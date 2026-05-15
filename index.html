@@ -211,10 +211,9 @@
     .glass--border { border: 2px solid var(--w25); background: transparent; }
     .divider { height: 1px; background: var(--w08); }
 
-    /* ── TABS ── */
-    .tabs { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3px; background: var(--blk25); border-radius: 14px; padding: 4px; border: 1px solid var(--w08); }
-    .tab-btn { padding: 10px 0; border: none; border-radius: 11px; background: transparent; color: var(--w60); font-family: 'Bebas Neue', sans-serif; font-size: 15px; letter-spacing: 0.05em; cursor: pointer; transition: all 0.2s; }
-    .tab-btn.active { background: var(--white); color: var(--orange); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+    /* ── RESULT PAGES ── */
+    .result-page { display: none; flex-direction: column; gap: 16px; }
+    .result-page.visible { display: flex; }
 
     /* ── CRITERIA ── */
     .criteria-item { display: flex; align-items: flex-start; gap: 10px; }
@@ -475,14 +474,9 @@
   <!-- ════ RESULTS ════ -->
   <div class="screen" id="screen-results">
     <div class="calc-inner col">
-      <div class="tabs" id="result-tabs">
-        <button class="tab-btn active" onclick="setTab('diagnostic')">🔍 Diagnostic</button>
-        <button class="tab-btn" onclick="setTab('systeme')">🎯 Mon Système</button>
-        <button class="tab-btn" onclick="setTab('potentiel')">💰 Potentiel</button>
-      </div>
-      <div id="tab-diagnostic" class="col" style="gap:16px"></div>
-      <div id="tab-systeme"    class="col" style="gap:16px;display:none"></div>
-      <div id="tab-potentiel"  class="col" style="gap:16px;display:none"></div>
+      <div id="rp-diagnostic" class="result-page"></div>
+      <div id="rp-systeme"    class="result-page"></div>
+      <div id="rp-potentiel"  class="result-page"></div>
     </div>
   </div>
 
@@ -497,7 +491,7 @@ const state = {
   industry: null, source: null, socialLeads: 0, video: null,
   closingRate: 30, avgValue: 3000,
   crm: null, challenge: null,
-  tab: 'diagnostic',
+  resultsPage: 'diagnostic',
   form: { nom: '', telephone: '', email: '', entreprise: '' },
   submitted: false,
 }
@@ -728,7 +722,7 @@ function renderDiagnostic() {
     prospection:"La prospection est épuisante et peu scalable. Un système inbound change tout.",
   }
 
-  document.getElementById('tab-diagnostic').innerHTML=`
+  document.getElementById('rp-diagnostic').innerHTML=`
     <div class="col--sm">
       <h2 class="bebas h2" style="font-size:34px">${['Tu es pratiquement invisible en ligne','Ta visibilité est sérieusement limitée',"Tu as du potentiel — mais tu laisses de l'argent sur la table",'Tu as une base solide — voici comment accélérer'][score]}</h2>
       ${state.source?`<div class="callout">${srcMsg[state.source]}</div>`:''}
@@ -741,12 +735,7 @@ function renderDiagnostic() {
       <div class="divider"></div>
       ${cHTML}
     </div>
-    <div class="glass glass--border" style="display:flex;flex-direction:column;gap:8px;padding:20px">
-      <div class="label">Résultats moyens de nos clients</div>
-      <div class="bebas" style="font-size:44px;color:#fff;line-height:1">120 000 vues/mois</div>
-      <div class="small">avec seulement 2–3 campagnes Meta bien structurées</div>
-    </div>
-    <button class="btn btn--primary" onclick="setTab('systeme')">Voir mon plan personnalisé →</button>
+    <button class="btn btn--primary" style="margin:0 auto;max-width:340px" onclick="setResultsPage('systeme')">Voir mon plan personnalisé →</button>
   `
 }
 
@@ -754,13 +743,13 @@ function renderDiagnostic() {
 // RENDER: MON SYSTÈME
 // ─────────────────────────────
 const CRM_LABELS = { none:'Aucun', ghl:'GoHighLevel', hubspot:'HubSpot', pipedrive:'Pipedrive/Salesforce', autre:'Autre CRM' }
-const CHALLENGE_LABELS = { visibility:'Manque de visibilité', leads_lost:'Je perds des leads', ads_dont_work:"Mes pubs ne marchent pas", content:"Mon contenu ne convertit pas", time:'Manque de temps', start:'Je ne sais pas par où commencer' }
+const CHALLENGE_LABELS = { visibility:'Manque de visibilité', ads_dont_work:"Mes pubs ne marchent pas", start:'Je ne sais pas par où commencer' }
 
 function renderSysteme() {
-  const { probs, recs } = buildRecommendation()
-
-  const probHTML = probs.map(p=>`<div class="prob-item">${p}</div>`).join('')
-  const recHTML = recs.map(r=>`
+  const { recs } = buildRecommendation()
+  // Show max 3 top recommendations — keep it short
+  const topRecs = recs.slice(0, 3)
+  const recHTML = topRecs.map(r=>`
     <div class="rec-card">
       <div class="rec-icon" style="background:${r.iconBg}">${r.icon}</div>
       <div style="flex:1">
@@ -770,28 +759,15 @@ function renderSysteme() {
       </div>
     </div>`).join('')
 
-  const needsAll = !state.crm||state.crm==='none'
-  const summaryText = needsAll
-    ? `Ton profil indique que tu pars d'une base minimale. La bonne nouvelle : le système complet (CRM + contenu + Meta Ads) peut être opérationnel en moins de 30 jours.`
-    : `Tu as déjà des éléments en place. On comble les lacunes et on optimise ce qui existe pour maximiser ton retour.`
-
-  document.getElementById('tab-systeme').innerHTML=`
+  document.getElementById('rp-systeme').innerHTML=`
     <div class="col--sm">
       <h2 class="bebas h2" style="font-size:34px">Ton plan personnalisé</h2>
-      <p class="small">Basé sur tes réponses — voici ce qui te manque et dans quel ordre l'implanter.</p>
-    </div>
-    <div class="glass" style="display:flex;flex-direction:column;gap:10px">
-      <div class="label" style="margin-bottom:2px">Problèmes identifiés</div>
-      ${probHTML}
+      <p class="small">Voici ce qu'on implante — dans cet ordre.</p>
     </div>
     <div style="display:flex;flex-direction:column;gap:10px">
-      <div class="label">Solutions recommandées — dans cet ordre</div>
       ${recHTML}
     </div>
-    <div class="glass glass--border" style="font-size:13px;color:var(--w80);line-height:1.6;padding:16px">
-      💡 ${summaryText}
-    </div>
-    <button class="btn btn--primary" onclick="setTab('potentiel')">Voir mon potentiel chiffré →</button>
+    <button class="btn btn--primary" style="margin:0 auto;max-width:340px" onclick="setResultsPage('potentiel')">Voir mon potentiel en chiffres →</button>
   `
 }
 
@@ -825,25 +801,25 @@ function renderPotentiel() {
   const formHTML = state.submitted ? `
     <div class="glass glass--dark col center" style="gap:10px;padding:28px 20px;align-items:center">
       <div style="font-size:52px">🎉</div>
-      <h3 class="bebas h3">Analyse en route!</h3>
-      <p class="body" style="text-align:center;font-size:14px">Notre équipe analyse ton profil et te revient sous 24h avec ton plan complet.</p>
+      <h3 class="bebas h3">On te revient sous 24h!</h3>
+      <p class="body" style="text-align:center;font-size:14px">Notre équipe analyse ton profil et te revient avec un plan d'action concret.</p>
     </div>
   ` : `
     <div class="col--sm">
-      <div>
-        <h3 class="bebas h3" style="margin-bottom:6px">Parle à un expert → Analyse gratuite</h3>
-        <p class="small">On analyse ton profil complet et on te propose un plan d'action. Sous 24h, sans engagement.</p>
+      <div style="text-align:center">
+        <h3 class="bebas h3" style="margin-bottom:6px">Parler à un expert</h3>
+        <p class="small">Analyse gratuite de ton profil · Sans engagement · Réponse sous 24h</p>
       </div>
       <input class="field" type="text"  placeholder="Ton prénom *"            id="f-nom"  oninput="state.form.nom=this.value;updateSubmitBtn()" />
       <input class="field" type="tel"   placeholder="Téléphone"               id="f-tel"  oninput="state.form.telephone=this.value" />
       <input class="field" type="email" placeholder="Adresse email *"         id="f-email" oninput="state.form.email=this.value;updateSubmitBtn()" />
       <input class="field" type="text"  placeholder="Entreprise (optionnel)"  id="f-co"   oninput="state.form.entreprise=this.value" />
-      <button class="btn btn--primary btn--disabled" id="btn-submit" onclick="handleSubmit()">Obtenir mon analyse gratuite →</button>
+      <button class="btn btn--primary btn--disabled" id="btn-submit" onclick="handleSubmit()" style="margin:0 auto;max-width:340px">Parler à un expert →</button>
       <p class="tiny">Aucun spam · Tes informations restent confidentielles</p>
     </div>
   `
 
-  document.getElementById('tab-potentiel').innerHTML=`
+  document.getElementById('rp-potentiel').innerHTML=`
     <div class="glass glass--dark col center" style="gap:6px;padding:24px 20px">
       <div class="label">Ton potentiel mensuel</div>
       <div class="bebas" style="font-size:60px;line-height:1.05;color:#fff" id="anim-revenue">${fmtCAD(0)}</div>
@@ -898,15 +874,18 @@ function handleSubmit() {
 }
 
 // ─────────────────────────────
-// TAB
+// RESULTS PAGE NAV
 // ─────────────────────────────
-function setTab(tab) {
-  state.tab=tab
-  const tabs=['diagnostic','systeme','potentiel']
-  document.querySelectorAll('.tab-btn').forEach((btn,i)=>btn.classList.toggle('active',tabs[i]===tab))
-  tabs.forEach(t=>{ document.getElementById('tab-'+t).style.display=t===tab?'flex':'none' })
-  if(tab==='systeme')   renderSysteme()
-  if(tab==='potentiel') renderPotentiel()
+function setResultsPage(page) {
+  state.resultsPage=page
+  const pages=['diagnostic','systeme','potentiel']
+  pages.forEach(p=>{
+    const el=document.getElementById('rp-'+p)
+    if(el) el.className='result-page'+(p===page?' visible':'')
+  })
+  if(page==='systeme')   renderSysteme()
+  if(page==='potentiel') renderPotentiel()
+  window.scrollTo({top:0,behavior:'smooth'})
 }
 
 // ─────────────────────────────
@@ -992,17 +971,14 @@ function render() {
 
   if(step==='challenge') {
     renderOptions('opts-challenge',[
-      {value:'visibility',     icon:'👻',label:'Manque de visibilité',             sub:"Personne ne me connaît en ligne"},
-      {value:'leads_lost',     icon:'💸',label:'Je perds des leads',               sub:'Pas de suivi structuré après le premier contact'},
-      {value:'ads_dont_work',  icon:'📉',label:"Mes pubs ne marchent pas",         sub:'J\'investis mais je ne vois pas de résultats'},
-      {value:'content',        icon:'🎯',label:'Mon contenu ne convertit pas',     sub:'J\'ai de la visibilité mais peu de leads'},
-      {value:'time',           icon:'⏰',label:'Manque de temps',                  sub:'Je veux automatiser mais je ne sais pas comment'},
-      {value:'start',          icon:'🧭',label:'Je ne sais pas par où commencer',  sub:'Trop d\'options, besoin d\'une feuille de route'},
+      {value:'visibility',    icon:'👻',label:'Manque de visibilité',           sub:"Personne ne me connaît en ligne"},
+      {value:'ads_dont_work', icon:'📉',label:"Mes pubs ne marchent pas",       sub:"J'investis mais je ne vois pas de résultats"},
+      {value:'start',         icon:'🧭',label:'Je ne sais pas par où commencer',sub:'Trop d\'options, besoin d\'une feuille de route'},
     ], state.challenge,'challenge','btn-challenge')
     if(state.challenge) document.getElementById('btn-challenge')?.classList.remove('btn--disabled')
   }
 
-  if(step==='results') { renderDiagnostic(); setTab('diagnostic') }
+  if(step==='results') { renderDiagnostic(); setResultsPage('diagnostic') }
 
   window.scrollTo({top:0,behavior:'smooth'})
 }
