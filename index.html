@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculateur de revenus manqués — Suna Films Media</title>
+  <meta name="description" content="Découvre combien tu laisses sur la table chaque mois sans un système de contenu + pubs Meta. Calcul personnalisé selon ton industrie." />
+  <meta property="og:title" content="Combien tu laisses sur la table chaque mois?" />
+  <meta property="og:description" content="Calculateur gratuit — 5 questions — Résultat chiffré selon ton industrie." />
+  <meta property="og:image" content="https://sunafilmsmedia.com/assets/images/og-calculateur.jpg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange: #FF5F00;
+      --white: #fff;
+      --w08: rgba(255,255,255,0.08);
+      --w15: rgba(255,255,255,0.15);
+      --w25: rgba(255,255,255,0.25);
+      --w40: rgba(255,255,255,0.40);
+      --w60: rgba(255,255,255,0.60);
+      --w80: rgba(255,255,255,0.80);
+      --blk15: rgba(0,0,0,0.15);
+      --blk25: rgba(0,0,0,0.25);
+      --green: #34C759;
+      --red: #FF3B30;
+      --yellow: #FF9500;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #0a0a0a;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 24px 16px 60px;
+    }
+
+    /* ── CARD ── */
+    .calc {
+      width: 100%;
+      max-width: 480px;
+      background: var(--orange);
+      border-radius: 24px;
+      padding: 32px 28px;
+      position: relative;
+      overflow: hidden;
+      color: var(--white);
+    }
+
+    .calc::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(circle at top right, rgba(255,255,255,0.07) 0%, transparent 55%);
+      pointer-events: none;
+    }
+
+    /* ── BRAND ── */
+    .brand {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--w60);
+      margin-bottom: 20px;
+    }
+
+    /* ── TYPOGRAPHY ── */
+    .bebas { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.02em; line-height: 1; }
+    .h1 { font-size: 52px; }
+    .h2 { font-size: 40px; }
+    .h3 { font-size: 30px; }
+    .h4 { font-size: 24px; }
+    .big-num { font-size: 96px; line-height: 1; }
+    .big-num-md { font-size: 64px; line-height: 1; }
+    .big-num-sm { font-size: 42px; line-height: 1; }
+
+    .body { font-size: 15px; line-height: 1.55; color: var(--w80); }
+    .small { font-size: 13px; color: var(--w60); }
+    .tiny { font-size: 11px; color: var(--w40); text-align: center; }
+    .label { font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--w60); }
+
+    /* ── LAYOUT ── */
+    .col { display: flex; flex-direction: column; gap: 20px; }
+    .col--sm { gap: 14px; }
+    .col--lg { gap: 28px; }
+    .row { display: flex; align-items: center; }
+    .between { justify-content: space-between; }
+    .center { text-align: center; align-items: center; }
+
+    /* ── PROGRESS ── */
+    .progress-bar {
+      display: flex;
+      gap: 5px;
+    }
+    .progress-bar__seg {
+      flex: 1;
+      height: 3px;
+      border-radius: 2px;
+      background: var(--w25);
+      transition: background 0.3s;
+    }
+    .progress-bar__seg.active { background: var(--white); }
+
+    /* ── BADGE ── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 12px;
+      border-radius: 99px;
+      background: var(--w15);
+      color: var(--white);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 16px 24px;
+      border: none;
+      border-radius: 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+      letter-spacing: 0.02em;
+    }
+    .btn:hover { opacity: 0.92; }
+    .btn:active { transform: scale(0.98); }
+    .btn--primary { background: var(--white); color: var(--orange); }
+    .btn--disabled { opacity: 0.42; cursor: default; pointer-events: none; }
+
+    .btn-ghost {
+      background: none;
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--w60);
+      cursor: pointer;
+      padding: 4px 0;
+      transition: color 0.2s;
+    }
+    .btn-ghost:hover { color: var(--white); }
+
+    /* ── CARD OPTION ── */
+    .option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      border-radius: 14px;
+      border: 2px solid var(--w25);
+      background: transparent;
+      color: var(--white);
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+    .option:hover { border-color: var(--w60); background: var(--w08); }
+    .option.active {
+      border-color: var(--white);
+      background: var(--white);
+      color: var(--orange);
+    }
+    .option__icon { font-size: 22px; flex-shrink: 0; }
+    .option__title { font-size: 15px; font-weight: 600; }
+    .option__sub { font-size: 12px; opacity: 0.65; margin-top: 2px; }
+
+    /* ── SLIDER ── */
+    .slider-wrap { position: relative; width: 100%; height: 40px; display: flex; align-items: center; }
+    .slider-track { position: absolute; left: 0; right: 0; height: 4px; border-radius: 2px; background: var(--w25); }
+    .slider-fill { position: absolute; left: 0; height: 4px; border-radius: 2px; background: var(--white); }
+    .slider-thumb {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--white);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      pointer-events: none;
+      transition: left 0.04s;
+    }
+    .slider-input {
+      position: absolute;
+      width: 100%;
+      height: 40px;
+      opacity: 0;
+      cursor: pointer;
+      z-index: 2;
+    }
+    input[type=range] { -webkit-appearance: none; appearance: none; background: transparent; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 1px; height: 1px; }
+    input[type=range]::-moz-range-thumb { width: 1px; height: 1px; opacity: 0; border: none; }
+    .slider-labels { display: flex; justify-content: space-between; margin-top: 4px; }
+
+    /* ── GLASS CARD ── */
+    .glass { background: var(--blk15); border-radius: 14px; padding: 16px; }
+    .glass--dark { background: var(--blk25); }
+
+    /* ── DIVIDER ── */
+    .divider { height: 1px; background: var(--w08); }
+
+    /* ── STATS ROW (intro) ── */
+    .stats-row { display: flex; gap: 20px; flex-wrap: wrap; }
+    .stat-item { display: flex; align-items: center; gap: 6px; }
+    .stat-icon { font-size: 18px; }
+
+    /* ── TABS ── */
+    .tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+      background: var(--blk25);
+      border-radius: 14px;
+      padding: 4px;
+    }
+    .tab-btn {
+      padding: 11px 0;
+      border: none;
+      border-radius: 11px;
+      background: transparent;
+      color: var(--w60);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-btn.active { background: var(--white); color: var(--orange); }
+
+    /* ── SCORE CRITERIA ── */
+    .criteria-item { display: flex; align-items: center; gap: 12px; }
+    .criteria-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      flex-shrink: 0;
+      color: var(--white);
+    }
+    .criteria-dot--ok { background: var(--green); }
+    .criteria-dot--no { background: var(--red); }
+
+    /* ── FUNNEL ROW ── */
+    .funnel-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 11px 0;
+    }
+    .funnel-row:not(:last-child) { border-bottom: 1px solid var(--w08); }
+    .funnel-label { display: flex; align-items: center; gap: 10px; }
+
+    /* ── BRIDGE BOX ── */
+    .bridge {
+      border: 2px solid var(--w25);
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    /* ── FORM INPUTS ── */
+    .field {
+      width: 100%;
+      padding: 14px 16px;
+      background: var(--blk25);
+      border: 2px solid var(--w25);
+      border-radius: 12px;
+      color: var(--white);
+      font-size: 15px;
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .field::placeholder { color: var(--w40); }
+    .field:focus { border-color: rgba(255,255,255,0.65); }
+
+    /* ── THANK YOU ── */
+    .thankyou { text-align: center; padding: 28px 20px; align-items: center; }
+    .thankyou-icon { font-size: 52px; }
+
+    /* ── ANNUAL ROW ── */
+    .annual-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 2px solid var(--w25);
+      border-radius: 14px;
+      padding: 14px 16px;
+    }
+
+    /* ── CALLOUT ── */
+    .callout {
+      background: rgba(0,0,0,0.20);
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--w80);
+      line-height: 1.55;
+    }
+
+    /* ── SCREENS ── */
+    .screen { display: none; }
+    .screen.visible { display: flex; flex-direction: column; gap: 20px; }
+
+    /* ── MOBILE ── */
+    @media (max-width: 520px) {
+      body { padding: 12px 12px 48px; }
+      .calc { padding: 24px 20px; border-radius: 20px; }
+      .h1 { font-size: 44px; }
+      .h2 { font-size: 34px; }
+      .big-num { font-size: 80px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="calc" id="calc">
+  <!-- Brand -->
+  <div class="brand" id="brand" style="display:none">Suna Films Media</div>
+
+  <!-- SCREEN: intro -->
+  <div class="screen" id="screen-intro">
+    <div class="badge">Outil gratuit — 2 minutes</div>
+    <div class="col--sm">
+      <h1 class="bebas h1">Combien tu laisses sur la table chaque mois?</h1>
+      <p class="body">Découvre en 5 questions le potentiel de revenus que tu rates sans un système de contenu + pubs Meta.</p>
+    </div>
+    <div class="stats-row">
+      <div class="stat-item"><span class="stat-icon">⏱</span><span class="small">2 minutes</span></div>
+      <div class="stat-item"><span class="stat-icon">❓</span><span class="small">5 questions</span></div>
+      <div class="stat-item"><span class="stat-icon">💰</span><span class="small">Résultat chiffré</span></div>
+    </div>
+    <button class="btn btn--primary" onclick="goNext()">Calculer mon potentiel →</button>
+    <p class="tiny">Basé sur 120 000 vues/mois générées par nos clients via 2–3 campagnes Meta</p>
+  </div>
+
+  <!-- SCREEN: industry -->
+  <div class="screen" id="screen-industry">
+    <div class="col--sm">
+      <div class="row between">
+        <span class="small" id="prog-industry"></span>
+      </div>
+      <div id="pb-industry" class="progress-bar"></div>
+    </div>
+    <h2 class="bebas h2">Dans quelle industrie travailles-tu?</h2>
+    <div class="col--sm" id="opts-industry"></div>
+    <button class="btn btn--primary btn--disabled" id="btn-industry" onclick="goNext()">Continuer →</button>
+  </div>
+
+  <!-- SCREEN: source -->
+  <div class="screen" id="screen-source">
+    <div class="col--sm">
+      <div class="row between">
+        <span class="small" id="prog-source"></span>
+        <button class="btn-ghost" onclick="goBack()">← Retour</button>
+      </div>
+      <div id="pb-source" class="progress-bar"></div>
+    </div>
+    <div>
+      <h2 class="bebas h2">D'où vient la majorité de tes clients?</h2>
+      <p class="small" style="margin-top:6px">Choisis ta source principale</p>
+    </div>
+    <div class="col--sm" id="opts-source"></div>
+    <button class="btn btn--primary btn--disabled" id="btn-source" onclick="goNext()">Continuer →</button>
+  </div>
+
+  <!-- SCREEN: leads -->
+  <div class="screen" id="screen-leads">
+    <div class="col--sm">
+      <div class="row between">
+        <span class="small" id="prog-leads"></span>
+        <button class="btn-ghost" onclick="goBack()">← Retour</button>
+      </div>
+      <div id="pb-leads" class="progress-bar"></div>
+    </div>
+    <div>
+      <h2 class="bebas h2">Combien de leads as-tu reçus via les réseaux ce mois-ci?</h2>
+    </div>
+    <div class="col center" style="gap:4px">
+      <div class="bebas big-num" id="leads-display">0</div>
+      <div class="small">lead<span id="leads-plural"></span> ce mois</div>
+    </div>
+    <div>
+      <div class="slider-wrap">
+        <div class="slider-track"></div>
+        <div class="slider-fill" id="leads-fill"></div>
+        <div class="slider-thumb" id="leads-thumb"></div>
+        <input type="range" class="slider-input" id="leads-slider" min="0" max="15" step="1" value="0" oninput="onLeadsChange(this.value)" />
+      </div>
+      <div class="slider-labels">
+        <span class="tiny">0</span>
+        <span class="tiny">15+</span>
+      </div>
+    </div>
+    <div id="leads-callout"></div>
+    <button class="btn btn--primary" onclick="goNext()">Continuer →</button>
+  </div>
+
+  <!-- SCREEN: video -->
+  <div class="screen" id="screen-video">
+    <div class="col--sm">
+      <div class="row between">
+        <span class="small" id="prog-video"></span>
+        <button class="btn-ghost" onclick="goBack()">← Retour</button>
+      </div>
+      <div id="pb-video" class="progress-bar"></div>
+    </div>
+    <h2 class="bebas h2">Publies-tu du contenu vidéo pour ton business?</h2>
+    <div class="col--sm" id="opts-video"></div>
+    <button class="btn btn--primary btn--disabled" id="btn-video" onclick="goNext()">Continuer →</button>
+  </div>
+
+  <!-- SCREEN: closing (Autre seulement) -->
+  <div class="screen" id="screen-closing">
+    <div class="col--sm">
+      <div class="row between">
+        <span class="small" id="prog-closing"></span>
+        <button class="btn-ghost" onclick="goBack()">← Retour</button>
+      </div>
+      <div id="pb-closing" class="progress-bar"></div>
+    </div>
+    <div>
+      <h2 class="bebas h2">Quel est ton taux de closing habituel?</h2>
+      <p class="small" style="margin-top:6px">Sur 100 prospects qualifiés, combien deviennent clients?</p>
+    </div>
+    <div class="col center" style="gap:4px">
+      <div class="bebas big-num" id="closing-display">30%</div>
+      <div class="small">des leads convertis</div>
+    </div>
+    <div>
+      <div class="slider-wrap">
+        <div class="slider-track"></div>
+        <div class="slider-fill" id="closing-fill"></div>
+        <div class="slider-thumb" id="closing-thumb"></div>
+        <input type="range" class="slider-input" id="closing-slider" min="5" max="70" step="5" value="30" oninput="onClosingChange(this.value)" />
+      </div>
+      <div class="slider-labels">
+        <span class="tiny">5%</span>
+        <span class="tiny">70%</span>
+      </div>
+    </div>
+    <button class="btn btn--primary" onclick="goNext()">Continuer →</button>
+  </div>
+
+  <!-- SCREEN: value -->
+  <div class="screen" id="screen-value">
+    <div class="col--sm">
+      <div class="row between">
+        <span class="small" id="prog-value"></span>
+        <button class="btn-ghost" onclick="goBack()">← Retour</button>
+      </div>
+      <div id="pb-value" class="progress-bar"></div>
+    </div>
+    <div>
+      <h2 class="bebas h2">Quelle est ta valeur moyenne par client?</h2>
+      <p class="small" style="margin-top:6px">Commission ou revenu moyen généré par dossier/mandat</p>
+    </div>
+    <div class="col center" style="gap:4px">
+      <div class="bebas big-num-md" id="value-display">3 000 $</div>
+      <div class="small">par client</div>
+    </div>
+    <div>
+      <div class="slider-wrap">
+        <div class="slider-track"></div>
+        <div class="slider-fill" id="value-fill"></div>
+        <div class="slider-thumb" id="value-thumb"></div>
+        <input type="range" class="slider-input" id="value-slider" oninput="onValueChange(this.value)" />
+      </div>
+      <div class="slider-labels">
+        <span class="tiny" id="value-min-label"></span>
+        <span class="tiny" id="value-max-label"></span>
+      </div>
+    </div>
+    <button class="btn btn--primary" onclick="goNext()">Voir mes résultats →</button>
+  </div>
+
+  <!-- SCREEN: results -->
+  <div class="screen" id="screen-results">
+    <div class="tabs" id="result-tabs">
+      <button class="tab-btn active" onclick="setTab('diagnostic')">🔍 Diagnostic</button>
+      <button class="tab-btn" onclick="setTab('potentiel')">💰 Potentiel</button>
+    </div>
+
+    <!-- TAB: diagnostic -->
+    <div id="tab-diagnostic" class="col" style="gap:18px"></div>
+
+    <!-- TAB: potentiel -->
+    <div id="tab-potentiel" class="col" style="gap:18px;display:none"></div>
+  </div>
+
+</div><!-- /.calc -->
+
+<script>
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+const state = {
+  step: 'intro',
+  industry: null,
+  source: null,
+  socialLeads: 0,
+  video: null,
+  closingRate: 30,
+  avgValue: 3000,
+  tab: 'diagnostic',
+  form: { nom: '', telephone: '', email: '', entreprise: '' },
+  submitted: false,
+}
+
+// ─────────────────────────────────────────────
+// FUNNEL DATA
+// ─────────────────────────────────────────────
+const FUNNEL = {
+  hypothecaire: { label: 'Courtier hypothécaire', totalLeads: 90, qualRate: 0.90, closingRate: 0.37, avgMin: 1000, avgMax: 10000, avgDefault: 3000, avgStep: 500 },
+  immobilier:   { label: 'Courtier immobilier',   totalLeads: 35, qualRate: 0.29, closingRate: 0.30, avgMin: 5000, avgMax: 50000, avgDefault: 15000, avgStep: 1000 },
+  financier:    { label: 'Conseiller financier',  totalLeads: 80, qualRate: 0.75, closingRate: 0.32, avgMin: 500,  avgMax: 10000, avgDefault: 2000,  avgStep: 500 },
+  autre:        { label: 'Autre industrie',        totalLeads: 90, qualRate: 0.50, closingRate: null, avgMin: 500,  avgMax: 20000, avgDefault: 3000,  avgStep: 500 },
+}
+
+// Step sequences
+const STEPS_BASE  = ['intro','industry','source','leads','video','value','results']
+const STEPS_AUTRE = ['intro','industry','source','leads','video','closing','value','results']
+
+function getSteps() {
+  return state.industry === 'autre' ? STEPS_AUTRE : STEPS_BASE
+}
+
+function getQSteps() {
+  return getSteps().filter(s => s !== 'intro' && s !== 'results')
+}
+
+// ─────────────────────────────────────────────
+// FORMAT
+// ─────────────────────────────────────────────
+function fmtCAD(n) {
+  return new Intl.NumberFormat('fr-CA', { style: 'currency', currency: 'CAD', maximumFractionDigits: 0 }).format(n)
+}
+function fmtN(n) {
+  return new Intl.NumberFormat('fr-CA').format(Math.round(n))
+}
+
+// ─────────────────────────────────────────────
+// NAVIGATION
+// ─────────────────────────────────────────────
+function goNext() {
+  const steps = getSteps()
+  const idx = steps.indexOf(state.step)
+  if (idx < steps.length - 1) {
+    state.step = steps[idx + 1]
+    render()
+  }
+}
+
+function goBack() {
+  const steps = getSteps()
+  const idx = steps.indexOf(state.step)
+  if (idx > 0) {
+    state.step = steps[idx - 1]
+    render()
+  }
+}
+
+// ─────────────────────────────────────────────
+// SLIDER HELPERS
+// ─────────────────────────────────────────────
+function updateSlider(fillId, thumbId, value, min, max) {
+  const pct = ((value - min) / (max - min)) * 100
+  document.getElementById(fillId).style.width = pct + '%'
+  document.getElementById(thumbId).style.left = 'calc(' + pct + '% - 12px)'
+}
+
+function onLeadsChange(v) {
+  state.socialLeads = +v
+  document.getElementById('leads-display').textContent = v
+  document.getElementById('leads-plural').textContent = v == 1 ? '' : 's'
+  updateSlider('leads-fill', 'leads-thumb', +v, 0, 15)
+  renderLeadsCallout()
+}
+
+function onClosingChange(v) {
+  state.closingRate = +v
+  document.getElementById('closing-display').textContent = v + '%'
+  updateSlider('closing-fill', 'closing-thumb', +v, 5, 70)
+}
+
+function onValueChange(v) {
+  state.avgValue = +v
+  document.getElementById('value-display').textContent = fmtCAD(+v)
+  const f = FUNNEL[state.industry]
+  updateSlider('value-fill', 'value-thumb', +v, f.avgMin, f.avgMax)
+}
+
+// ─────────────────────────────────────────────
+// PROGRESS BAR
+// ─────────────────────────────────────────────
+function renderProgress(pbId, progId, step) {
+  const qSteps = getQSteps()
+  const idx = qSteps.indexOf(step) + 1
+  const total = qSteps.length
+  const pb = document.getElementById(pbId)
+  if (!pb) return
+  pb.innerHTML = ''
+  for (let i = 0; i < total; i++) {
+    const seg = document.createElement('div')
+    seg.className = 'progress-bar__seg' + (i < idx ? ' active' : '')
+    pb.appendChild(seg)
+  }
+  document.getElementById(progId).textContent = 'Question ' + idx + ' / ' + total
+}
+
+// ─────────────────────────────────────────────
+// OPTION LISTS
+// ─────────────────────────────────────────────
+function renderOptions(containerId, options, currentValue, stateKey, btnId) {
+  const container = document.getElementById(containerId)
+  container.innerHTML = ''
+  options.forEach(opt => {
+    const div = document.createElement('div')
+    div.className = 'option' + (currentValue === opt.value ? ' active' : '')
+    div.innerHTML = `
+      <span class="option__icon">${opt.icon}</span>
+      <div>
+        <div class="option__title">${opt.label}</div>
+        ${opt.sub ? `<div class="option__sub">${opt.sub}</div>` : ''}
+      </div>
+    `
+    div.onclick = () => {
+      state[stateKey] = opt.value
+      if (stateKey === 'industry') {
+        state.avgValue = FUNNEL[opt.value].avgDefault
+      }
+      renderOptions(containerId, options, opt.value, stateKey, btnId)
+      if (btnId) {
+        const btn = document.getElementById(btnId)
+        if (btn) btn.classList.remove('btn--disabled')
+      }
+    }
+    container.appendChild(div)
+  })
+}
+
+// ─────────────────────────────────────────────
+// LEADS CALLOUT
+// ─────────────────────────────────────────────
+function renderLeadsCallout() {
+  const el = document.getElementById('leads-callout')
+  if (!el) return
+  const v = state.socialLeads
+  if (v === 0) {
+    el.innerHTML = `<div class="callout">😬 <strong style="color:#fff">Tu n'es pas seul</strong> — la majorité des professionnels financiers ne génèrent aucun lead via les réseaux. C'est exactement ce qu'on règle.</div>`
+  } else if (v > 0 && v < 5) {
+    el.innerHTML = `<div class="callout">📈 <strong style="color:#fff">C'est un début</strong> — avec un système structuré, nos clients génèrent jusqu'à 90 leads/mois dans ton industrie.</div>`
+  } else {
+    el.innerHTML = ''
+  }
+}
+
+// ─────────────────────────────────────────────
+// CALCULATIONS
+// ─────────────────────────────────────────────
+function calc() {
+  if (!state.industry) return null
+  const f = FUNNEL[state.industry]
+  const cr = state.industry === 'autre' ? state.closingRate / 100 : f.closingRate
+  const qualLeads = Math.round(f.totalLeads * f.qualRate)
+  const clients   = Math.round(qualLeads * cr)
+  const monthly   = clients * state.avgValue
+  const annual    = monthly * 12
+  return { totalLeads: f.totalLeads, qualLeads, cr, clients, monthly, annual }
+}
+
+// ─────────────────────────────────────────────
+// RESULTS HELPERS
+// ─────────────────────────────────────────────
+function getVisibilityScore() {
+  let s = 0
+  if (state.source === 'social' || state.source === 'pubs') s++
+  if (state.socialLeads >= 5) s++
+  if (state.video === 'oui') s++
+  return s
+}
+
+function getDiagTitle(score) {
+  if (score === 0) return 'Tu es pratiquement invisible en ligne'
+  if (score === 1) return 'Ta visibilité est sérieusement limitée'
+  if (score === 2) return "Tu as du potentiel — mais tu laisses de l'argent sur la table"
+  return 'Tu as une base solide — voici comment accélérer'
+}
+
+function getSourceMsg(src) {
+  const msgs = {
+    references: "100% références = zéro contrôle sur ta croissance. Si les références s'arrêtent, ton pipeline aussi.",
+    reseau: 'Ton réseau a des limites naturelles. Sans système inbound, tu plafonnes rapidement.',
+    social: 'Tu es actif sur les réseaux — mais sans système structuré, les résultats restent imprévisibles.',
+    pubs: 'Tu investis déjà en pubs — bonne base. Voici comment maximiser chaque dollar dépensé.',
+    prospection: "La prospection est épuisante et peu scalable. Un système inbound change tout.",
+  }
+  return msgs[src] || ''
+}
+
+// ─────────────────────────────────────────────
+// RENDER DIAGNOSTIC TAB
+// ─────────────────────────────────────────────
+function renderDiagnostic() {
+  const score = getVisibilityScore()
+  const scoreColors = ['#FF3B30','#FF9500','#FF9500','#34C759']
+  const scoreLabels = ['Invisible 🔴','Limité 🟡','Moyen 🟡','Visible 🟢']
+
+  const criteria = [
+    {
+      label: 'Source de clients',
+      ok: state.source === 'social' || state.source === 'pubs',
+      detail: (state.source === 'social' || state.source === 'pubs')
+        ? 'Présence sur les canaux digitaux'
+        : 'Dépendance aux références / réseau',
+    },
+    {
+      label: 'Inbound via réseaux sociaux',
+      ok: state.socialLeads >= 5,
+      detail: state.socialLeads >= 5
+        ? `${state.socialLeads} lead${state.socialLeads > 1 ? 's' : ''} ce mois — bonne traction`
+        : `Seulement ${state.socialLeads} lead${state.socialLeads > 1 ? 's' : ''} ce mois`,
+    },
+    {
+      label: 'Contenu vidéo',
+      ok: state.video === 'oui',
+      detail: state.video === 'oui' ? 'Publié régulièrement ✓'
+        : state.video === 'parfois' ? 'Publication irrégulière'
+        : 'Aucun contenu vidéo publié',
+    },
+  ]
+
+  const criteriaHTML = criteria.map(c => `
+    <div class="criteria-item">
+      <div class="criteria-dot ${c.ok ? 'criteria-dot--ok' : 'criteria-dot--no'}">${c.ok ? '✓' : '✗'}</div>
+      <div>
+        <div style="font-size:13px;font-weight:600;color:#fff">${c.label}</div>
+        <div style="font-size:12px;color:var(--w60)">${c.detail}</div>
+      </div>
+    </div>
+  `).join('')
+
+  const tab = document.getElementById('tab-diagnostic')
+  tab.innerHTML = `
+    <div class="col--sm">
+      <h2 class="bebas h2">${getDiagTitle(score)}</h2>
+      ${state.source ? `<div class="callout">${getSourceMsg(state.source)}</div>` : ''}
+    </div>
+
+    <div class="glass" style="display:flex;flex-direction:column;gap:14px">
+      <div class="row between">
+        <span style="font-size:14px;font-weight:700;color:#fff">Score de visibilité</span>
+        <span class="bebas" style="font-size:28px;color:${scoreColors[score]}">${score}/3 — ${scoreLabels[score]}</span>
+      </div>
+      <div class="divider"></div>
+      ${criteriaHTML}
+    </div>
+
+    <div class="bridge">
+      <div style="font-size:13px;font-weight:600;color:var(--w60);text-transform:uppercase;letter-spacing:.06em">Résultats moyens de nos clients</div>
+      <div class="bebas" style="font-size:42px;color:#fff">120 000 vues/mois</div>
+      <div style="font-size:13px;color:var(--w60)">avec seulement 2–3 campagnes Meta bien structurées — sans budget énorme</div>
+    </div>
+
+    <button class="btn btn--primary" onclick="setTab('potentiel')">Voir mon potentiel de revenus →</button>
+  `
+}
+
+// ─────────────────────────────────────────────
+// RENDER POTENTIEL TAB
+// ─────────────────────────────────────────────
+let animFrame = null
+
+function animateNumbers(targetClients, targetRevenue, durationMs) {
+  if (animFrame) cancelAnimationFrame(animFrame)
+  const start = performance.now()
+  function tick(now) {
+    const p = Math.min((now - start) / durationMs, 1)
+    const ease = 1 - Math.pow(1 - p, 3)
+    const c = document.getElementById('anim-clients')
+    const r = document.getElementById('anim-revenue')
+    if (c) c.textContent = fmtN(Math.round(targetClients * ease))
+    if (r) r.textContent = fmtCAD(Math.round(targetRevenue * ease))
+    if (p < 1) animFrame = requestAnimationFrame(tick)
+  }
+  animFrame = requestAnimationFrame(tick)
+}
+
+function renderPotentiel() {
+  const r = calc()
+  if (!r) return
+
+  const funnelRows = [
+    { icon: '👁',  label: 'Vues/mois',      val: fmtN(120000),      sub: 'campagnes Meta' },
+    { icon: '📥',  label: 'Leads générés',  val: fmtN(r.totalLeads), sub: ((r.totalLeads/120000)*100).toFixed(1)+'% des vues' },
+    { icon: '✅',  label: 'Leads qualifiés',val: fmtN(r.qualLeads),  sub: Math.round(r.qualLeads/r.totalLeads*100)+'% qualifiés' },
+    { icon: '🤝',  label: 'Clients signés', val: fmtN(r.clients),    sub: Math.round(r.cr*100)+'% de closing' },
+    { icon: '💰',  label: 'Revenus/mois',   val: fmtCAD(r.monthly),  sub: '', highlight: true },
+  ]
+
+  const funnelHTML = funnelRows.map(row => `
+    <div class="funnel-row">
+      <div class="funnel-label">
+        <span style="font-size:18px">${row.icon}</span>
+        <span style="font-size:14px;font-weight:${row.highlight?700:400};color:#fff">${row.label}</span>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:14px;font-weight:700;color:#fff">${row.val}</div>
+        ${row.sub ? `<div style="font-size:11px;color:var(--w40)">${row.sub}</div>` : ''}
+      </div>
+    </div>
+  `).join('')
+
+  const formHTML = state.submitted ? `
+    <div class="glass glass--dark col thankyou" style="gap:10px">
+      <div class="thankyou-icon">🎉</div>
+      <h3 class="bebas h3">Analyse en route!</h3>
+      <p class="body" style="text-align:center">Notre équipe analyse ton profil et te revient sous 24h avec un plan personnalisé.</p>
+      <p style="font-size:13px;color:var(--w60);text-align:center">En attendant, suis-nous sur Instagram pour du contenu exclusif.</p>
+    </div>
+  ` : `
+    <div class="col--sm">
+      <div>
+        <h3 class="bebas h3">Je veux ce système → Analyse gratuite</h3>
+        <p style="font-size:13px;color:var(--w60);margin-top:6px">On analyse ton profil et on te propose un plan personnalisé. Sous 24h, sans engagement.</p>
+      </div>
+      <input class="field" type="text" placeholder="Ton prénom *" id="f-nom" oninput="state.form.nom=this.value;updateSubmitBtn()" />
+      <input class="field" type="tel" placeholder="Téléphone" id="f-tel" oninput="state.form.telephone=this.value" />
+      <input class="field" type="email" placeholder="Adresse email *" id="f-email" oninput="state.form.email=this.value;updateSubmitBtn()" />
+      <input class="field" type="text" placeholder="Entreprise (optionnel)" id="f-co" oninput="state.form.entreprise=this.value" />
+      <button class="btn btn--primary btn--disabled" id="btn-submit" onclick="handleSubmit()">Obtenir mon analyse gratuite →</button>
+      <p class="tiny">Aucun spam. Tes informations restent confidentielles.</p>
+    </div>
+  `
+
+  const tab = document.getElementById('tab-potentiel')
+  tab.innerHTML = `
+    <div class="glass glass--dark col center" style="gap:6px;padding:24px 20px">
+      <div class="label">Ton potentiel mensuel</div>
+      <div class="bebas" style="font-size:64px;line-height:1;color:#fff" id="anim-revenue">${fmtCAD(0)}</div>
+      <div style="font-size:15px;font-weight:500;color:var(--w60)">soit <strong style="color:#fff" id="anim-clients">0</strong> clients/mois</div>
+    </div>
+
+    <div class="glass" style="display:flex;flex-direction:column;gap:0">
+      <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:12px">📊 Ton funnel projeté</div>
+      ${funnelHTML}
+    </div>
+
+    <div class="annual-row">
+      <div>
+        <div class="label">Potentiel annuel</div>
+      </div>
+      <div class="bebas" style="font-size:36px;color:#fff">${fmtCAD(r.annual)}</div>
+    </div>
+
+    ${formHTML}
+  `
+
+  // Animate after DOM is ready
+  requestAnimationFrame(() => {
+    animateNumbers(r.clients, r.monthly, 800)
+  })
+}
+
+// ─────────────────────────────────────────────
+// FORM
+// ─────────────────────────────────────────────
+function updateSubmitBtn() {
+  const btn = document.getElementById('btn-submit')
+  if (!btn) return
+  const ok = state.form.nom.trim() && state.form.email.trim()
+  btn.classList.toggle('btn--disabled', !ok)
+}
+
+function handleSubmit() {
+  if (!state.form.nom.trim() || !state.form.email.trim()) return
+  state.submitted = true
+
+  // Webhook (configure via meta tag ou hardcode l'URL)
+  const webhookUrl = document.querySelector('meta[name="webhook-url"]')?.content
+  if (webhookUrl) {
+    const r = calc()
+    fetch(webhookUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ...state.form,
+        industry: state.industry,
+        source: state.source,
+        socialLeads: state.socialLeads,
+        video: state.video,
+        closingRate: state.closingRate,
+        avgValue: state.avgValue,
+        potentielMensuel: r?.monthly,
+        potentielAnnuel: r?.annual,
+        clients: r?.clients,
+      }),
+    }).catch(() => {})
+  }
+
+  renderPotentiel()
+}
+
+// ─────────────────────────────────────────────
+// TAB SWITCHER
+// ─────────────────────────────────────────────
+function setTab(tab) {
+  state.tab = tab
+  document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+    btn.classList.toggle('active', (i === 0 && tab === 'diagnostic') || (i === 1 && tab === 'potentiel'))
+  })
+  document.getElementById('tab-diagnostic').style.display = tab === 'diagnostic' ? 'flex' : 'none'
+  document.getElementById('tab-potentiel').style.display  = tab === 'potentiel'  ? 'flex' : 'none'
+
+  if (tab === 'potentiel') {
+    renderPotentiel()
+  }
+}
+
+// ─────────────────────────────────────────────
+// MAIN RENDER
+// ─────────────────────────────────────────────
+function render() {
+  const step = state.step
+  const screens = ['intro','industry','source','leads','video','closing','value','results']
+  screens.forEach(s => {
+    const el = document.getElementById('screen-' + s)
+    if (el) el.className = 'screen' + (s === step ? ' visible' : '')
+  })
+
+  // Brand header (show on intro + results)
+  const brand = document.getElementById('brand')
+  brand.style.display = (step === 'intro' || step === 'results') ? 'block' : 'none'
+
+  // Progress bars & question labels
+  if (step !== 'intro' && step !== 'results') {
+    renderProgress('pb-' + step, 'prog-' + step, step)
+  }
+
+  // Industry options
+  if (step === 'industry') {
+    const industryOpts = [
+      { value: 'hypothecaire', icon: '🏠', label: 'Courtier hypothécaire', sub: 'Prêts, renouvellements, refinancement' },
+      { value: 'immobilier',   icon: '🏢', label: 'Courtier immobilier',   sub: 'Achat, vente, investissement' },
+      { value: 'financier',    icon: '💼', label: 'Conseiller financier',  sub: 'Planification, assurances, placements' },
+      { value: 'autre',        icon: '⚡', label: 'Autre industrie',        sub: 'Autre domaine professionnel' },
+    ]
+    renderOptions('opts-industry', industryOpts, state.industry, 'industry', 'btn-industry')
+    const btn = document.getElementById('btn-industry')
+    if (state.industry) btn.classList.remove('btn--disabled')
+  }
+
+  // Source options
+  if (step === 'source') {
+    const sourceOpts = [
+      { value: 'references',  icon: '👥', label: 'Références de clients' },
+      { value: 'reseau',      icon: '🤝', label: 'Mon réseau personnel' },
+      { value: 'social',      icon: '📱', label: 'Réseaux sociaux' },
+      { value: 'pubs',        icon: '📢', label: 'Publicités payantes' },
+      { value: 'prospection', icon: '📞', label: 'Prospection directe' },
+    ]
+    renderOptions('opts-source', sourceOpts, state.source, 'source', 'btn-source')
+    const btn = document.getElementById('btn-source')
+    if (state.source) btn.classList.remove('btn--disabled')
+  }
+
+  // Leads slider
+  if (step === 'leads') {
+    const v = state.socialLeads
+    document.getElementById('leads-display').textContent = v
+    document.getElementById('leads-plural').textContent = v == 1 ? '' : 's'
+    document.getElementById('leads-slider').value = v
+    updateSlider('leads-fill', 'leads-thumb', v, 0, 15)
+    renderLeadsCallout()
+  }
+
+  // Video options
+  if (step === 'video') {
+    const videoOpts = [
+      { value: 'non',     icon: '🚫', label: 'Non, pas du tout',       sub: 'Aucun contenu vidéo publié' },
+      { value: 'parfois', icon: '📹', label: 'Parfois / irrégulièrement', sub: 'Quelques publications sans système' },
+      { value: 'oui',     icon: '🎬', label: 'Oui, régulièrement',     sub: 'Contenu publié chaque semaine' },
+    ]
+    renderOptions('opts-video', videoOpts, state.video, 'video', 'btn-video')
+    const btn = document.getElementById('btn-video')
+    if (state.video) btn.classList.remove('btn--disabled')
+  }
+
+  // Closing slider
+  if (step === 'closing') {
+    const v = state.closingRate
+    document.getElementById('closing-display').textContent = v + '%'
+    document.getElementById('closing-slider').value = v
+    updateSlider('closing-fill', 'closing-thumb', v, 5, 70)
+  }
+
+  // Value slider
+  if (step === 'value' && state.industry) {
+    const f = FUNNEL[state.industry]
+    const v = state.avgValue
+    const slider = document.getElementById('value-slider')
+    slider.min = f.avgMin
+    slider.max = f.avgMax
+    slider.step = f.avgStep
+    slider.value = v
+    document.getElementById('value-display').textContent = fmtCAD(v)
+    document.getElementById('value-min-label').textContent = fmtCAD(f.avgMin)
+    document.getElementById('value-max-label').textContent = fmtCAD(f.avgMax)
+    updateSlider('value-fill', 'value-thumb', v, f.avgMin, f.avgMax)
+  }
+
+  // Results
+  if (step === 'results') {
+    renderDiagnostic()
+    setTab('diagnostic')
+  }
+
+  // Scroll to top
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+// ─────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────
+render()
+</script>
+
+</body>
+</html>
