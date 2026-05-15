@@ -500,10 +500,11 @@ const state = {
 // FUNNEL DATA
 // ─────────────────────────────
 const FUNNEL = {
-  hypothecaire: { label:'Courtier hypothécaire', totalLeads:90, qualRate:0.90, closingRate:0.37, avgMin:1000, avgMax:10000, avgDefault:3000, avgStep:500 },
-  immobilier:   { label:'Courtier immobilier',   totalLeads:35, qualRate:0.29, closingRate:0.30, avgMin:5000, avgMax:50000, avgDefault:15000, avgStep:1000 },
-  financier:    { label:'Conseiller financier',  totalLeads:80, qualRate:0.75, closingRate:0.32, avgMin:500,  avgMax:10000, avgDefault:2000,  avgStep:500 },
-  autre:        { label:'Autre industrie',        totalLeads:90, qualRate:0.50, closingRate:null, avgMin:500,  avgMax:20000, avgDefault:3000,  avgStep:500 },
+  // totalLeads = potentiel max avec système complet — multiplié par le score du profil
+  hypothecaire: { label:'Courtier hypothécaire', totalLeads:35, qualRate:0.90, closingRate:0.37, avgMin:1000, avgMax:10000, avgDefault:3000, avgStep:500 },
+  immobilier:   { label:'Courtier immobilier',   totalLeads:15, qualRate:0.60, closingRate:0.28, avgMin:5000, avgMax:50000, avgDefault:15000, avgStep:1000 },
+  financier:    { label:'Conseiller financier',  totalLeads:50, qualRate:0.75, closingRate:0.32, avgMin:500,  avgMax:10000, avgDefault:3000,  avgStep:500 },
+  autre:        { label:'Autre industrie',        totalLeads:35, qualRate:0.50, closingRate:null, avgMin:500,  avgMax:20000, avgDefault:3000,  avgStep:500 },
 }
 
 const STEPS_BASE  = ['intro','industry','source','leads','video','value','crm','challenge','results']
@@ -593,22 +594,40 @@ function renderLeadsCallout() {
   const el=document.getElementById('leads-callout'); if(!el) return
   const v=state.socialLeads
   if(v===0) el.innerHTML=`<div class="callout">😬 <strong style="color:#fff">Tu n'es pas seul</strong> — la majorité des professionnels ne génèrent aucun lead via les réseaux. C'est exactement ce qu'on règle.</div>`
-  else if(v<5) el.innerHTML=`<div class="callout">📈 <strong style="color:#fff">C'est un début</strong> — avec un système structuré, nos clients génèrent jusqu'à 90 leads/mois.</div>`
+  else if(v<5) el.innerHTML=`<div class="callout">📈 <strong style="color:#fff">C'est un début</strong> — avec un système structuré, nos clients génèrent 15–40 leads qualifiés/mois.</div>`
   else el.innerHTML=''
 }
 
 // ─────────────────────────────
 // CALC
+// Multiplicateur de leads selon le profil :
+//   base 0.25 → max ~0.90 dépendant des réponses
+// Résultat cible : ~100k–400k$/an
 // ─────────────────────────────
+function getLeadMult() {
+  let m = 0.25 // base — part de zéro, système non structuré
+  if (state.video === 'oui')     m += 0.25 // contenu régulier = audience existante
+  else if (state.video === 'parfois') m += 0.10
+  if (state.source === 'pubs')   m += 0.25 // déjà en pub = mindset digital
+  else if (state.source === 'social') m += 0.15
+  if (state.socialLeads >= 5)    m += 0.15 // traction existante
+  return Math.min(m, 1.0)
+}
+
 function calc() {
   if(!state.industry) return null
-  const f=FUNNEL[state.industry]
-  const cr=state.industry==='autre'?state.closingRate/100:f.closingRate
-  const qualLeads=Math.round(f.totalLeads*f.qualRate)
-  const clients=Math.round(qualLeads*cr)
-  const monthly=clients*state.avgValue
-  const annual=monthly*12
-  return {totalLeads:f.totalLeads,qualLeads,cr,clients,monthly,annual}
+  const f = FUNNEL[state.industry]
+  const mult = getLeadMult()
+  const totalLeads = Math.round(f.totalLeads * mult)
+  const qualLeads  = Math.round(totalLeads * f.qualRate)
+  // CRM améliore le closing
+  let cr = state.industry === 'autre' ? state.closingRate/100 : f.closingRate
+  if (state.crm === 'ghl')               cr = Math.min(cr + 0.05, 0.65)
+  else if (state.crm && state.crm !== 'none') cr = Math.min(cr + 0.02, 0.65)
+  const clients = Math.round(qualLeads * cr)
+  const monthly  = clients * state.avgValue
+  const annual   = monthly * 12
+  return { totalLeads, qualLeads, cr, clients, monthly, annual, mult }
 }
 
 // ─────────────────────────────
@@ -665,19 +684,6 @@ function buildRecommendation() {
   }
 
   // ── CHALLENGE-SPECIFIC ──
-  if (state.challenge === 'leads_lost' && hasCRM) {
-    probs.push("Tu confirmes perdre des leads malgré un CRM — c'est souvent un problème d'automatisations mal configurées, pas de volume.")
-    recs.unshift({ order:0, icon:'⚡', title:'Audit & optimisation CRM', tag:'URGENT', tagColor:'#FF3B30', iconBg:'rgba(255,59,48,0.2)',
-      desc:"On analyse tes séquences actuelles, on identifie où tu perds tes leads et on reconfigure les automatisations pour ne plus en échapper." })
-  }
-  if (state.challenge === 'leads_lost' && !hasCRM) {
-    probs.push("Tu perds des leads sans CRM — chaque conversation sans suivi structuré est une opportunité qui disparaît.")
-  }
-  if (state.challenge === 'time') {
-    probs.push("Le manque de temps est souvent le symptôme d'un système trop manuel. Les bonnes automatisations te redonnent 5–10h/semaine.")
-    recs.push({ order:4, icon:'⏱', title:'Automatisations & séquences', tag:'GAIN DE TEMPS', tagColor:'#AF52DE', iconBg:'rgba(175,82,222,0.15)',
-      desc:"Relances automatiques, nurturing par courriel/SMS, rappels de suivis. Ton CRM travaille pendant que tu closes." })
-  }
   if (state.challenge === 'start') {
     probs.push("Ne pas savoir par où commencer, c'est souvent vouloir tout faire en même temps. On a une séquence testée qui fonctionne.")
   }
@@ -790,12 +796,12 @@ function animateNumbers(tC, tR, ms) {
 
 function renderPotentiel() {
   const r=calc(); if(!r) return
+  const multPct = Math.round(r.mult * 100)
   const rows=[
-    {icon:'👁', label:'Vues/mois',       val:fmtN(120000),       sub:'campagnes Meta'},
-    {icon:'📥', label:'Leads générés',   val:fmtN(r.totalLeads),  sub:((r.totalLeads/120000)*100).toFixed(1)+'% des vues'},
-    {icon:'✅', label:'Leads qualifiés', val:fmtN(r.qualLeads),   sub:Math.round(r.qualLeads/r.totalLeads*100)+'% qualifiés'},
-    {icon:'🤝', label:'Clients signés',  val:fmtN(r.clients),     sub:Math.round(r.cr*100)+'% de closing'},
-    {icon:'💰', label:'Revenus/mois',    val:fmtCAD(r.monthly),   sub:'', bold:true},
+    {icon:'📥', label:'Leads/mois projetés', val:fmtN(r.totalLeads),  sub:'selon ton profil actuel ('+multPct+'% du potentiel)'},
+    {icon:'✅', label:'Leads qualifiés',     val:fmtN(r.qualLeads),   sub:Math.round(r.qualLeads/Math.max(r.totalLeads,1)*100)+'% du volume'},
+    {icon:'🤝', label:'Clients signés',      val:fmtN(r.clients),     sub:Math.round(r.cr*100)+'% de closing'},
+    {icon:'💰', label:'Revenus/mois',        val:fmtCAD(r.monthly),   sub:'', bold:true},
   ]
 
   const formHTML = state.submitted ? `
