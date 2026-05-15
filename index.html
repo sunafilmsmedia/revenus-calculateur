@@ -7,6 +7,7 @@
   <meta name="description" content="Découvre exactement quel système te manque pour générer des leads en continu. Diagnostic gratuit en 7 questions." />
   <meta property="og:title" content="Quel système te manque pour scaler?" />
   <meta property="og:description" content="Diagnostic gratuit — 7 questions — Plan personnalisé selon ton profil." />
+  <meta name="webhook-url" content="https://services.leadconnectorhq.com/hooks/pp5qkRPyKZNC36rStsc7/webhook-trigger/90fa0adc-bf8e-49cb-9af4-613d831f4cd1" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -286,7 +287,7 @@
 <body>
 <div class="calc" id="calc">
 
-  <div class="brand" id="brand" style="display:none">Suna Films Media</div>
+  <div class="brand" id="brand" style="display:none"><a href="https://sunafilmsmedia.com" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">Suna Films Media</a></div>
 
   <!-- ════ INTRO ════ -->
   <div class="screen" id="screen-intro">
@@ -862,17 +863,29 @@ function handleSubmit() {
   if(url) {
     const r=calc()
     const { probs, recs } = buildRecommendation()
+    const SOURCE_LABELS = { references:'Références clients', reseau:'Réseau personnel', social:'Réseaux sociaux', pubs:'Publicités payantes', prospection:'Prospection directe' }
+    const VIDEO_LABELS  = { non:'Non', parfois:'Parfois / irrégulièrement', oui:'Oui, régulièrement' }
     fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
-        ...state.form,
-        industry:FUNNEL[state.industry]?.label, source:state.source,
-        socialLeads:state.socialLeads, video:state.video,
-        closingRate:state.closingRate, avgValue:state.avgValue,
-        crm:CRM_LABELS[state.crm]||state.crm,
-        challenge:CHALLENGE_LABELS[state.challenge]||state.challenge,
-        visibilityScore:getVisibilityScore(),
-        recommendedSolutions:recs.map(r=>r.title),
-        potentielMensuel:r?.monthly, potentielAnnuel:r?.annual, clients:r?.clients,
+        // Contact
+        prenom:           state.form.nom,
+        telephone:        state.form.telephone,
+        email:            state.form.email,
+        entreprise:       state.form.entreprise,
+        // Réponses quiz
+        industrie:        FUNNEL[state.industry]?.label,
+        source_clients:   SOURCE_LABELS[state.source] || state.source,
+        leads_sociaux:    state.socialLeads,
+        contenu_video:    VIDEO_LABELS[state.video] || state.video,
+        crm:              CRM_LABELS[state.crm] || state.crm,
+        defi_principal:   CHALLENGE_LABELS[state.challenge] || state.challenge,
+        valeur_client:    state.avgValue,
+        // Résultats
+        score_visibilite: getVisibilityScore() + '/4',
+        solutions_recommandees: recs.map(r=>r.title).join(', '),
+        potentiel_mensuel: r?.monthly,
+        potentiel_annuel:  r?.annual,
+        clients_par_mois:  r?.clients,
       })
     }).catch(()=>{})
   }
