@@ -19,12 +19,12 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 48px 24px 80px;
-      gap: 48px;
+      padding: 52px 24px 100px;
+      gap: 52px;
     }
 
-    /* ── Section label ── */
-    .section-label {
+    /* ─── PAGE SECTION LABEL ─── */
+    .page-label {
       font-size: 11px;
       font-weight: 700;
       letter-spacing: 2px;
@@ -33,7 +33,7 @@
       text-align: center;
     }
 
-    /* ── Ads row ── */
+    /* ─── ADS ROW ─── */
     .ads-row {
       display: flex;
       align-items: flex-start;
@@ -42,7 +42,7 @@
       flex-wrap: wrap;
     }
 
-    /* ── Ad wrapper ── */
+    /* ─── AD WRAP ─── */
     .ad-wrap {
       display: flex;
       flex-direction: column;
@@ -57,71 +57,22 @@
       color: #333;
     }
 
-    /* ── AD CARD BASE ── */
-    .ad {
-      position: relative;
-      border-radius: 22px;
-      box-shadow: 0 32px 80px rgba(0,0,0,0.7);
-      overflow: hidden;
+    /* ══════════════════════════════
+       HEADER LOCKUP STANDALONE
+    ══════════════════════════════ */
+    .lockup-preview {
+      width: 320px;
+      background: #1a1008;
+      border-radius: 18px;
+      padding: 22px 20px;
       display: flex;
       flex-direction: column;
-    }
-
-    /* Feed 1:1 */
-    .ad--feed {
-      width: 340px;
-      height: 340px;
-      background-image: linear-gradient(150deg, #080808 0%, #180900 38%, #7A2A00 68%, #FF5F00 100%);
-      background-size: 100% 100%;
-    }
-
-    /* Story 9:16 */
-    .ad--story {
-      width: 191px;
-      height: 340px;
-      background-image: linear-gradient(165deg, #080808 0%, #180900 38%, #7A2A00 68%, #FF5F00 100%);
-      background-size: 100% 100%;
-    }
-
-    /* Radial depth circles */
-    .ad__circle-tr {
-      position: absolute;
-      width: 240px; height: 240px;
-      top: -70px; right: -70px;
-      border-radius: 50%;
-      background: rgba(255,95,0,0.09);
-      pointer-events: none;
-    }
-    .ad__circle-bl {
-      position: absolute;
-      width: 160px; height: 160px;
-      bottom: -40px; left: -40px;
-      border-radius: 50%;
-      background: rgba(255,95,0,0.07);
-      pointer-events: none;
-    }
-
-    /* ── AD CONTENT ── */
-    .ad__content {
+      gap: 0;
       position: relative;
-      z-index: 2;
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      padding: 22px 20px 20px;
-      gap: 12px;
+      border: 1px solid rgba(255,255,255,0.06);
     }
 
-    /* Brand tag */
-    .ad__brand {
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.45);
-    }
-
-    /* ── HEADER LOCKUP ── */
+    /* ─── LOCKUP COMPONENT ─── */
     .lockup {
       display: inline-flex;
       align-items: center;
@@ -129,7 +80,7 @@
 
     .lockup__folder {
       flex-shrink: 0;
-      margin-right: -12px;
+      margin-right: -10px;
       z-index: 1;
       filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
     }
@@ -138,180 +89,356 @@
       z-index: 2;
       display: flex;
       flex-direction: column;
-      line-height: 1;
+      gap: 0;
     }
+
     .lockup__decouvre {
       font-family: 'Pacifico', cursive;
       color: rgba(255,255,255,0.88);
-      margin-bottom: 2px;
+      line-height: 1.15;
+      margin-bottom: 1px;
     }
+
     .lockup__potentiel {
       font-family: 'Bebas Neue', sans-serif;
       color: #fff;
       letter-spacing: 0.03em;
-      line-height: 1;
+      line-height: 0.9;
     }
 
-    /* ── BODY COPY ── */
-    .ad__body {
-      font-size: 12px;
-      font-weight: 500;
-      color: rgba(255,255,255,0.65);
-      line-height: 1.55;
+    /* GRATUIT badge — absolute inside lockup-preview or ad */
+    .badge-gratuit {
+      position: absolute;
+      background: #FF5F00;
+      color: #fff;
+      font-family: 'Bebas Neue', sans-serif;
+      letter-spacing: 0.1em;
+      border-radius: 99px;
+      font-size: 13px;
+      padding: 5px 14px;
+      box-shadow: 0 4px 14px rgba(255,95,0,0.4);
     }
-    .ad__body strong { color: rgba(255,255,255,0.9); font-weight: 700; }
 
-    /* ── STAT PILLS ── */
-    .ad__stats {
+    /* ══════════════════════════════
+       AD CARD
+    ══════════════════════════════ */
+    .ad {
+      position: relative;
+      border-radius: 22px;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.7);
+      overflow: hidden;
+    }
+
+    /* Story 9:16 */
+    .ad--story {
+      width: 302px;
+      height: 536px; /* 302 * 16/9 ≈ 537 */
+      background-image: linear-gradient(165deg,
+        #080808 0%,
+        #180900 38%,
+        #7A2A00 68%,
+        #FF5F00 100%
+      );
+    }
+
+    /* Feed 1:1 */
+    .ad--feed {
+      width: 340px;
+      height: 340px;
+      background-image: linear-gradient(150deg,
+        #080808 0%,
+        #180900 38%,
+        #7A2A00 68%,
+        #FF5F00 100%
+      );
+    }
+
+    /* Depth circles */
+    .circle-tr {
+      position: absolute;
+      width: 240px; height: 240px;
+      top: -70px; right: -70px;
+      border-radius: 50%;
+      background: rgba(255,95,0,0.09);
+      pointer-events: none;
+    }
+    .circle-bl {
+      position: absolute;
+      width: 160px; height: 160px;
+      bottom: -40px; left: -40px;
+      border-radius: 50%;
+      background: rgba(255,95,0,0.07);
+      pointer-events: none;
+    }
+
+    /* Ad inner content */
+    .ad__inner {
+      position: relative;
+      z-index: 2;
+      height: 100%;
       display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
+      flex-direction: column;
+      padding: 22px 18px 20px;
+      gap: 14px;
+    }
+
+    /* Brand top label */
+    .ad__brand {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+    }
+
+    /* ─── FEATURE ITEMS ─── */
+    .feature-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+
+    .feature-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .feature-text {
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.88);
+      line-height: 1.4;
+    }
+
+    /* ─── FUNNEL STATS ─── */
+    .stats-section {
       margin-top: auto;
     }
-    .ad__stat {
-      background: rgba(255,255,255,0.10);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 99px;
-      padding: 5px 11px;
-      font-size: 11px;
+
+    .stats-label {
+      font-size: 9px;
       font-weight: 700;
-      color: #fff;
-    }
-    .ad__stat span { color: rgba(255,255,255,0.5); font-weight: 500; margin-left: 3px; }
-
-    /* ── CTA BUTTON ── */
-    .ad__cta {
-      background: #fff;
-      color: #FF5F00;
-      border-radius: 10px;
-      padding: 12px 16px;
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 16px;
-      letter-spacing: 0.06em;
-      text-align: center;
-      border: none;
-      cursor: pointer;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.30);
+      margin-bottom: 8px;
     }
 
-    /* ── BADGE GRATUIT ── */
-    .ad__badge {
-      position: absolute;
-      bottom: 72px;
-      right: 16px;
-      z-index: 10;
-      background: #fff;
-      color: #FF5F00;
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 12px;
-      letter-spacing: 0.1em;
-      padding: 4px 12px;
-      border-radius: 99px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+    .stats-row {
+      display: flex;
+      align-items: center;
+      gap: 0;
     }
 
-    /* ── STORY ADJUSTMENTS ── */
-    .ad--story .lockup__decouvre { font-size: 14px; }
-    .ad--story .lockup__potentiel { font-size: 38px; }
-    .ad--story .lockup__folder svg { width: 52px; }
-    .ad--story .ad__body { font-size: 11px; }
-    .ad--story .ad__stat { font-size: 10px; padding: 4px 9px; }
-    .ad--story .ad__badge { bottom: 62px; right: 12px; font-size: 11px; }
-
-    /* ── FEED SIZES ── */
-    .ad--feed .lockup__decouvre { font-size: 18px; }
-    .ad--feed .lockup__potentiel { font-size: 52px; }
-    .ad--feed .lockup__folder svg { width: 72px; }
-
-    /* ── SECTION GROUPS ── */
-    .section {
+    .stat-block {
+      flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 20px;
-      width: 100%;
+      gap: 2px;
     }
+
+    .stat-val {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 32px;
+      color: #fff;
+      line-height: 1;
+      letter-spacing: 0.02em;
+    }
+
+    .stat-name {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+    }
+
+    .stat-arrow {
+      font-size: 14px;
+      color: rgba(255,95,0,0.7);
+      padding: 0 4px;
+      padding-bottom: 14px; /* align with top of number */
+    }
+
+    /* ─── SIZING VARIANTS ─── */
+
+    /* Story lockup sizes */
+    .ad--story .lockup__decouvre { font-size: 18px; }
+    .ad--story .lockup__potentiel { font-size: 58px; }
+    .ad--story .lockup__folder svg { width: 58px; height: 48px; }
+    .ad--story .badge-gratuit { font-size: 12px; padding: 4px 12px; bottom: 18px; right: 18px; }
+
+    /* Feed lockup sizes */
+    .ad--feed .lockup__decouvre { font-size: 16px; }
+    .ad--feed .lockup__potentiel { font-size: 50px; }
+    .ad--feed .lockup__folder svg { width: 52px; height: 43px; }
+    .ad--feed .badge-gratuit { font-size: 11px; padding: 4px 11px; bottom: 14px; right: 14px; }
+    .ad--feed .feature-text { font-size: 12px; }
+    .ad--feed .feature-icon { width: 32px; height: 32px; border-radius: 9px; font-size: 15px; }
+    .ad--feed .stat-val { font-size: 26px; }
+    .ad--feed .stat-name { font-size: 8px; }
+    .ad--feed .feature-item { padding: 10px 12px; gap: 10px; }
+
+    /* Lockup preview sizes */
+    .lockup-preview .lockup__decouvre { font-size: 20px; }
+    .lockup-preview .lockup__potentiel { font-size: 68px; }
+    .lockup-preview .lockup__folder svg { width: 68px; height: 56px; }
+    .lockup-preview .badge-gratuit { font-size: 13px; padding: 5px 14px; bottom: 20px; right: 20px; }
+
+    /* ─── FOLDER SVG (reused via template) ─── */
   </style>
 </head>
 <body>
 
-  <!-- ══════ FEED + STORY ══════ -->
-  <div class="section">
-    <div class="section-label">Aperçu — Ad Creatives</div>
+  <!-- ════════════════════════════════════════
+       SECTION 1 — HEADER LOCKUP STANDALONE
+  ════════════════════════════════════════ -->
+  <div style="display:flex;flex-direction:column;align-items:center;gap:16px">
+    <div class="page-label">Header Lockup</div>
+
+    <div class="lockup-preview">
+      <div class="lockup">
+        <!-- Folder -->
+        <div class="lockup__folder">
+          <svg viewBox="0 0 80 66" xmlns="http://www.w3.org/2000/svg" width="68" height="56">
+            <rect x="18" y="12" width="28" height="36" rx="3" fill="#fff" opacity="0.92" transform="rotate(-8 32 30)"/>
+            <rect x="22" y="10" width="28" height="36" rx="3" fill="#fff" opacity="0.85" transform="rotate(-2 36 28)"/>
+            <line x1="26" y1="18" x2="45" y2="16" stroke="#FF5F00" stroke-width="2.2" stroke-linecap="round" opacity="0.4"/>
+            <line x1="26" y1="23" x2="43" y2="21.5" stroke="#FF5F00" stroke-width="2" stroke-linecap="round" opacity="0.3"/>
+            <line x1="26" y1="28" x2="40" y2="27" stroke="#FF5F00" stroke-width="2" stroke-linecap="round" opacity="0.3"/>
+            <rect x="2" y="14" width="76" height="50" rx="6" fill="#CC4400"/>
+            <path d="M2 14 Q2 10 6 10 L30 10 Q35 10 37 14 L2 14Z" fill="#CC4400"/>
+            <rect x="2" y="20" width="76" height="44" rx="5" fill="#FF5F00"/>
+            <rect x="2" y="20" width="76" height="14" rx="5" fill="#FF7A2A" opacity="0.5"/>
+          </svg>
+        </div>
+        <!-- Text -->
+        <div class="lockup__text">
+          <div class="lockup__decouvre">Découvre ton</div>
+          <div class="lockup__potentiel">POTENTIEL</div>
+        </div>
+      </div>
+      <!-- Badge -->
+      <div class="badge-gratuit">GRATUIT</div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════
+       SECTION 2 — STORY + FEED
+  ════════════════════════════════════════ -->
+  <div style="display:flex;flex-direction:column;align-items:center;gap:16px;width:100%">
+    <div class="page-label">Ad Creatives</div>
 
     <div class="ads-row">
 
-      <!-- ── FEED AD ── -->
+      <!-- ── STORY 9:16 ── -->
       <div class="ad-wrap">
-        <div class="ad-format-label">Feed 1:1</div>
-        <div class="ad ad--feed">
-          <!-- depth circles -->
-          <div class="ad__circle-tr"></div>
-          <div class="ad__circle-bl"></div>
+        <div class="ad-format-label">Story · 9:16</div>
+        <div class="ad ad--story">
+          <div class="circle-tr"></div>
+          <div class="circle-bl"></div>
 
-          <div class="ad__content">
+          <div class="ad__inner">
             <div class="ad__brand">Suna Films Media</div>
 
             <!-- Header lockup -->
             <div class="lockup">
-              <!-- Bloc 1 — Folder SVG -->
               <div class="lockup__folder">
-                <svg viewBox="0 0 80 66" xmlns="http://www.w3.org/2000/svg" width="72" height="60">
-                  <!-- Feuille 1 (derrière, gauche) -->
+                <svg viewBox="0 0 80 66" xmlns="http://www.w3.org/2000/svg">
                   <rect x="18" y="12" width="28" height="36" rx="3" fill="#fff" opacity="0.92" transform="rotate(-8 32 30)"/>
-                  <!-- Feuille 2 (devant, droite) -->
                   <rect x="22" y="10" width="28" height="36" rx="3" fill="#fff" opacity="0.85" transform="rotate(-2 36 28)"/>
-                  <!-- 3 lignes sur feuille 2 -->
                   <line x1="26" y1="18" x2="45" y2="16" stroke="#FF5F00" stroke-width="2.2" stroke-linecap="round" opacity="0.4"/>
                   <line x1="26" y1="23" x2="43" y2="21.5" stroke="#FF5F00" stroke-width="2" stroke-linecap="round" opacity="0.3"/>
                   <line x1="26" y1="28" x2="40" y2="27" stroke="#FF5F00" stroke-width="2" stroke-linecap="round" opacity="0.3"/>
-                  <!-- Dos du dossier -->
                   <rect x="2" y="14" width="76" height="50" rx="6" fill="#CC4400"/>
-                  <!-- Onglet -->
                   <path d="M2 14 Q2 10 6 10 L30 10 Q35 10 37 14 L2 14Z" fill="#CC4400"/>
-                  <!-- Face avant -->
                   <rect x="2" y="20" width="76" height="44" rx="5" fill="#FF5F00"/>
-                  <!-- Reflet shine -->
                   <rect x="2" y="20" width="76" height="14" rx="5" fill="#FF7A2A" opacity="0.5"/>
                 </svg>
               </div>
-              <!-- Bloc 2 — Texte -->
               <div class="lockup__text">
                 <div class="lockup__decouvre">Découvre ton</div>
                 <div class="lockup__potentiel">POTENTIEL</div>
               </div>
             </div>
 
-            <p class="ad__body">
-              Combien tu laisses sur la table chaque mois sans un système de <strong>contenu + pubs Meta</strong>?
-            </p>
-
-            <div class="ad__stats">
-              <div class="ad__stat">120K<span>vues/mois</span></div>
-              <div class="ad__stat">90<span>leads/mois</span></div>
-              <div class="ad__stat">12$<span>par lead</span></div>
+            <!-- 3 feature items -->
+            <div class="feature-list">
+              <div class="feature-item">
+                <div class="feature-icon">📊</div>
+                <div class="feature-text">Diagnostic de ta visibilité en ligne</div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-icon">🎯</div>
+                <div class="feature-text">Calcul de ton potentiel avec Meta</div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-icon">💰</div>
+                <div class="feature-text">Jusqu'à 13+ clients/mois de plus</div>
+              </div>
             </div>
 
-            <div class="ad__cta">Calculer mon potentiel →</div>
-          </div>
+            <!-- Funnel stats -->
+            <div class="stats-section">
+              <div class="stats-label">Exemple — Courtier hypothécaire</div>
+              <div class="stats-row">
+                <div class="stat-block">
+                  <div class="stat-val">40</div>
+                  <div class="stat-name">leads</div>
+                </div>
+                <div class="stat-arrow">→</div>
+                <div class="stat-block">
+                  <div class="stat-val">34</div>
+                  <div class="stat-name">qualifiés</div>
+                </div>
+                <div class="stat-arrow">→</div>
+                <div class="stat-block">
+                  <div class="stat-val">13</div>
+                  <div class="stat-name">clients</div>
+                </div>
+              </div>
+            </div>
 
-          <div class="ad__badge">GRATUIT</div>
+          </div><!-- /.ad__inner -->
+
+          <!-- GRATUIT badge -->
+          <div class="badge-gratuit">GRATUIT</div>
         </div>
       </div>
 
-      <!-- ── STORY AD ── -->
+      <!-- ── FEED 1:1 ── -->
       <div class="ad-wrap">
-        <div class="ad-format-label">Story 9:16</div>
-        <div class="ad ad--story">
-          <div class="ad__circle-tr"></div>
-          <div class="ad__circle-bl"></div>
+        <div class="ad-format-label">Feed · 1:1</div>
+        <div class="ad ad--feed">
+          <div class="circle-tr"></div>
+          <div class="circle-bl"></div>
 
-          <div class="ad__content">
+          <div class="ad__inner">
             <div class="ad__brand">Suna Films Media</div>
 
             <!-- Header lockup -->
             <div class="lockup">
               <div class="lockup__folder">
-                <svg viewBox="0 0 80 66" xmlns="http://www.w3.org/2000/svg" width="52" height="43">
+                <svg viewBox="0 0 80 66" xmlns="http://www.w3.org/2000/svg">
                   <rect x="18" y="12" width="28" height="36" rx="3" fill="#fff" opacity="0.92" transform="rotate(-8 32 30)"/>
                   <rect x="22" y="10" width="28" height="36" rx="3" fill="#fff" opacity="0.85" transform="rotate(-2 36 28)"/>
                   <line x1="26" y1="18" x2="45" y2="16" stroke="#FF5F00" stroke-width="2.2" stroke-linecap="round" opacity="0.4"/>
@@ -329,124 +456,50 @@
               </div>
             </div>
 
-            <p class="ad__body">
-              Sans système de pubs Meta, tu laisses des <strong>milliers de dollars</strong> sur la table chaque mois.
-            </p>
-
-            <div class="ad__stats">
-              <div class="ad__stat">120K<span>vues</span></div>
-              <div class="ad__stat">12$<span>/lead</span></div>
+            <!-- 3 feature items -->
+            <div class="feature-list">
+              <div class="feature-item">
+                <div class="feature-icon">📊</div>
+                <div class="feature-text">Diagnostic de ta visibilité en ligne</div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-icon">🎯</div>
+                <div class="feature-text">Calcul de ton potentiel avec Meta</div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-icon">💰</div>
+                <div class="feature-text">Jusqu'à 13+ clients/mois</div>
+              </div>
             </div>
 
-            <div class="ad__cta">Calculer →</div>
-          </div>
+            <!-- Funnel stats -->
+            <div class="stats-section">
+              <div class="stats-label">Exemple — Courtier hypothécaire</div>
+              <div class="stats-row">
+                <div class="stat-block">
+                  <div class="stat-val">40</div>
+                  <div class="stat-name">leads</div>
+                </div>
+                <div class="stat-arrow">→</div>
+                <div class="stat-block">
+                  <div class="stat-val">34</div>
+                  <div class="stat-name">qualifiés</div>
+                </div>
+                <div class="stat-arrow">→</div>
+                <div class="stat-block">
+                  <div class="stat-val">13</div>
+                  <div class="stat-name">clients</div>
+                </div>
+              </div>
+            </div>
 
-          <div class="ad__badge">GRATUIT</div>
+          </div><!-- /.ad__inner -->
+
+          <div class="badge-gratuit">GRATUIT</div>
         </div>
       </div>
 
     </div><!-- /.ads-row -->
-  </div>
-
-  <!-- ══════ VARIANTE — Hook différent ══════ -->
-  <div class="section">
-    <div class="section-label">Variante — Hook chiffré</div>
-
-    <div class="ads-row">
-
-      <!-- Feed variante -->
-      <div class="ad-wrap">
-        <div class="ad-format-label">Feed 1:1</div>
-        <div class="ad ad--feed">
-          <div class="ad__circle-tr"></div>
-          <div class="ad__circle-bl"></div>
-
-          <div class="ad__content">
-            <div class="ad__brand">Suna Films Media</div>
-
-            <div class="lockup">
-              <div class="lockup__folder">
-                <svg viewBox="0 0 80 66" xmlns="http://www.w3.org/2000/svg" width="72" height="60">
-                  <rect x="18" y="12" width="28" height="36" rx="3" fill="#fff" opacity="0.92" transform="rotate(-8 32 30)"/>
-                  <rect x="22" y="10" width="28" height="36" rx="3" fill="#fff" opacity="0.85" transform="rotate(-2 36 28)"/>
-                  <line x1="26" y1="18" x2="45" y2="16" stroke="#FF5F00" stroke-width="2.2" stroke-linecap="round" opacity="0.4"/>
-                  <line x1="26" y1="23" x2="43" y2="21.5" stroke="#FF5F00" stroke-width="2" stroke-linecap="round" opacity="0.3"/>
-                  <line x1="26" y1="28" x2="40" y2="27" stroke="#FF5F00" stroke-width="2" stroke-linecap="round" opacity="0.3"/>
-                  <rect x="2" y="14" width="76" height="50" rx="6" fill="#CC4400"/>
-                  <path d="M2 14 Q2 10 6 10 L30 10 Q35 10 37 14 L2 14Z" fill="#CC4400"/>
-                  <rect x="2" y="20" width="76" height="44" rx="5" fill="#FF5F00"/>
-                  <rect x="2" y="20" width="76" height="14" rx="5" fill="#FF7A2A" opacity="0.5"/>
-                </svg>
-              </div>
-              <div class="lockup__text">
-                <div class="lockup__decouvre">Découvre ton</div>
-                <div class="lockup__potentiel">POTENTIEL</div>
-              </div>
-            </div>
-
-            <p class="ad__body">
-              Nos clients courtiers génèrent en moyenne <strong>30 dossiers/mois</strong> avec 2–3 campagnes Meta.
-            </p>
-
-            <div class="ad__stats">
-              <div class="ad__stat">30<span>dossiers/mois</span></div>
-              <div class="ad__stat">2 min<span>pour calculer</span></div>
-            </div>
-
-            <div class="ad__cta">Calculer mon potentiel →</div>
-          </div>
-
-          <div class="ad__badge">GRATUIT</div>
-        </div>
-      </div>
-
-      <!-- Story variante -->
-      <div class="ad-wrap">
-        <div class="ad-format-label">Story 9:16</div>
-        <div class="ad ad--story">
-          <div class="ad__circle-tr"></div>
-          <div class="ad__circle-bl"></div>
-
-          <div class="ad__content">
-            <div class="ad__brand">Suna Films Media</div>
-
-            <div class="lockup">
-              <div class="lockup__folder">
-                <svg viewBox="0 0 80 66" xmlns="http://www.w3.org/2000/svg" width="52" height="43">
-                  <rect x="18" y="12" width="28" height="36" rx="3" fill="#fff" opacity="0.92" transform="rotate(-8 32 30)"/>
-                  <rect x="22" y="10" width="28" height="36" rx="3" fill="#fff" opacity="0.85" transform="rotate(-2 36 28)"/>
-                  <line x1="26" y1="18" x2="45" y2="16" stroke="#FF5F00" stroke-width="2.2" stroke-linecap="round" opacity="0.4"/>
-                  <line x1="26" y1="23" x2="43" y2="21.5" stroke="#FF5F00" stroke-width="2" stroke-linecap="round" opacity="0.3"/>
-                  <line x1="26" y1="28" x2="40" y2="27" stroke="#FF5F00" stroke-width="2" stroke-linecap="round" opacity="0.3"/>
-                  <rect x="2" y="14" width="76" height="50" rx="6" fill="#CC4400"/>
-                  <path d="M2 14 Q2 10 6 10 L30 10 Q35 10 37 14 L2 14Z" fill="#CC4400"/>
-                  <rect x="2" y="20" width="76" height="44" rx="5" fill="#FF5F00"/>
-                  <rect x="2" y="20" width="76" height="14" rx="5" fill="#FF7A2A" opacity="0.5"/>
-                </svg>
-              </div>
-              <div class="lockup__text">
-                <div class="lockup__decouvre">Découvre ton</div>
-                <div class="lockup__potentiel">POTENTIEL</div>
-              </div>
-            </div>
-
-            <p class="ad__body">
-              <strong>30 dossiers/mois</strong> en moyenne pour nos courtiers hypothécaires.
-            </p>
-
-            <div class="ad__stats">
-              <div class="ad__stat">30<span>dossiers</span></div>
-              <div class="ad__stat">12$<span>/lead</span></div>
-            </div>
-
-            <div class="ad__cta">Calculer →</div>
-          </div>
-
-          <div class="ad__badge">GRATUIT</div>
-        </div>
-      </div>
-
-    </div>
   </div>
 
 </body>
