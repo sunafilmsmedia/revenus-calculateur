@@ -7,17 +7,18 @@
   <meta name="description" content="Découvre combien tu laisses sur la table chaque mois sans un système de contenu + pubs Meta. Calcul personnalisé selon ton industrie." />
   <meta property="og:title" content="Combien tu laisses sur la table chaque mois?" />
   <meta property="og:description" content="Calculateur gratuit — 5 questions — Résultat chiffré selon ton industrie." />
-  <meta property="og:image" content="https://sunafilmsmedia.com/assets/images/og-calculateur.jpg" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Pacifico&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
       --orange: #FF5F00;
+      --orange-dark: #CC4400;
+      --orange-deep: #7A2A00;
       --white: #fff;
       --w08: rgba(255,255,255,0.08);
       --w15: rgba(255,255,255,0.15);
@@ -25,18 +26,18 @@
       --w40: rgba(255,255,255,0.40);
       --w60: rgba(255,255,255,0.60);
       --w80: rgba(255,255,255,0.80);
-      --blk15: rgba(0,0,0,0.15);
-      --blk25: rgba(0,0,0,0.25);
+      --blk10: rgba(0,0,0,0.10);
+      --blk20: rgba(0,0,0,0.20);
+      --blk30: rgba(0,0,0,0.30);
       --green: #34C759;
       --red: #FF3B30;
-      --yellow: #FF9500;
     }
 
     html { scroll-behavior: smooth; }
 
     body {
       font-family: 'DM Sans', sans-serif;
-      background: #0a0a0a;
+      background: #080808;
       min-height: 100vh;
       display: flex;
       align-items: flex-start;
@@ -44,107 +45,155 @@
       padding: 24px 16px 60px;
     }
 
-    /* ── CARD ── */
+    /* ─── CARD ─── */
     .calc {
       width: 100%;
       max-width: 480px;
       background: var(--orange);
-      border-radius: 24px;
-      padding: 32px 28px;
+      border-radius: 28px;
+      padding: 0 0 32px;
       position: relative;
       overflow: hidden;
       color: var(--white);
+      box-shadow: 0 32px 80px rgba(255,95,0,0.35), 0 8px 24px rgba(0,0,0,0.5);
     }
 
-    .calc::before {
+    /* noise texture */
+    .calc::after {
       content: '';
       position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: radial-gradient(circle at top right, rgba(255,255,255,0.07) 0%, transparent 55%);
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
       pointer-events: none;
+      z-index: 0;
     }
 
-    /* ── BRAND ── */
+    .calc-inner {
+      position: relative;
+      z-index: 1;
+      padding: 0 28px 0;
+    }
+
+    /* ─── HERO LOCKUP ─── */
+    .hero-lockup {
+      position: relative;
+      width: 100%;
+      height: 260px;
+      margin-bottom: 4px;
+      overflow: visible;
+    }
+
+    .hero-folder {
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 320px;
+      z-index: 1;
+      filter: drop-shadow(0 12px 32px rgba(0,0,0,0.35));
+    }
+
+    .hero-potentiel {
+      position: absolute;
+      bottom: 28px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 86px;
+      line-height: 1;
+      color: var(--white);
+      letter-spacing: 0.04em;
+      z-index: 2;
+      text-shadow: 0 4px 24px rgba(0,0,0,0.3);
+    }
+
+    .hero-decouvre {
+      position: absolute;
+      bottom: 102px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-family: 'Pacifico', cursive;
+      font-size: 28px;
+      color: rgba(255,255,255,0.92);
+      z-index: 3;
+      letter-spacing: 0.01em;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.25);
+    }
+
+    .hero-badge {
+      position: absolute;
+      bottom: 12px;
+      right: 20px;
+      z-index: 5;
+      background: var(--white);
+      color: var(--orange);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 15px;
+      letter-spacing: 0.1em;
+      padding: 5px 14px;
+      border-radius: 99px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    }
+
+    /* ─── BRAND ─── */
     .brand {
+      padding: 24px 28px 0;
       font-size: 11px;
       font-weight: 700;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--w60);
-      margin-bottom: 20px;
+      position: relative;
+      z-index: 1;
     }
 
-    /* ── TYPOGRAPHY ── */
-    .bebas { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.02em; line-height: 1; }
+    /* ─── TYPOGRAPHY ─── */
+    .bebas { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.03em; line-height: 1; }
     .h1 { font-size: 52px; }
     .h2 { font-size: 40px; }
     .h3 { font-size: 30px; }
-    .h4 { font-size: 24px; }
     .big-num { font-size: 96px; line-height: 1; }
     .big-num-md { font-size: 64px; line-height: 1; }
-    .big-num-sm { font-size: 42px; line-height: 1; }
 
-    .body { font-size: 15px; line-height: 1.55; color: var(--w80); }
-    .small { font-size: 13px; color: var(--w60); }
+    .body { font-size: 15px; line-height: 1.6; color: var(--w80); }
+    .small { font-size: 13px; color: var(--w60); line-height: 1.5; }
     .tiny { font-size: 11px; color: var(--w40); text-align: center; }
-    .label { font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--w60); }
+    .label { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--w60); }
 
-    /* ── LAYOUT ── */
+    /* ─── LAYOUT ─── */
     .col { display: flex; flex-direction: column; gap: 20px; }
-    .col--sm { gap: 14px; }
+    .col--sm { gap: 12px; }
     .col--lg { gap: 28px; }
     .row { display: flex; align-items: center; }
     .between { justify-content: space-between; }
     .center { text-align: center; align-items: center; }
 
-    /* ── PROGRESS ── */
-    .progress-bar {
-      display: flex;
-      gap: 5px;
-    }
-    .progress-bar__seg {
-      flex: 1;
-      height: 3px;
-      border-radius: 2px;
-      background: var(--w25);
-      transition: background 0.3s;
-    }
+    /* ─── PROGRESS ─── */
+    .progress-bar { display: flex; gap: 5px; }
+    .progress-bar__seg { flex: 1; height: 3px; border-radius: 2px; background: var(--w25); transition: background 0.3s; }
     .progress-bar__seg.active { background: var(--white); }
 
-    /* ── BADGE ── */
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      padding: 4px 12px;
-      border-radius: 99px;
-      background: var(--w15);
-      color: var(--white);
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    /* ── BUTTONS ── */
+    /* ─── BUTTONS ─── */
     .btn {
       display: flex;
       align-items: center;
       justify-content: center;
       width: 100%;
-      padding: 16px 24px;
+      padding: 18px 24px;
       border: none;
       border-radius: 14px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 16px;
-      font-weight: 700;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 20px;
+      letter-spacing: 0.06em;
       cursor: pointer;
-      transition: opacity 0.2s, transform 0.1s;
-      letter-spacing: 0.02em;
+      transition: opacity 0.2s, transform 0.12s, box-shadow 0.2s;
     }
-    .btn:hover { opacity: 0.92; }
-    .btn:active { transform: scale(0.98); }
-    .btn--primary { background: var(--white); color: var(--orange); }
-    .btn--disabled { opacity: 0.42; cursor: default; pointer-events: none; }
+    .btn:hover { opacity: 0.93; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,0,0,0.25); }
+    .btn:active { transform: scale(0.98) translateY(0); box-shadow: none; }
+    .btn--primary { background: var(--white); color: var(--orange); box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+    .btn--disabled { opacity: 0.38; cursor: default; pointer-events: none; box-shadow: none; }
 
     .btn-ghost {
       background: none;
@@ -158,178 +207,144 @@
     }
     .btn-ghost:hover { color: var(--white); }
 
-    /* ── CARD OPTION ── */
+    /* ─── OPTION CARDS ─── */
     .option {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 14px 18px;
-      border-radius: 14px;
+      gap: 14px;
+      padding: 15px 18px;
+      border-radius: 16px;
       border: 2px solid var(--w25);
-      background: transparent;
+      background: var(--blk10);
       color: var(--white);
       cursor: pointer;
       transition: all 0.18s ease;
+      backdrop-filter: blur(4px);
     }
-    .option:hover { border-color: var(--w60); background: var(--w08); }
+    .option:hover { border-color: var(--w60); background: var(--blk20); transform: translateX(3px); }
     .option.active {
       border-color: var(--white);
       background: var(--white);
       color: var(--orange);
+      transform: translateX(3px);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
     }
-    .option__icon { font-size: 22px; flex-shrink: 0; }
-    .option__title { font-size: 15px; font-weight: 600; }
-    .option__sub { font-size: 12px; opacity: 0.65; margin-top: 2px; }
+    .option__icon { font-size: 24px; flex-shrink: 0; }
+    .option__title { font-size: 15px; font-weight: 700; }
+    .option__sub { font-size: 12px; opacity: 0.6; margin-top: 2px; }
 
-    /* ── SLIDER ── */
-    .slider-wrap { position: relative; width: 100%; height: 40px; display: flex; align-items: center; }
+    /* ─── SLIDER ─── */
+    .slider-wrap { position: relative; width: 100%; height: 44px; display: flex; align-items: center; }
     .slider-track { position: absolute; left: 0; right: 0; height: 4px; border-radius: 2px; background: var(--w25); }
     .slider-fill { position: absolute; left: 0; height: 4px; border-radius: 2px; background: var(--white); }
     .slider-thumb {
       position: absolute;
-      width: 24px;
-      height: 24px;
+      width: 26px; height: 26px;
       border-radius: 50%;
       background: var(--white);
-      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.3), 0 0 0 3px rgba(255,255,255,0.3);
       pointer-events: none;
       transition: left 0.04s;
     }
     .slider-input {
-      position: absolute;
-      width: 100%;
-      height: 40px;
-      opacity: 0;
-      cursor: pointer;
-      z-index: 2;
+      position: absolute; width: 100%; height: 44px;
+      opacity: 0; cursor: pointer; z-index: 2;
     }
     input[type=range] { -webkit-appearance: none; appearance: none; background: transparent; }
     input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 1px; height: 1px; }
     input[type=range]::-moz-range-thumb { width: 1px; height: 1px; opacity: 0; border: none; }
-    .slider-labels { display: flex; justify-content: space-between; margin-top: 4px; }
+    .slider-labels { display: flex; justify-content: space-between; margin-top: 6px; }
 
-    /* ── GLASS CARD ── */
-    .glass { background: var(--blk15); border-radius: 14px; padding: 16px; }
-    .glass--dark { background: var(--blk25); }
+    /* ─── GLASS CARD ─── */
+    .glass {
+      background: var(--blk20);
+      border-radius: 16px;
+      padding: 18px;
+      border: 1px solid var(--w08);
+      backdrop-filter: blur(8px);
+    }
+    .glass--dark { background: var(--blk30); }
+    .glass--border { border: 2px solid var(--w25); background: transparent; }
 
-    /* ── DIVIDER ── */
+    /* ─── DIVIDER ─── */
     .divider { height: 1px; background: var(--w08); }
 
-    /* ── STATS ROW (intro) ── */
-    .stats-row { display: flex; gap: 20px; flex-wrap: wrap; }
-    .stat-item { display: flex; align-items: center; gap: 6px; }
-    .stat-icon { font-size: 18px; }
-
-    /* ── TABS ── */
-    .tabs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+    /* ─── STATS ROW ─── */
+    .stats-row { display: flex; gap: 0; }
+    .stat-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       gap: 4px;
-      background: var(--blk25);
-      border-radius: 14px;
-      padding: 4px;
+      padding: 14px 8px;
+      border-right: 1px solid var(--w15);
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-icon { font-size: 20px; }
+    .stat-val { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--white); letter-spacing: 0.03em; }
+    .stat-label { font-size: 11px; color: var(--w40); text-align: center; }
+
+    /* ─── TABS ─── */
+    .tabs {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 4px;
+      background: var(--blk30); border-radius: 16px; padding: 4px;
+      border: 1px solid var(--w08);
     }
     .tab-btn {
-      padding: 11px 0;
-      border: none;
-      border-radius: 11px;
-      background: transparent;
-      color: var(--w60);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s;
+      padding: 12px 0; border: none; border-radius: 13px;
+      background: transparent; color: var(--w60);
+      font-family: 'Bebas Neue', sans-serif; font-size: 17px; letter-spacing: 0.05em;
+      cursor: pointer; transition: all 0.2s;
     }
-    .tab-btn.active { background: var(--white); color: var(--orange); }
+    .tab-btn.active { background: var(--white); color: var(--orange); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
 
-    /* ── SCORE CRITERIA ── */
+    /* ─── CRITERIA ─── */
     .criteria-item { display: flex; align-items: center; gap: 12px; }
     .criteria-dot {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      font-weight: 700;
-      flex-shrink: 0;
-      color: var(--white);
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; flex-shrink: 0; color: var(--white);
     }
     .criteria-dot--ok { background: var(--green); }
     .criteria-dot--no { background: var(--red); }
 
-    /* ── FUNNEL ROW ── */
-    .funnel-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 11px 0;
-    }
+    /* ─── FUNNEL ROW ─── */
+    .funnel-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; }
     .funnel-row:not(:last-child) { border-bottom: 1px solid var(--w08); }
     .funnel-label { display: flex; align-items: center; gap: 10px; }
 
-    /* ── BRIDGE BOX ── */
-    .bridge {
-      border: 2px solid var(--w25);
-      border-radius: 14px;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    /* ── FORM INPUTS ── */
+    /* ─── FORM ─── */
     .field {
-      width: 100%;
-      padding: 14px 16px;
-      background: var(--blk25);
-      border: 2px solid var(--w25);
-      border-radius: 12px;
-      color: var(--white);
-      font-size: 15px;
-      font-family: 'DM Sans', sans-serif;
-      outline: none;
-      transition: border-color 0.2s;
+      width: 100%; padding: 15px 16px;
+      background: var(--blk30); border: 2px solid var(--w25); border-radius: 14px;
+      color: var(--white); font-size: 15px; font-family: 'DM Sans', sans-serif;
+      outline: none; transition: border-color 0.2s, background 0.2s;
     }
     .field::placeholder { color: var(--w40); }
-    .field:focus { border-color: rgba(255,255,255,0.65); }
+    .field:focus { border-color: rgba(255,255,255,0.65); background: var(--blk20); }
 
-    /* ── THANK YOU ── */
-    .thankyou { text-align: center; padding: 28px 20px; align-items: center; }
-    .thankyou-icon { font-size: 52px; }
-
-    /* ── ANNUAL ROW ── */
-    .annual-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border: 2px solid var(--w25);
-      border-radius: 14px;
-      padding: 14px 16px;
-    }
-
-    /* ── CALLOUT ── */
+    /* ─── CALLOUT ─── */
     .callout {
-      background: rgba(0,0,0,0.20);
-      border-radius: 12px;
-      padding: 14px 16px;
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--w80);
-      line-height: 1.55;
+      background: rgba(0,0,0,0.22);
+      border-radius: 14px; padding: 14px 16px;
+      font-size: 14px; font-weight: 500; color: var(--w80); line-height: 1.6;
+      border: 1px solid var(--w08);
     }
 
-    /* ── SCREENS ── */
+    /* ─── SCREENS ─── */
     .screen { display: none; }
     .screen.visible { display: flex; flex-direction: column; gap: 20px; }
 
-    /* ── MOBILE ── */
+    /* ─── MOBILE ─── */
     @media (max-width: 520px) {
-      body { padding: 12px 12px 48px; }
-      .calc { padding: 24px 20px; border-radius: 20px; }
-      .h1 { font-size: 44px; }
+      body { padding: 0 0 48px; }
+      .calc { border-radius: 0; min-height: 100dvh; }
+      .calc-inner { padding: 0 20px; }
+      .brand { padding: 20px 20px 0; }
+      .hero-lockup { height: 230px; }
+      .hero-potentiel { font-size: 72px; }
+      .hero-decouvre { font-size: 24px; bottom: 88px; }
       .h2 { font-size: 34px; }
       .big-num { font-size: 80px; }
     }
@@ -338,177 +353,275 @@
 <body>
 
 <div class="calc" id="calc">
-  <!-- Brand -->
+
+  <!-- Brand (shown on intro + results) -->
   <div class="brand" id="brand" style="display:none">Suna Films Media</div>
 
-  <!-- SCREEN: intro -->
+  <!-- ══════════════════════════════════
+       SCREEN: intro
+  ══════════════════════════════════ -->
   <div class="screen" id="screen-intro">
-    <div class="badge">Outil gratuit — 2 minutes</div>
-    <div class="col--sm">
-      <h1 class="bebas h1">Combien tu laisses sur la table chaque mois?</h1>
-      <p class="body">Découvre en 5 questions le potentiel de revenus que tu rates sans un système de contenu + pubs Meta.</p>
+
+    <!-- HERO LOCKUP -->
+    <div class="hero-lockup">
+
+      <!-- Z1 — Folder SVG -->
+      <div class="hero-folder">
+        <svg viewBox="0 0 320 210" xmlns="http://www.w3.org/2000/svg" width="100%">
+          <!-- Paper 1 (left, rotated) -->
+          <rect x="52" y="80" width="130" height="158" rx="6" fill="#fff" opacity="0.20" transform="rotate(-8 117 159)"/>
+          <!-- Paper 2 (right, rotated) -->
+          <rect x="135" y="78" width="130" height="158" rx="6" fill="#fff" opacity="0.15" transform="rotate(6 200 157)"/>
+          <!-- Paper center (straight) -->
+          <rect x="90" y="72" width="140" height="160" rx="6" fill="rgba(255,255,255,0.95)"/>
+          <!-- Lines on paper -->
+          <rect x="106" y="102" width="108" height="5" rx="2.5" fill="#FF5F00" opacity="0.25"/>
+          <rect x="106" y="116" width="88" height="4" rx="2" fill="#FF5F00" opacity="0.15"/>
+          <rect x="106" y="128" width="96" height="4" rx="2" fill="#FF5F00" opacity="0.15"/>
+          <rect x="106" y="140" width="72" height="4" rx="2" fill="#FF5F00" opacity="0.10"/>
+          <!-- Dollar sign on paper -->
+          <text x="160" y="190" text-anchor="middle" font-family="'Bebas Neue', sans-serif" font-size="36" fill="#FF5F00" opacity="0.18">$$$</text>
+
+          <!-- Folder back -->
+          <path d="M24 88 L24 196 Q24 206 34 206 L286 206 Q296 206 296 196 L296 88 Z" fill="#9E3200"/>
+          <!-- Folder tab -->
+          <path d="M24 88 L24 74 Q24 64 34 64 L118 64 Q132 64 137 74 L148 88 Z" fill="#9E3200"/>
+
+          <!-- Folder front body -->
+          <path d="M24 108 L24 196 Q24 206 34 206 L286 206 Q296 206 296 196 L296 108 Z" fill="#CC4400"/>
+
+          <!-- Folder front flap highlight -->
+          <path d="M24 108 L296 108 L296 120 Q160 132 24 120 Z" fill="rgba(255,255,255,0.06)"/>
+
+          <!-- Folder clasp -->
+          <ellipse cx="160" cy="108" rx="14" ry="9" fill="#B33C00"/>
+          <ellipse cx="160" cy="108" rx="9" ry="5.5" fill="#CC4400"/>
+          <ellipse cx="160" cy="108" rx="5" ry="3" fill="#9E3200"/>
+        </svg>
+      </div>
+
+      <!-- Z2 — POTENTIEL -->
+      <div class="hero-potentiel">POTENTIEL</div>
+
+      <!-- Z3 — Découvre ton -->
+      <div class="hero-decouvre">Découvre ton</div>
+
+      <!-- Z5 — GRATUIT badge -->
+      <div class="hero-badge">GRATUIT</div>
+
+    </div><!-- /.hero-lockup -->
+
+    <!-- Body content -->
+    <div class="calc-inner col" style="gap:20px">
+
+      <!-- Stats strip -->
+      <div class="glass" style="padding:0;overflow:hidden">
+        <div class="stats-row">
+          <div class="stat-item">
+            <span class="stat-icon">⏱</span>
+            <span class="stat-val">2 MIN</span>
+            <span class="stat-label">pour le faire</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-icon">❓</span>
+            <span class="stat-val">5</span>
+            <span class="stat-label">questions</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-icon">💰</span>
+            <span class="stat-val">100%</span>
+            <span class="stat-label">personnalisé</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="body" style="font-size:14px">
+        Combien tu laisses sur la table chaque mois sans un système de contenu + pubs Meta? On calcule ça pour toi en <strong style="color:#fff">2 minutes</strong>.
+      </p>
+
+      <button class="btn btn--primary" onclick="goNext()">Calculer mon potentiel →</button>
+
+      <p class="tiny">Basé sur 120 000 vues/mois générées par nos clients</p>
+
     </div>
-    <div class="stats-row">
-      <div class="stat-item"><span class="stat-icon">⏱</span><span class="small">2 minutes</span></div>
-      <div class="stat-item"><span class="stat-icon">❓</span><span class="small">5 questions</span></div>
-      <div class="stat-item"><span class="stat-icon">💰</span><span class="small">Résultat chiffré</span></div>
-    </div>
-    <button class="btn btn--primary" onclick="goNext()">Calculer mon potentiel →</button>
-    <p class="tiny">Basé sur 120 000 vues/mois générées par nos clients via 2–3 campagnes Meta</p>
   </div>
 
-  <!-- SCREEN: industry -->
+  <!-- ══════════════════════════════════
+       SCREEN: industry
+  ══════════════════════════════════ -->
   <div class="screen" id="screen-industry">
-    <div class="col--sm">
-      <div class="row between">
-        <span class="small" id="prog-industry"></span>
+    <div class="calc-inner col" style="gap:20px">
+      <div class="col--sm">
+        <div class="row between">
+          <span class="small" id="prog-industry"></span>
+        </div>
+        <div id="pb-industry" class="progress-bar"></div>
       </div>
-      <div id="pb-industry" class="progress-bar"></div>
+      <h2 class="bebas h2">Dans quelle industrie travailles-tu?</h2>
+      <div class="col--sm" id="opts-industry"></div>
+      <button class="btn btn--primary btn--disabled" id="btn-industry" onclick="goNext()">Continuer →</button>
     </div>
-    <h2 class="bebas h2">Dans quelle industrie travailles-tu?</h2>
-    <div class="col--sm" id="opts-industry"></div>
-    <button class="btn btn--primary btn--disabled" id="btn-industry" onclick="goNext()">Continuer →</button>
   </div>
 
-  <!-- SCREEN: source -->
+  <!-- ══════════════════════════════════
+       SCREEN: source
+  ══════════════════════════════════ -->
   <div class="screen" id="screen-source">
-    <div class="col--sm">
-      <div class="row between">
-        <span class="small" id="prog-source"></span>
-        <button class="btn-ghost" onclick="goBack()">← Retour</button>
+    <div class="calc-inner col" style="gap:20px">
+      <div class="col--sm">
+        <div class="row between">
+          <span class="small" id="prog-source"></span>
+          <button class="btn-ghost" onclick="goBack()">← Retour</button>
+        </div>
+        <div id="pb-source" class="progress-bar"></div>
       </div>
-      <div id="pb-source" class="progress-bar"></div>
+      <div>
+        <h2 class="bebas h2">D'où vient la majorité de tes clients?</h2>
+        <p class="small" style="margin-top:6px">Choisis ta source principale</p>
+      </div>
+      <div class="col--sm" id="opts-source"></div>
+      <button class="btn btn--primary btn--disabled" id="btn-source" onclick="goNext()">Continuer →</button>
     </div>
-    <div>
-      <h2 class="bebas h2">D'où vient la majorité de tes clients?</h2>
-      <p class="small" style="margin-top:6px">Choisis ta source principale</p>
-    </div>
-    <div class="col--sm" id="opts-source"></div>
-    <button class="btn btn--primary btn--disabled" id="btn-source" onclick="goNext()">Continuer →</button>
   </div>
 
-  <!-- SCREEN: leads -->
+  <!-- ══════════════════════════════════
+       SCREEN: leads
+  ══════════════════════════════════ -->
   <div class="screen" id="screen-leads">
-    <div class="col--sm">
-      <div class="row between">
-        <span class="small" id="prog-leads"></span>
-        <button class="btn-ghost" onclick="goBack()">← Retour</button>
+    <div class="calc-inner col" style="gap:20px">
+      <div class="col--sm">
+        <div class="row between">
+          <span class="small" id="prog-leads"></span>
+          <button class="btn-ghost" onclick="goBack()">← Retour</button>
+        </div>
+        <div id="pb-leads" class="progress-bar"></div>
       </div>
-      <div id="pb-leads" class="progress-bar"></div>
-    </div>
-    <div>
-      <h2 class="bebas h2">Combien de leads as-tu reçus via les réseaux ce mois-ci?</h2>
-    </div>
-    <div class="col center" style="gap:4px">
-      <div class="bebas big-num" id="leads-display">0</div>
-      <div class="small">lead<span id="leads-plural"></span> ce mois</div>
-    </div>
-    <div>
-      <div class="slider-wrap">
-        <div class="slider-track"></div>
-        <div class="slider-fill" id="leads-fill"></div>
-        <div class="slider-thumb" id="leads-thumb"></div>
-        <input type="range" class="slider-input" id="leads-slider" min="0" max="15" step="1" value="0" oninput="onLeadsChange(this.value)" />
+      <div>
+        <h2 class="bebas h2">Combien de leads via les réseaux ce mois-ci?</h2>
       </div>
-      <div class="slider-labels">
-        <span class="tiny">0</span>
-        <span class="tiny">15+</span>
+      <div class="glass col center" style="gap:4px;padding:24px">
+        <div class="bebas big-num" id="leads-display">0</div>
+        <div class="small">lead<span id="leads-plural"></span> ce mois</div>
       </div>
+      <div>
+        <div class="slider-wrap">
+          <div class="slider-track"></div>
+          <div class="slider-fill" id="leads-fill"></div>
+          <div class="slider-thumb" id="leads-thumb"></div>
+          <input type="range" class="slider-input" id="leads-slider" min="0" max="15" step="1" value="0" oninput="onLeadsChange(this.value)" />
+        </div>
+        <div class="slider-labels">
+          <span class="tiny">0</span>
+          <span class="tiny">15+</span>
+        </div>
+      </div>
+      <div id="leads-callout"></div>
+      <button class="btn btn--primary" onclick="goNext()">Continuer →</button>
     </div>
-    <div id="leads-callout"></div>
-    <button class="btn btn--primary" onclick="goNext()">Continuer →</button>
   </div>
 
-  <!-- SCREEN: video -->
+  <!-- ══════════════════════════════════
+       SCREEN: video
+  ══════════════════════════════════ -->
   <div class="screen" id="screen-video">
-    <div class="col--sm">
-      <div class="row between">
-        <span class="small" id="prog-video"></span>
-        <button class="btn-ghost" onclick="goBack()">← Retour</button>
+    <div class="calc-inner col" style="gap:20px">
+      <div class="col--sm">
+        <div class="row between">
+          <span class="small" id="prog-video"></span>
+          <button class="btn-ghost" onclick="goBack()">← Retour</button>
+        </div>
+        <div id="pb-video" class="progress-bar"></div>
       </div>
-      <div id="pb-video" class="progress-bar"></div>
+      <h2 class="bebas h2">Publies-tu du contenu vidéo pour ton business?</h2>
+      <div class="col--sm" id="opts-video"></div>
+      <button class="btn btn--primary btn--disabled" id="btn-video" onclick="goNext()">Continuer →</button>
     </div>
-    <h2 class="bebas h2">Publies-tu du contenu vidéo pour ton business?</h2>
-    <div class="col--sm" id="opts-video"></div>
-    <button class="btn btn--primary btn--disabled" id="btn-video" onclick="goNext()">Continuer →</button>
   </div>
 
-  <!-- SCREEN: closing (Autre seulement) -->
+  <!-- ══════════════════════════════════
+       SCREEN: closing (Autre seulement)
+  ══════════════════════════════════ -->
   <div class="screen" id="screen-closing">
-    <div class="col--sm">
-      <div class="row between">
-        <span class="small" id="prog-closing"></span>
-        <button class="btn-ghost" onclick="goBack()">← Retour</button>
+    <div class="calc-inner col" style="gap:20px">
+      <div class="col--sm">
+        <div class="row between">
+          <span class="small" id="prog-closing"></span>
+          <button class="btn-ghost" onclick="goBack()">← Retour</button>
+        </div>
+        <div id="pb-closing" class="progress-bar"></div>
       </div>
-      <div id="pb-closing" class="progress-bar"></div>
-    </div>
-    <div>
-      <h2 class="bebas h2">Quel est ton taux de closing habituel?</h2>
-      <p class="small" style="margin-top:6px">Sur 100 prospects qualifiés, combien deviennent clients?</p>
-    </div>
-    <div class="col center" style="gap:4px">
-      <div class="bebas big-num" id="closing-display">30%</div>
-      <div class="small">des leads convertis</div>
-    </div>
-    <div>
-      <div class="slider-wrap">
-        <div class="slider-track"></div>
-        <div class="slider-fill" id="closing-fill"></div>
-        <div class="slider-thumb" id="closing-thumb"></div>
-        <input type="range" class="slider-input" id="closing-slider" min="5" max="70" step="5" value="30" oninput="onClosingChange(this.value)" />
+      <div>
+        <h2 class="bebas h2">Quel est ton taux de closing habituel?</h2>
+        <p class="small" style="margin-top:6px">Sur 100 prospects qualifiés, combien deviennent clients?</p>
       </div>
-      <div class="slider-labels">
-        <span class="tiny">5%</span>
-        <span class="tiny">70%</span>
+      <div class="glass col center" style="gap:4px;padding:24px">
+        <div class="bebas big-num" id="closing-display">30%</div>
+        <div class="small">des leads convertis</div>
       </div>
+      <div>
+        <div class="slider-wrap">
+          <div class="slider-track"></div>
+          <div class="slider-fill" id="closing-fill"></div>
+          <div class="slider-thumb" id="closing-thumb"></div>
+          <input type="range" class="slider-input" id="closing-slider" min="5" max="70" step="5" value="30" oninput="onClosingChange(this.value)" />
+        </div>
+        <div class="slider-labels">
+          <span class="tiny">5%</span>
+          <span class="tiny">70%</span>
+        </div>
+      </div>
+      <button class="btn btn--primary" onclick="goNext()">Continuer →</button>
     </div>
-    <button class="btn btn--primary" onclick="goNext()">Continuer →</button>
   </div>
 
-  <!-- SCREEN: value -->
+  <!-- ══════════════════════════════════
+       SCREEN: value
+  ══════════════════════════════════ -->
   <div class="screen" id="screen-value">
-    <div class="col--sm">
-      <div class="row between">
-        <span class="small" id="prog-value"></span>
-        <button class="btn-ghost" onclick="goBack()">← Retour</button>
+    <div class="calc-inner col" style="gap:20px">
+      <div class="col--sm">
+        <div class="row between">
+          <span class="small" id="prog-value"></span>
+          <button class="btn-ghost" onclick="goBack()">← Retour</button>
+        </div>
+        <div id="pb-value" class="progress-bar"></div>
       </div>
-      <div id="pb-value" class="progress-bar"></div>
-    </div>
-    <div>
-      <h2 class="bebas h2">Quelle est ta valeur moyenne par client?</h2>
-      <p class="small" style="margin-top:6px">Commission ou revenu moyen généré par dossier/mandat</p>
-    </div>
-    <div class="col center" style="gap:4px">
-      <div class="bebas big-num-md" id="value-display">3 000 $</div>
-      <div class="small">par client</div>
-    </div>
-    <div>
-      <div class="slider-wrap">
-        <div class="slider-track"></div>
-        <div class="slider-fill" id="value-fill"></div>
-        <div class="slider-thumb" id="value-thumb"></div>
-        <input type="range" class="slider-input" id="value-slider" oninput="onValueChange(this.value)" />
+      <div>
+        <h2 class="bebas h2">Quelle est ta valeur moyenne par client?</h2>
+        <p class="small" style="margin-top:6px">Commission ou revenu moyen par dossier / mandat</p>
       </div>
-      <div class="slider-labels">
-        <span class="tiny" id="value-min-label"></span>
-        <span class="tiny" id="value-max-label"></span>
+      <div class="glass col center" style="gap:4px;padding:24px">
+        <div class="bebas big-num-md" id="value-display">3 000 $</div>
+        <div class="small">par client</div>
       </div>
+      <div>
+        <div class="slider-wrap">
+          <div class="slider-track"></div>
+          <div class="slider-fill" id="value-fill"></div>
+          <div class="slider-thumb" id="value-thumb"></div>
+          <input type="range" class="slider-input" id="value-slider" oninput="onValueChange(this.value)" />
+        </div>
+        <div class="slider-labels">
+          <span class="tiny" id="value-min-label"></span>
+          <span class="tiny" id="value-max-label"></span>
+        </div>
+      </div>
+      <button class="btn btn--primary" onclick="goNext()">Voir mes résultats →</button>
     </div>
-    <button class="btn btn--primary" onclick="goNext()">Voir mes résultats →</button>
   </div>
 
-  <!-- SCREEN: results -->
+  <!-- ══════════════════════════════════
+       SCREEN: results
+  ══════════════════════════════════ -->
   <div class="screen" id="screen-results">
-    <div class="tabs" id="result-tabs">
-      <button class="tab-btn active" onclick="setTab('diagnostic')">🔍 Diagnostic</button>
-      <button class="tab-btn" onclick="setTab('potentiel')">💰 Potentiel</button>
+    <div class="calc-inner col" style="gap:20px">
+      <div class="tabs" id="result-tabs">
+        <button class="tab-btn active" onclick="setTab('diagnostic')">🔍 Diagnostic</button>
+        <button class="tab-btn" onclick="setTab('potentiel')">💰 Potentiel</button>
+      </div>
+      <div id="tab-diagnostic" class="col" style="gap:16px"></div>
+      <div id="tab-potentiel" class="col" style="gap:16px;display:none"></div>
     </div>
-
-    <!-- TAB: diagnostic -->
-    <div id="tab-diagnostic" class="col" style="gap:18px"></div>
-
-    <!-- TAB: potentiel -->
-    <div id="tab-potentiel" class="col" style="gap:18px;display:none"></div>
   </div>
 
 </div><!-- /.calc -->
@@ -540,17 +653,10 @@ const FUNNEL = {
   autre:        { label: 'Autre industrie',        totalLeads: 90, qualRate: 0.50, closingRate: null, avgMin: 500,  avgMax: 20000, avgDefault: 3000,  avgStep: 500 },
 }
 
-// Step sequences
 const STEPS_BASE  = ['intro','industry','source','leads','video','value','results']
 const STEPS_AUTRE = ['intro','industry','source','leads','video','closing','value','results']
-
-function getSteps() {
-  return state.industry === 'autre' ? STEPS_AUTRE : STEPS_BASE
-}
-
-function getQSteps() {
-  return getSteps().filter(s => s !== 'intro' && s !== 'results')
-}
+function getSteps() { return state.industry === 'autre' ? STEPS_AUTRE : STEPS_BASE }
+function getQSteps() { return getSteps().filter(s => s !== 'intro' && s !== 'results') }
 
 // ─────────────────────────────────────────────
 // FORMAT
@@ -558,9 +664,7 @@ function getQSteps() {
 function fmtCAD(n) {
   return new Intl.NumberFormat('fr-CA', { style: 'currency', currency: 'CAD', maximumFractionDigits: 0 }).format(n)
 }
-function fmtN(n) {
-  return new Intl.NumberFormat('fr-CA').format(Math.round(n))
-}
+function fmtN(n) { return new Intl.NumberFormat('fr-CA').format(Math.round(n)) }
 
 // ─────────────────────────────────────────────
 // NAVIGATION
@@ -568,19 +672,12 @@ function fmtN(n) {
 function goNext() {
   const steps = getSteps()
   const idx = steps.indexOf(state.step)
-  if (idx < steps.length - 1) {
-    state.step = steps[idx + 1]
-    render()
-  }
+  if (idx < steps.length - 1) { state.step = steps[idx + 1]; render() }
 }
-
 function goBack() {
   const steps = getSteps()
   const idx = steps.indexOf(state.step)
-  if (idx > 0) {
-    state.step = steps[idx - 1]
-    render()
-  }
+  if (idx > 0) { state.step = steps[idx - 1]; render() }
 }
 
 // ─────────────────────────────────────────────
@@ -589,7 +686,7 @@ function goBack() {
 function updateSlider(fillId, thumbId, value, min, max) {
   const pct = ((value - min) / (max - min)) * 100
   document.getElementById(fillId).style.width = pct + '%'
-  document.getElementById(thumbId).style.left = 'calc(' + pct + '% - 12px)'
+  document.getElementById(thumbId).style.left = 'calc(' + pct + '% - 13px)'
 }
 
 function onLeadsChange(v) {
@@ -599,13 +696,11 @@ function onLeadsChange(v) {
   updateSlider('leads-fill', 'leads-thumb', +v, 0, 15)
   renderLeadsCallout()
 }
-
 function onClosingChange(v) {
   state.closingRate = +v
   document.getElementById('closing-display').textContent = v + '%'
   updateSlider('closing-fill', 'closing-thumb', +v, 5, 70)
 }
-
 function onValueChange(v) {
   state.avgValue = +v
   document.getElementById('value-display').textContent = fmtCAD(+v)
@@ -614,7 +709,7 @@ function onValueChange(v) {
 }
 
 // ─────────────────────────────────────────────
-// PROGRESS BAR
+// PROGRESS
 // ─────────────────────────────────────────────
 function renderProgress(pbId, progId, step) {
   const qSteps = getQSteps()
@@ -628,7 +723,8 @@ function renderProgress(pbId, progId, step) {
     seg.className = 'progress-bar__seg' + (i < idx ? ' active' : '')
     pb.appendChild(seg)
   }
-  document.getElementById(progId).textContent = 'Question ' + idx + ' / ' + total
+  if (document.getElementById(progId))
+    document.getElementById(progId).textContent = 'Question ' + idx + ' / ' + total
 }
 
 // ─────────────────────────────────────────────
@@ -649,14 +745,9 @@ function renderOptions(containerId, options, currentValue, stateKey, btnId) {
     `
     div.onclick = () => {
       state[stateKey] = opt.value
-      if (stateKey === 'industry') {
-        state.avgValue = FUNNEL[opt.value].avgDefault
-      }
+      if (stateKey === 'industry') state.avgValue = FUNNEL[opt.value].avgDefault
       renderOptions(containerId, options, opt.value, stateKey, btnId)
-      if (btnId) {
-        const btn = document.getElementById(btnId)
-        if (btn) btn.classList.remove('btn--disabled')
-      }
+      if (btnId) document.getElementById(btnId)?.classList.remove('btn--disabled')
     }
     container.appendChild(div)
   })
@@ -669,13 +760,12 @@ function renderLeadsCallout() {
   const el = document.getElementById('leads-callout')
   if (!el) return
   const v = state.socialLeads
-  if (v === 0) {
-    el.innerHTML = `<div class="callout">😬 <strong style="color:#fff">Tu n'es pas seul</strong> — la majorité des professionnels financiers ne génèrent aucun lead via les réseaux. C'est exactement ce qu'on règle.</div>`
-  } else if (v > 0 && v < 5) {
-    el.innerHTML = `<div class="callout">📈 <strong style="color:#fff">C'est un début</strong> — avec un système structuré, nos clients génèrent jusqu'à 90 leads/mois dans ton industrie.</div>`
-  } else {
+  if (v === 0)
+    el.innerHTML = `<div class="callout">😬 <strong style="color:#fff">Tu n'es pas seul</strong> — la majorité des professionnels ne génèrent aucun lead via les réseaux. C'est exactement ce qu'on règle.</div>`
+  else if (v < 5)
+    el.innerHTML = `<div class="callout">📈 <strong style="color:#fff">C'est un début</strong> — avec un système structuré, nos clients génèrent jusqu'à 90 leads/mois.</div>`
+  else
     el.innerHTML = ''
-  }
 }
 
 // ─────────────────────────────────────────────
@@ -693,7 +783,7 @@ function calc() {
 }
 
 // ─────────────────────────────────────────────
-// RESULTS HELPERS
+// VISIBILITY SCORE
 // ─────────────────────────────────────────────
 function getVisibilityScore() {
   let s = 0
@@ -702,69 +792,47 @@ function getVisibilityScore() {
   if (state.video === 'oui') s++
   return s
 }
-
 function getDiagTitle(score) {
   if (score === 0) return 'Tu es pratiquement invisible en ligne'
   if (score === 1) return 'Ta visibilité est sérieusement limitée'
   if (score === 2) return "Tu as du potentiel — mais tu laisses de l'argent sur la table"
   return 'Tu as une base solide — voici comment accélérer'
 }
-
 function getSourceMsg(src) {
-  const msgs = {
+  return {
     references: "100% références = zéro contrôle sur ta croissance. Si les références s'arrêtent, ton pipeline aussi.",
     reseau: 'Ton réseau a des limites naturelles. Sans système inbound, tu plafonnes rapidement.',
     social: 'Tu es actif sur les réseaux — mais sans système structuré, les résultats restent imprévisibles.',
     pubs: 'Tu investis déjà en pubs — bonne base. Voici comment maximiser chaque dollar dépensé.',
     prospection: "La prospection est épuisante et peu scalable. Un système inbound change tout.",
-  }
-  return msgs[src] || ''
+  }[src] || ''
 }
 
 // ─────────────────────────────────────────────
-// RENDER DIAGNOSTIC TAB
+// DIAGNOSTIC TAB
 // ─────────────────────────────────────────────
 function renderDiagnostic() {
   const score = getVisibilityScore()
   const scoreColors = ['#FF3B30','#FF9500','#FF9500','#34C759']
-  const scoreLabels = ['Invisible 🔴','Limité 🟡','Moyen 🟡','Visible 🟢']
-
   const criteria = [
-    {
-      label: 'Source de clients',
-      ok: state.source === 'social' || state.source === 'pubs',
-      detail: (state.source === 'social' || state.source === 'pubs')
-        ? 'Présence sur les canaux digitaux'
-        : 'Dépendance aux références / réseau',
-    },
-    {
-      label: 'Inbound via réseaux sociaux',
-      ok: state.socialLeads >= 5,
-      detail: state.socialLeads >= 5
-        ? `${state.socialLeads} lead${state.socialLeads > 1 ? 's' : ''} ce mois — bonne traction`
-        : `Seulement ${state.socialLeads} lead${state.socialLeads > 1 ? 's' : ''} ce mois`,
-    },
-    {
-      label: 'Contenu vidéo',
-      ok: state.video === 'oui',
-      detail: state.video === 'oui' ? 'Publié régulièrement ✓'
-        : state.video === 'parfois' ? 'Publication irrégulière'
-        : 'Aucun contenu vidéo publié',
-    },
+    { label: 'Source de clients', ok: state.source === 'social' || state.source === 'pubs',
+      detail: (state.source === 'social' || state.source === 'pubs') ? 'Présence sur les canaux digitaux' : 'Dépendance aux références / réseau' },
+    { label: 'Inbound via réseaux', ok: state.socialLeads >= 5,
+      detail: state.socialLeads >= 5 ? `${state.socialLeads} leads ce mois — bonne traction` : `Seulement ${state.socialLeads} lead${state.socialLeads>1?'s':''} ce mois` },
+    { label: 'Contenu vidéo', ok: state.video === 'oui',
+      detail: state.video === 'oui' ? 'Publié régulièrement ✓' : state.video === 'parfois' ? 'Publication irrégulière' : 'Aucun contenu vidéo publié' },
   ]
 
   const criteriaHTML = criteria.map(c => `
     <div class="criteria-item">
       <div class="criteria-dot ${c.ok ? 'criteria-dot--ok' : 'criteria-dot--no'}">${c.ok ? '✓' : '✗'}</div>
       <div>
-        <div style="font-size:13px;font-weight:600;color:#fff">${c.label}</div>
+        <div style="font-size:13px;font-weight:700;color:#fff">${c.label}</div>
         <div style="font-size:12px;color:var(--w60)">${c.detail}</div>
       </div>
-    </div>
-  `).join('')
+    </div>`).join('')
 
-  const tab = document.getElementById('tab-diagnostic')
-  tab.innerHTML = `
+  document.getElementById('tab-diagnostic').innerHTML = `
     <div class="col--sm">
       <h2 class="bebas h2">${getDiagTitle(score)}</h2>
       ${state.source ? `<div class="callout">${getSourceMsg(state.source)}</div>` : ''}
@@ -773,16 +841,16 @@ function renderDiagnostic() {
     <div class="glass" style="display:flex;flex-direction:column;gap:14px">
       <div class="row between">
         <span style="font-size:14px;font-weight:700;color:#fff">Score de visibilité</span>
-        <span class="bebas" style="font-size:28px;color:${scoreColors[score]}">${score}/3 — ${scoreLabels[score]}</span>
+        <span class="bebas" style="font-size:28px;color:${scoreColors[score]}">${score}/3</span>
       </div>
       <div class="divider"></div>
       ${criteriaHTML}
     </div>
 
-    <div class="bridge">
-      <div style="font-size:13px;font-weight:600;color:var(--w60);text-transform:uppercase;letter-spacing:.06em">Résultats moyens de nos clients</div>
-      <div class="bebas" style="font-size:42px;color:#fff">120 000 vues/mois</div>
-      <div style="font-size:13px;color:var(--w60)">avec seulement 2–3 campagnes Meta bien structurées — sans budget énorme</div>
+    <div class="glass glass--border" style="display:flex;flex-direction:column;gap:8px;padding:20px">
+      <div class="label">Résultats moyens de nos clients</div>
+      <div class="bebas" style="font-size:48px;color:#fff;line-height:1">120 000 vues/mois</div>
+      <div class="small">avec seulement 2–3 campagnes Meta bien structurées</div>
     </div>
 
     <button class="btn btn--primary" onclick="setTab('potentiel')">Voir mon potentiel de revenus →</button>
@@ -790,10 +858,9 @@ function renderDiagnostic() {
 }
 
 // ─────────────────────────────────────────────
-// RENDER POTENTIEL TAB
+// POTENTIEL TAB
 // ─────────────────────────────────────────────
 let animFrame = null
-
 function animateNumbers(targetClients, targetRevenue, durationMs) {
   if (animFrame) cancelAnimationFrame(animFrame)
   const start = performance.now()
@@ -813,39 +880,25 @@ function renderPotentiel() {
   const r = calc()
   if (!r) return
 
-  const funnelRows = [
-    { icon: '👁',  label: 'Vues/mois',      val: fmtN(120000),      sub: 'campagnes Meta' },
-    { icon: '📥',  label: 'Leads générés',  val: fmtN(r.totalLeads), sub: ((r.totalLeads/120000)*100).toFixed(1)+'% des vues' },
-    { icon: '✅',  label: 'Leads qualifiés',val: fmtN(r.qualLeads),  sub: Math.round(r.qualLeads/r.totalLeads*100)+'% qualifiés' },
-    { icon: '🤝',  label: 'Clients signés', val: fmtN(r.clients),    sub: Math.round(r.cr*100)+'% de closing' },
-    { icon: '💰',  label: 'Revenus/mois',   val: fmtCAD(r.monthly),  sub: '', highlight: true },
+  const rows = [
+    { icon: '👁',  label: 'Vues/mois',       val: fmtN(120000),       sub: 'campagnes Meta' },
+    { icon: '📥',  label: 'Leads générés',   val: fmtN(r.totalLeads),  sub: ((r.totalLeads/120000)*100).toFixed(1)+'% des vues' },
+    { icon: '✅',  label: 'Leads qualifiés', val: fmtN(r.qualLeads),   sub: Math.round(r.qualLeads/r.totalLeads*100)+'% qualifiés' },
+    { icon: '🤝',  label: 'Clients signés',  val: fmtN(r.clients),     sub: Math.round(r.cr*100)+'% de closing' },
+    { icon: '💰',  label: 'Revenus/mois',    val: fmtCAD(r.monthly),   sub: '', bold: true },
   ]
 
-  const funnelHTML = funnelRows.map(row => `
-    <div class="funnel-row">
-      <div class="funnel-label">
-        <span style="font-size:18px">${row.icon}</span>
-        <span style="font-size:14px;font-weight:${row.highlight?700:400};color:#fff">${row.label}</span>
-      </div>
-      <div style="text-align:right">
-        <div style="font-size:14px;font-weight:700;color:#fff">${row.val}</div>
-        ${row.sub ? `<div style="font-size:11px;color:var(--w40)">${row.sub}</div>` : ''}
-      </div>
-    </div>
-  `).join('')
-
   const formHTML = state.submitted ? `
-    <div class="glass glass--dark col thankyou" style="gap:10px">
-      <div class="thankyou-icon">🎉</div>
+    <div class="glass glass--dark col center" style="gap:10px;padding:28px 20px;align-items:center">
+      <div style="font-size:52px">🎉</div>
       <h3 class="bebas h3">Analyse en route!</h3>
-      <p class="body" style="text-align:center">Notre équipe analyse ton profil et te revient sous 24h avec un plan personnalisé.</p>
-      <p style="font-size:13px;color:var(--w60);text-align:center">En attendant, suis-nous sur Instagram pour du contenu exclusif.</p>
+      <p class="body" style="text-align:center;font-size:14px">Notre équipe analyse ton profil et te revient sous 24h.</p>
     </div>
   ` : `
     <div class="col--sm">
       <div>
-        <h3 class="bebas h3">Je veux ce système → Analyse gratuite</h3>
-        <p style="font-size:13px;color:var(--w60);margin-top:6px">On analyse ton profil et on te propose un plan personnalisé. Sous 24h, sans engagement.</p>
+        <h3 class="bebas h3" style="margin-bottom:6px">Je veux ce système → Analyse gratuite</h3>
+        <p class="small">On te propose un plan personnalisé. Sous 24h, sans engagement.</p>
       </div>
       <input class="field" type="text" placeholder="Ton prénom *" id="f-nom" oninput="state.form.nom=this.value;updateSubmitBtn()" />
       <input class="field" type="tel" placeholder="Téléphone" id="f-tel" oninput="state.form.telephone=this.value" />
@@ -856,33 +909,36 @@ function renderPotentiel() {
     </div>
   `
 
-  const tab = document.getElementById('tab-potentiel')
-  tab.innerHTML = `
+  document.getElementById('tab-potentiel').innerHTML = `
     <div class="glass glass--dark col center" style="gap:6px;padding:24px 20px">
       <div class="label">Ton potentiel mensuel</div>
-      <div class="bebas" style="font-size:64px;line-height:1;color:#fff" id="anim-revenue">${fmtCAD(0)}</div>
-      <div style="font-size:15px;font-weight:500;color:var(--w60)">soit <strong style="color:#fff" id="anim-clients">0</strong> clients/mois</div>
+      <div class="bebas" style="font-size:64px;line-height:1.05;color:#fff" id="anim-revenue">${fmtCAD(0)}</div>
+      <div style="font-size:15px;font-weight:600;color:var(--w60)">soit <strong style="color:#fff" id="anim-clients">0</strong> clients/mois</div>
     </div>
 
     <div class="glass" style="display:flex;flex-direction:column;gap:0">
-      <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:12px">📊 Ton funnel projeté</div>
-      ${funnelHTML}
+      <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:10px">📊 Ton funnel projeté</div>
+      ${rows.map(row => `
+        <div class="funnel-row">
+          <div class="funnel-label">
+            <span style="font-size:18px">${row.icon}</span>
+            <span style="font-size:14px;font-weight:${row.bold?700:400};color:#fff">${row.label}</span>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:14px;font-weight:700;color:#fff">${row.val}</div>
+            ${row.sub ? `<div style="font-size:11px;color:var(--w40)">${row.sub}</div>` : ''}
+          </div>
+        </div>`).join('')}
     </div>
 
-    <div class="annual-row">
-      <div>
-        <div class="label">Potentiel annuel</div>
-      </div>
+    <div class="glass glass--border row between" style="padding:16px 18px">
+      <div class="label">Potentiel annuel</div>
       <div class="bebas" style="font-size:36px;color:#fff">${fmtCAD(r.annual)}</div>
     </div>
 
     ${formHTML}
   `
-
-  // Animate after DOM is ready
-  requestAnimationFrame(() => {
-    animateNumbers(r.clients, r.monthly, 800)
-  })
+  requestAnimationFrame(() => animateNumbers(r.clients, r.monthly, 900))
 }
 
 // ─────────────────────────────────────────────
@@ -891,36 +947,20 @@ function renderPotentiel() {
 function updateSubmitBtn() {
   const btn = document.getElementById('btn-submit')
   if (!btn) return
-  const ok = state.form.nom.trim() && state.form.email.trim()
-  btn.classList.toggle('btn--disabled', !ok)
+  btn.classList.toggle('btn--disabled', !(state.form.nom.trim() && state.form.email.trim()))
 }
-
 function handleSubmit() {
   if (!state.form.nom.trim() || !state.form.email.trim()) return
   state.submitted = true
-
-  // Webhook (configure via meta tag ou hardcode l'URL)
   const webhookUrl = document.querySelector('meta[name="webhook-url"]')?.content
   if (webhookUrl) {
     const r = calc()
-    fetch(webhookUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        ...state.form,
-        industry: state.industry,
-        source: state.source,
-        socialLeads: state.socialLeads,
-        video: state.video,
-        closingRate: state.closingRate,
-        avgValue: state.avgValue,
-        potentielMensuel: r?.monthly,
-        potentielAnnuel: r?.annual,
-        clients: r?.clients,
-      }),
+    fetch(webhookUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...state.form, industry: state.industry, source: state.source,
+        socialLeads: state.socialLeads, video: state.video, closingRate: state.closingRate,
+        avgValue: state.avgValue, potentielMensuel: r?.monthly, potentielAnnuel: r?.annual, clients: r?.clients })
     }).catch(() => {})
   }
-
   renderPotentiel()
 }
 
@@ -930,14 +970,11 @@ function handleSubmit() {
 function setTab(tab) {
   state.tab = tab
   document.querySelectorAll('.tab-btn').forEach((btn, i) => {
-    btn.classList.toggle('active', (i === 0 && tab === 'diagnostic') || (i === 1 && tab === 'potentiel'))
+    btn.classList.toggle('active', (i===0 && tab==='diagnostic') || (i===1 && tab==='potentiel'))
   })
   document.getElementById('tab-diagnostic').style.display = tab === 'diagnostic' ? 'flex' : 'none'
   document.getElementById('tab-potentiel').style.display  = tab === 'potentiel'  ? 'flex' : 'none'
-
-  if (tab === 'potentiel') {
-    renderPotentiel()
-  }
+  if (tab === 'potentiel') renderPotentiel()
 }
 
 // ─────────────────────────────────────────────
@@ -945,49 +982,37 @@ function setTab(tab) {
 // ─────────────────────────────────────────────
 function render() {
   const step = state.step
-  const screens = ['intro','industry','source','leads','video','closing','value','results']
-  screens.forEach(s => {
+  ;['intro','industry','source','leads','video','closing','value','results'].forEach(s => {
     const el = document.getElementById('screen-' + s)
     if (el) el.className = 'screen' + (s === step ? ' visible' : '')
   })
 
-  // Brand header (show on intro + results)
   const brand = document.getElementById('brand')
   brand.style.display = (step === 'intro' || step === 'results') ? 'block' : 'none'
 
-  // Progress bars & question labels
-  if (step !== 'intro' && step !== 'results') {
-    renderProgress('pb-' + step, 'prog-' + step, step)
-  }
+  if (step !== 'intro' && step !== 'results') renderProgress('pb-' + step, 'prog-' + step, step)
 
-  // Industry options
   if (step === 'industry') {
-    const industryOpts = [
+    renderOptions('opts-industry', [
       { value: 'hypothecaire', icon: '🏠', label: 'Courtier hypothécaire', sub: 'Prêts, renouvellements, refinancement' },
       { value: 'immobilier',   icon: '🏢', label: 'Courtier immobilier',   sub: 'Achat, vente, investissement' },
       { value: 'financier',    icon: '💼', label: 'Conseiller financier',  sub: 'Planification, assurances, placements' },
       { value: 'autre',        icon: '⚡', label: 'Autre industrie',        sub: 'Autre domaine professionnel' },
-    ]
-    renderOptions('opts-industry', industryOpts, state.industry, 'industry', 'btn-industry')
-    const btn = document.getElementById('btn-industry')
-    if (state.industry) btn.classList.remove('btn--disabled')
+    ], state.industry, 'industry', 'btn-industry')
+    if (state.industry) document.getElementById('btn-industry')?.classList.remove('btn--disabled')
   }
 
-  // Source options
   if (step === 'source') {
-    const sourceOpts = [
+    renderOptions('opts-source', [
       { value: 'references',  icon: '👥', label: 'Références de clients' },
       { value: 'reseau',      icon: '🤝', label: 'Mon réseau personnel' },
       { value: 'social',      icon: '📱', label: 'Réseaux sociaux' },
       { value: 'pubs',        icon: '📢', label: 'Publicités payantes' },
       { value: 'prospection', icon: '📞', label: 'Prospection directe' },
-    ]
-    renderOptions('opts-source', sourceOpts, state.source, 'source', 'btn-source')
-    const btn = document.getElementById('btn-source')
-    if (state.source) btn.classList.remove('btn--disabled')
+    ], state.source, 'source', 'btn-source')
+    if (state.source) document.getElementById('btn-source')?.classList.remove('btn--disabled')
   }
 
-  // Leads slider
   if (step === 'leads') {
     const v = state.socialLeads
     document.getElementById('leads-display').textContent = v
@@ -997,54 +1022,36 @@ function render() {
     renderLeadsCallout()
   }
 
-  // Video options
   if (step === 'video') {
-    const videoOpts = [
-      { value: 'non',     icon: '🚫', label: 'Non, pas du tout',       sub: 'Aucun contenu vidéo publié' },
-      { value: 'parfois', icon: '📹', label: 'Parfois / irrégulièrement', sub: 'Quelques publications sans système' },
-      { value: 'oui',     icon: '🎬', label: 'Oui, régulièrement',     sub: 'Contenu publié chaque semaine' },
-    ]
-    renderOptions('opts-video', videoOpts, state.video, 'video', 'btn-video')
-    const btn = document.getElementById('btn-video')
-    if (state.video) btn.classList.remove('btn--disabled')
+    renderOptions('opts-video', [
+      { value: 'non',     icon: '🚫', label: 'Non, pas du tout',            sub: 'Aucun contenu vidéo publié' },
+      { value: 'parfois', icon: '📹', label: 'Parfois / irrégulièrement',   sub: 'Quelques publications sans système' },
+      { value: 'oui',     icon: '🎬', label: 'Oui, régulièrement',          sub: 'Contenu publié chaque semaine' },
+    ], state.video, 'video', 'btn-video')
+    if (state.video) document.getElementById('btn-video')?.classList.remove('btn--disabled')
   }
 
-  // Closing slider
   if (step === 'closing') {
-    const v = state.closingRate
-    document.getElementById('closing-display').textContent = v + '%'
-    document.getElementById('closing-slider').value = v
-    updateSlider('closing-fill', 'closing-thumb', v, 5, 70)
+    document.getElementById('closing-display').textContent = state.closingRate + '%'
+    document.getElementById('closing-slider').value = state.closingRate
+    updateSlider('closing-fill', 'closing-thumb', state.closingRate, 5, 70)
   }
 
-  // Value slider
   if (step === 'value' && state.industry) {
     const f = FUNNEL[state.industry]
-    const v = state.avgValue
     const slider = document.getElementById('value-slider')
-    slider.min = f.avgMin
-    slider.max = f.avgMax
-    slider.step = f.avgStep
-    slider.value = v
-    document.getElementById('value-display').textContent = fmtCAD(v)
+    slider.min = f.avgMin; slider.max = f.avgMax; slider.step = f.avgStep; slider.value = state.avgValue
+    document.getElementById('value-display').textContent = fmtCAD(state.avgValue)
     document.getElementById('value-min-label').textContent = fmtCAD(f.avgMin)
     document.getElementById('value-max-label').textContent = fmtCAD(f.avgMax)
-    updateSlider('value-fill', 'value-thumb', v, f.avgMin, f.avgMax)
+    updateSlider('value-fill', 'value-thumb', state.avgValue, f.avgMin, f.avgMax)
   }
 
-  // Results
-  if (step === 'results') {
-    renderDiagnostic()
-    setTab('diagnostic')
-  }
+  if (step === 'results') { renderDiagnostic(); setTab('diagnostic') }
 
-  // Scroll to top
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
-// ─────────────────────────────────────────────
-// INIT
-// ─────────────────────────────────────────────
 render()
 </script>
 
