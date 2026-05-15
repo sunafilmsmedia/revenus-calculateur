@@ -129,31 +129,34 @@
       overflow: hidden;
     }
 
+    /* Gradient ::before — indestructible, rien ne peut l'écraser */
+    .ad::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      border-radius: inherit;
+    }
+
     /* Story 9:16 */
     .ad--story {
       width: 302px;
-      height: 536px; /* 302 * 16/9 ≈ 537 */
-      background-image: linear-gradient(165deg,
-        #080808 0%,
-        #180900 38%,
-        #7A2A00 68%,
-        #FF5F00 100%
-      );
+      height: 536px;
+    }
+    .ad--story::before {
+      background: linear-gradient(165deg, #080808 0%, #180900 38%, #7A2A00 68%, #FF5F00 100%);
     }
 
     /* Feed 1:1 */
     .ad--feed {
       width: 340px;
       height: 340px;
-      background-image: linear-gradient(150deg,
-        #080808 0%,
-        #180900 38%,
-        #7A2A00 68%,
-        #FF5F00 100%
-      );
+    }
+    .ad--feed::before {
+      background: linear-gradient(150deg, #080808 0%, #180900 38%, #7A2A00 68%, #FF5F00 100%);
     }
 
-    /* Depth circles */
+    /* Depth circles — z-index 1 */
     .circle-tr {
       position: absolute;
       width: 240px; height: 240px;
@@ -161,6 +164,7 @@
       border-radius: 50%;
       background: rgba(255,95,0,0.09);
       pointer-events: none;
+      z-index: 1;
     }
     .circle-bl {
       position: absolute;
@@ -169,9 +173,10 @@
       border-radius: 50%;
       background: rgba(255,95,0,0.07);
       pointer-events: none;
+      z-index: 1;
     }
 
-    /* Ad inner content */
+    /* Ad inner content — z-index 2 */
     .ad__inner {
       position: relative;
       z-index: 2;
