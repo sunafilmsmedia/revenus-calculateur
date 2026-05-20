@@ -655,10 +655,11 @@ function calc() {
 // ─────────────────────────────
 const LEVEL_FUNNELS = {
   immobilier: [
-    { label:'0 vidéo, 0 lead réseau, pas de pubs',       leadsMin:12,  leadsMax:20,  qualRate:0.40,  closingsMin:1,  closingsMax:2  },
-    { label:'Vidéos par lui-même, irrégulier',           leadsMin:18,  leadsMax:30,  qualRate:0.45,  closingsMin:1,  closingsMax:3  },
-    { label:'Contenu régulier, un peu de traction',      leadsMin:25,  leadsMax:40,  qualRate:0.50,  closingsMin:2,  closingsMax:4  },
-    { label:'Contenu + pubs déjà actives',               leadsMin:35,  leadsMax:60,  qualRate:0.55,  closingsMin:3,  closingsMax:6  },
+    // qualRate = % de leads qui deviennent des évaluations · closingRate = 30% standard
+    { label:'0 vidéo, 0 lead réseau, pas de pubs',       leadsMin:12,  leadsMax:20,  qualRate:0.25,  closingRate:0.30 },
+    { label:'Vidéos par lui-même, irrégulier',           leadsMin:18,  leadsMax:30,  qualRate:0.25,  closingRate:0.30 },
+    { label:'Contenu régulier, un peu de traction',      leadsMin:25,  leadsMax:40,  qualRate:0.25,  closingRate:0.30 },
+    { label:'Contenu + pubs déjà actives',               leadsMin:35,  leadsMax:60,  qualRate:0.25,  closingRate:0.30 },
   ],
   hypothecaire: [
     { label:'0 contenu, 0 lead, pas de pubs',            leadsMin:50,  leadsMax:70,  qualRate:0.50,  closingsMin:8,  closingsMax:12 },
@@ -676,23 +677,30 @@ function getLevel() {
 function calcLevel(industry) {
   const level = getLevel()
   const L = LEVEL_FUNNELS[industry][level]
-  // CRM augmente le closing max (plus marqué pour hypothécaire car le L3 inclut "+ CRM")
   const crmBoost = state.crm === 'ghl' ? 1 : (state.crm && state.crm !== 'none' ? 0.5 : 0)
-  const bonus = industry === 'hypothecaire' ? Math.round(crmBoost * 2) : Math.floor(crmBoost)
-  const closingsMax = L.closingsMax + bonus
+  const qualMin = Math.round(L.leadsMin * L.qualRate)
+  const qualMax = Math.round(L.leadsMax * L.qualRate)
+  let closingsMin, closingsMax
+  if (L.closingRate != null) {
+    // Mode taux de closing dynamique (immobilier)
+    closingsMin = Math.max(1, Math.round(qualMin * L.closingRate))
+    closingsMax = Math.round(qualMax * L.closingRate) + Math.floor(crmBoost)
+  } else {
+    // Mode closings explicites (hypothécaire — L3 inclut "+ CRM")
+    closingsMin = L.closingsMin
+    closingsMax = L.closingsMax + Math.round(crmBoost * 2)
+  }
   return {
     isRange: true,
     level,
     levelLabel: L.label,
     leadsMin: L.leadsMin, leadsMax: L.leadsMax,
     qualRate: L.qualRate,
-    qualMin: Math.round(L.leadsMin * L.qualRate),
-    qualMax: Math.round(L.leadsMax * L.qualRate),
-    closingsMin: L.closingsMin,
-    closingsMax,
-    revenueMin: L.closingsMin * state.avgValue,
+    qualMin, qualMax,
+    closingsMin, closingsMax,
+    revenueMin: closingsMin * state.avgValue,
     revenueMax: closingsMax * state.avgValue,
-    annualMin: L.closingsMin * state.avgValue * 12,
+    annualMin: closingsMin * state.avgValue * 12,
     annualMax: closingsMax * state.avgValue * 12,
   }
 }
@@ -865,10 +873,10 @@ function renderPotentiel() {
   const r=calc(); if(!r) return
   let rows, heroLabel, heroBig, heroSub, annualVal
   if (r.isRange) {
-    // ── IMMOBILIER — affichage par plages ──
+    const qualLabel = state.industry === 'immobilier' ? 'Évaluations/mois' : 'Leads qualifiés'
     rows=[
       {icon:'📥', label:'Leads/mois projetés', val:`${r.leadsMin} à ${r.leadsMax}`, sub:`Niveau ${r.level+1}/4 — ${r.levelLabel}`},
-      {icon:'✅', label:'Leads qualifiés',     val:`${r.qualMin} à ${r.qualMax}`,   sub:Math.round(r.qualRate*100)+'% du volume'},
+      {icon:'✅', label:qualLabel,             val:`${r.qualMin} à ${r.qualMax}`,   sub:Math.round(r.qualRate*100)+'% du volume'},
       {icon:'🤝', label:'Closings/mois',       val:`${r.closingsMin} à ${r.closingsMax}`, sub:'clients signés'},
       {icon:'💰', label:'Extra revenu/mois',   val:`${fmtCAD(r.revenueMin)} à ${fmtCAD(r.revenueMax)}`, sub:'', bold:true},
     ]
