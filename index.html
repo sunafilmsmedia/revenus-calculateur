@@ -635,12 +635,11 @@ function getLeadMult() {
 
 function calc() {
   if(!state.industry) return null
-  if(state.industry === 'immobilier') return calcImmo()
+  if(LEVEL_FUNNELS[state.industry]) return calcLevel(state.industry)
   const f = FUNNEL[state.industry]
   const mult = getLeadMult()
   const totalLeads = Math.round(f.totalLeads * mult)
   const qualLeads  = Math.round(totalLeads * f.qualRate)
-  // CRM améliore le closing
   let cr = state.industry === 'autre' ? state.closingRate/100 : f.closingRate
   if (state.crm === 'ghl')               cr = Math.min(cr + 0.05, 0.65)
   else if (state.crm && state.crm !== 'none') cr = Math.min(cr + 0.02, 0.65)
@@ -651,26 +650,36 @@ function calc() {
 }
 
 // ─────────────────────────────
-// CALC IMMOBILIER — par niveau (0-3)
-// Le ticket moyen détermine le revenu extra
+// CALC PAR NIVEAU (0-3) — pour industries calibrées
+// Le revenu = closings × ticket moyen entré par l'utilisateur
 // ─────────────────────────────
-const IMMO_LEVELS = [
-  { label:'0 vidéo, 0 lead réseau, pas de pubs',     leadsMin:12, leadsMax:20, qualRate:0.40, closingsMin:1, closingsMax:2 },
-  { label:'Vidéos par lui-même, irrégulier',         leadsMin:18, leadsMax:30, qualRate:0.45, closingsMin:1, closingsMax:3 },
-  { label:'Contenu régulier, un peu de traction',    leadsMin:25, leadsMax:40, qualRate:0.50, closingsMin:2, closingsMax:4 },
-  { label:'Contenu + pubs déjà actives',             leadsMin:35, leadsMax:60, qualRate:0.55, closingsMin:3, closingsMax:6 },
-]
-function getImmoLevel() {
+const LEVEL_FUNNELS = {
+  immobilier: [
+    { label:'0 vidéo, 0 lead réseau, pas de pubs',       leadsMin:12,  leadsMax:20,  qualRate:0.40,  closingsMin:1,  closingsMax:2  },
+    { label:'Vidéos par lui-même, irrégulier',           leadsMin:18,  leadsMax:30,  qualRate:0.45,  closingsMin:1,  closingsMax:3  },
+    { label:'Contenu régulier, un peu de traction',      leadsMin:25,  leadsMax:40,  qualRate:0.50,  closingsMin:2,  closingsMax:4  },
+    { label:'Contenu + pubs déjà actives',               leadsMin:35,  leadsMax:60,  qualRate:0.55,  closingsMin:3,  closingsMax:6  },
+  ],
+  hypothecaire: [
+    { label:'0 contenu, 0 lead, pas de pubs',            leadsMin:50,  leadsMax:70,  qualRate:0.50,  closingsMin:8,  closingsMax:12 },
+    { label:'Contenu irrégulier / vidéos par lui-même',  leadsMin:80,  leadsMax:110, qualRate:0.55,  closingsMin:12, closingsMax:18 },
+    { label:'Contenu régulier + quelques leads réseaux', leadsMin:110, leadsMax:150, qualRate:0.60,  closingsMin:18, closingsMax:28 },
+    { label:'Contenu + pubs déjà actives + CRM',         leadsMin:150, leadsMax:220, qualRate:0.625, closingsMin:28, closingsMax:45 },
+  ],
+}
+function getLevel() {
   if (state.video === 'oui' && state.source === 'pubs') return 3
   if (state.video === 'oui') return 2
   if (state.video === 'parfois') return 1
   return 0
 }
-function calcImmo() {
-  const level = getImmoLevel()
-  const L = IMMO_LEVELS[level]
-  // CRM peut bumper d'un niveau le closing (small boost)
+function calcLevel(industry) {
+  const level = getLevel()
+  const L = LEVEL_FUNNELS[industry][level]
+  // CRM augmente le closing max (plus marqué pour hypothécaire car le L3 inclut "+ CRM")
   const crmBoost = state.crm === 'ghl' ? 1 : (state.crm && state.crm !== 'none' ? 0.5 : 0)
+  const bonus = industry === 'hypothecaire' ? Math.round(crmBoost * 2) : Math.floor(crmBoost)
+  const closingsMax = L.closingsMax + bonus
   return {
     isRange: true,
     level,
@@ -680,11 +689,11 @@ function calcImmo() {
     qualMin: Math.round(L.leadsMin * L.qualRate),
     qualMax: Math.round(L.leadsMax * L.qualRate),
     closingsMin: L.closingsMin,
-    closingsMax: L.closingsMax + Math.floor(crmBoost),
+    closingsMax,
     revenueMin: L.closingsMin * state.avgValue,
-    revenueMax: (L.closingsMax + Math.floor(crmBoost)) * state.avgValue,
+    revenueMax: closingsMax * state.avgValue,
     annualMin: L.closingsMin * state.avgValue * 12,
-    annualMax: (L.closingsMax + Math.floor(crmBoost)) * state.avgValue * 12,
+    annualMax: closingsMax * state.avgValue * 12,
   }
 }
 
