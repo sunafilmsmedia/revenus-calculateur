@@ -873,17 +873,21 @@ function renderPotentiel() {
   const r=calc(); if(!r) return
   let rows, heroLabel, heroBig, heroSub, annualVal
   if (r.isRange) {
+    const range = (a, b) => a === b ? `${a}` : `${a} à ${b}`
+    const rangeCAD = (a, b) => a === b ? fmtCAD(a) : `${fmtCAD(a)} à ${fmtCAD(b)}`
     const qualLabel = state.industry === 'immobilier' ? 'Évaluations/mois' : 'Leads qualifiés'
     rows=[
-      {icon:'📥', label:'Leads/mois projetés', val:`${r.leadsMin} à ${r.leadsMax}`, sub:`Niveau ${r.level+1}/4 — ${r.levelLabel}`},
-      {icon:'✅', label:qualLabel,             val:`${r.qualMin} à ${r.qualMax}`,   sub:Math.round(r.qualRate*100)+'% du volume'},
-      {icon:'🤝', label:'Closings/mois',       val:`${r.closingsMin} à ${r.closingsMax}`, sub:'clients signés'},
-      {icon:'💰', label:'Extra revenu/mois',   val:`${fmtCAD(r.revenueMin)} à ${fmtCAD(r.revenueMax)}`, sub:'', bold:true},
+      {icon:'📥', label:'Leads/mois projetés', val:range(r.leadsMin, r.leadsMax),       sub:`Niveau ${r.level+1}/4 — ${r.levelLabel}`},
+      {icon:'✅', label:qualLabel,             val:range(r.qualMin, r.qualMax),         sub:Math.round(r.qualRate*100)+'% du volume'},
+      {icon:'🤝', label:'Closings/mois',       val:range(r.closingsMin, r.closingsMax), sub:'clients signés'},
+      {icon:'💰', label:'Extra revenu/mois',   val:rangeCAD(r.revenueMin, r.revenueMax), sub:'', bold:true},
     ]
     heroLabel = 'Ton revenu extra mensuel'
-    heroBig   = `${fmtCAD(r.revenueMin)} à ${fmtCAD(r.revenueMax)}`
-    heroSub   = `soit <strong style="color:#fff">${r.closingsMin} à ${r.closingsMax}</strong> closings/mois en plus`
-    annualVal = `${fmtCAD(r.annualMin)} à ${fmtCAD(r.annualMax)}`
+    heroBig   = rangeCAD(r.revenueMin, r.revenueMax)
+    heroSub   = r.closingsMin === r.closingsMax
+      ? `soit <strong style="color:#fff">${r.closingsMin}</strong> closing${r.closingsMin>1?'s':''}/mois en plus`
+      : `soit <strong style="color:#fff">${r.closingsMin} à ${r.closingsMax}</strong> closings/mois en plus`
+    annualVal = rangeCAD(r.annualMin, r.annualMax)
   } else {
     const multPct = Math.round(r.mult * 100)
     rows=[
