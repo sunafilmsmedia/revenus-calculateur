@@ -635,6 +635,7 @@ function getLeadMult() {
 
 function calc() {
   if(!state.industry) return null
+  if(state.industry === 'immobilier') return calcImmo()
   const f = FUNNEL[state.industry]
   const mult = getLeadMult()
   const totalLeads = Math.round(f.totalLeads * mult)
@@ -647,6 +648,44 @@ function calc() {
   const monthly  = clients * state.avgValue
   const annual   = monthly * 12
   return { totalLeads, qualLeads, cr, clients, monthly, annual, mult }
+}
+
+// ─────────────────────────────
+// CALC IMMOBILIER — par niveau (0-3)
+// Le ticket moyen détermine le revenu extra
+// ─────────────────────────────
+const IMMO_LEVELS = [
+  { label:'0 vidéo, 0 lead réseau, pas de pubs',     leadsMin:12, leadsMax:20, qualRate:0.40, closingsMin:1, closingsMax:2 },
+  { label:'Vidéos par lui-même, irrégulier',         leadsMin:18, leadsMax:30, qualRate:0.45, closingsMin:1, closingsMax:3 },
+  { label:'Contenu régulier, un peu de traction',    leadsMin:25, leadsMax:40, qualRate:0.50, closingsMin:2, closingsMax:4 },
+  { label:'Contenu + pubs déjà actives',             leadsMin:35, leadsMax:60, qualRate:0.55, closingsMin:3, closingsMax:6 },
+]
+function getImmoLevel() {
+  if (state.video === 'oui' && state.source === 'pubs') return 3
+  if (state.video === 'oui') return 2
+  if (state.video === 'parfois') return 1
+  return 0
+}
+function calcImmo() {
+  const level = getImmoLevel()
+  const L = IMMO_LEVELS[level]
+  // CRM peut bumper d'un niveau le closing (small boost)
+  const crmBoost = state.crm === 'ghl' ? 1 : (state.crm && state.crm !== 'none' ? 0.5 : 0)
+  return {
+    isRange: true,
+    level,
+    levelLabel: L.label,
+    leadsMin: L.leadsMin, leadsMax: L.leadsMax,
+    qualRate: L.qualRate,
+    qualMin: Math.round(L.leadsMin * L.qualRate),
+    qualMax: Math.round(L.leadsMax * L.qualRate),
+    closingsMin: L.closingsMin,
+    closingsMax: L.closingsMax + Math.floor(crmBoost),
+    revenueMin: L.closingsMin * state.avgValue,
+    revenueMax: (L.closingsMax + Math.floor(crmBoost)) * state.avgValue,
+    annualMin: L.closingsMin * state.avgValue * 12,
+    annualMax: (L.closingsMax + Math.floor(crmBoost)) * state.avgValue * 12,
+  }
 }
 
 // ─────────────────────────────
@@ -815,13 +854,32 @@ function animateNumbers(tC, tR, ms) {
 
 function renderPotentiel() {
   const r=calc(); if(!r) return
-  const multPct = Math.round(r.mult * 100)
-  const rows=[
-    {icon:'📥', label:'Leads/mois projetés', val:fmtN(r.totalLeads),  sub:'selon ton profil actuel ('+multPct+'% du potentiel)'},
-    {icon:'✅', label:'Leads qualifiés',     val:fmtN(r.qualLeads),   sub:Math.round(r.qualLeads/Math.max(r.totalLeads,1)*100)+'% du volume'},
-    {icon:'🤝', label:'Clients signés',      val:fmtN(r.clients),     sub:Math.round(r.cr*100)+'% de closing'},
-    {icon:'💰', label:'Revenus/mois',        val:fmtCAD(r.monthly),   sub:'', bold:true},
-  ]
+  let rows, heroLabel, heroBig, heroSub, annualVal
+  if (r.isRange) {
+    // ── IMMOBILIER — affichage par plages ──
+    rows=[
+      {icon:'📥', label:'Leads/mois projetés', val:`${r.leadsMin} à ${r.leadsMax}`, sub:`Niveau ${r.level+1}/4 — ${r.levelLabel}`},
+      {icon:'✅', label:'Leads qualifiés',     val:`${r.qualMin} à ${r.qualMax}`,   sub:Math.round(r.qualRate*100)+'% du volume'},
+      {icon:'🤝', label:'Closings/mois',       val:`${r.closingsMin} à ${r.closingsMax}`, sub:'clients signés'},
+      {icon:'💰', label:'Extra revenu/mois',   val:`${fmtCAD(r.revenueMin)} à ${fmtCAD(r.revenueMax)}`, sub:'', bold:true},
+    ]
+    heroLabel = 'Ton revenu extra mensuel'
+    heroBig   = `${fmtCAD(r.revenueMin)} à ${fmtCAD(r.revenueMax)}`
+    heroSub   = `soit <strong style="color:#fff">${r.closingsMin} à ${r.closingsMax}</strong> closings/mois en plus`
+    annualVal = `${fmtCAD(r.annualMin)} à ${fmtCAD(r.annualMax)}`
+  } else {
+    const multPct = Math.round(r.mult * 100)
+    rows=[
+      {icon:'📥', label:'Leads/mois projetés', val:fmtN(r.totalLeads),  sub:'selon ton profil actuel ('+multPct+'% du potentiel)'},
+      {icon:'✅', label:'Leads qualifiés',     val:fmtN(r.qualLeads),   sub:Math.round(r.qualLeads/Math.max(r.totalLeads,1)*100)+'% du volume'},
+      {icon:'🤝', label:'Clients signés',      val:fmtN(r.clients),     sub:Math.round(r.cr*100)+'% de closing'},
+      {icon:'💰', label:'Revenus/mois',        val:fmtCAD(r.monthly),   sub:'', bold:true},
+    ]
+    heroLabel = 'Ton potentiel mensuel'
+    heroBig   = fmtCAD(0)
+    heroSub   = `soit <strong style="color:#fff" id="anim-clients">0</strong> clients/mois`
+    annualVal = fmtCAD(r.annual)
+  }
 
   const formHTML = state.submitted ? `
     <div class="glass glass--dark col center" style="gap:10px;padding:28px 20px;align-items:center">
@@ -846,9 +904,9 @@ function renderPotentiel() {
 
   document.getElementById('rp-potentiel').innerHTML=`
     <div class="glass glass--dark col center" style="gap:6px;padding:24px 20px">
-      <div class="label">Ton potentiel mensuel</div>
-      <div class="bebas" style="font-size:60px;line-height:1.05;color:#fff" id="anim-revenue">${fmtCAD(0)}</div>
-      <div style="font-size:15px;font-weight:600;color:var(--w60)">soit <strong style="color:#fff" id="anim-clients">0</strong> clients/mois</div>
+      <div class="label">${heroLabel}</div>
+      <div class="bebas" style="font-size:${r.isRange?42:60}px;line-height:1.05;color:#fff" id="anim-revenue">${heroBig}</div>
+      <div style="font-size:15px;font-weight:600;color:var(--w60)">${heroSub}</div>
     </div>
     <div class="glass" style="display:flex;flex-direction:column;gap:0">
       <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:10px">📊 Ton funnel projeté</div>
@@ -859,12 +917,12 @@ function renderPotentiel() {
         </div>`).join('')}
     </div>
     <div class="glass glass--border row between" style="padding:14px 18px">
-      <div class="label">Potentiel annuel</div>
-      <div class="bebas" style="font-size:34px;color:#fff">${fmtCAD(r.annual)}</div>
+      <div class="label">${r.isRange?'Extra revenu annuel':'Potentiel annuel'}</div>
+      <div class="bebas" style="font-size:${r.isRange?22:34}px;color:#fff">${annualVal}</div>
     </div>
     ${formHTML}
   `
-  requestAnimationFrame(()=>animateNumbers(r.clients, r.monthly, 900))
+  if (!r.isRange) requestAnimationFrame(()=>animateNumbers(r.clients, r.monthly, 900))
 }
 
 // ─────────────────────────────
@@ -883,7 +941,7 @@ function handleSubmit() {
     fbq('track', 'Lead', {
       content_name: 'Diagnostic calculateur',
       content_category: FUNNEL[state.industry]?.label || '',
-      value: r?.potentiel_annuel || r?.annual || 0,
+      value: (r?.isRange ? r.annualMax : r?.annual) || 0,
       currency: 'CAD',
     })
   }
@@ -911,9 +969,21 @@ function handleSubmit() {
         // Résultats
         score_visibilite: getVisibilityScore() + '/4',
         solutions_recommandees: recs.map(r=>r.title).join(', '),
-        potentiel_mensuel: r?.monthly,
-        potentiel_annuel:  r?.annual,
-        clients_par_mois:  r?.clients,
+        ...(r?.isRange ? {
+          niveau: (r.level + 1) + '/4',
+          niveau_label: r.levelLabel,
+          leads_mois: `${r.leadsMin}-${r.leadsMax}`,
+          closings_mois: `${r.closingsMin}-${r.closingsMax}`,
+          extra_revenu_mensuel: `${r.revenueMin}-${r.revenueMax}`,
+          extra_revenu_annuel:  `${r.annualMin}-${r.annualMax}`,
+          potentiel_mensuel: r.revenueMax, // pour compat GHL
+          potentiel_annuel:  r.annualMax,
+          clients_par_mois:  r.closingsMax,
+        } : {
+          potentiel_mensuel: r?.monthly,
+          potentiel_annuel:  r?.annual,
+          clients_par_mois:  r?.clients,
+        }),
       })
     }).catch(()=>{})
   }
