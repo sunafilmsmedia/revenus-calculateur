@@ -522,7 +522,6 @@ const FUNNEL = {
   // totalLeads = potentiel max avec système complet — multiplié par le score du profil
   hypothecaire: { label:'Courtier hypothécaire', totalLeads:35, qualRate:0.90, closingRate:0.37, avgMin:1000, avgMax:10000, avgDefault:3000, avgStep:500 },
   immobilier:   { label:'Courtier immobilier',   totalLeads:15, qualRate:0.60, closingRate:0.28, avgMin:5000, avgMax:50000, avgDefault:15000, avgStep:1000 },
-  financier:    { label:'Conseiller financier',  totalLeads:50, qualRate:0.75, closingRate:0.32, avgMin:500,  avgMax:10000, avgDefault:3000,  avgStep:500 },
   autre:        { label:'Autre industrie',        totalLeads:35, qualRate:0.50, closingRate:null, avgMin:500,  avgMax:20000, avgDefault:3000,  avgStep:500 },
 }
 
@@ -734,7 +733,7 @@ function buildRecommendation() {
   } else if (!hasGHL) {
     probs.push(`Tu utilises un CRM, mais GHL intègre les pubs Meta, les landing pages et les automatisations spécifiques au marché immobilier/hypothécaire.`)
     recs.push({ order:1, icon:'🔄', title:'Migration vers GoHighLevel', tag:'RECOMMANDÉ', tagColor:'#FF9500', iconBg:'rgba(255,149,0,0.2)',
-      desc:"On configure ton pipeline selon ta réalité — courtier hypothécaire, immo ou financier. Transition sans perte de données." })
+      desc:"On configure ton pipeline selon ta réalité — courtier hypothécaire ou immobilier. Transition sans perte de données." })
   } else {
     probs.push("Tu as GHL — c'est la bonne base. L'étape suivante est d'y alimenter du trafic qualifié en continu.")
   }
@@ -1045,7 +1044,6 @@ function render() {
     renderOptions('opts-industry',[
       {value:'hypothecaire',icon:'🏠',label:'Courtier hypothécaire',sub:'Prêts, renouvellements, refinancement'},
       {value:'immobilier',  icon:'🏢',label:'Courtier immobilier',  sub:'Achat, vente, investissement'},
-      {value:'financier',   icon:'💼',label:'Conseiller financier', sub:'Planification, assurances, placements'},
       {value:'autre',       icon:'⚡',label:'Autre industrie',       sub:'Autre domaine professionnel'},
     ], state.industry,'industry','btn-industry')
     if(state.industry) document.getElementById('btn-industry')?.classList.remove('btn--disabled')
