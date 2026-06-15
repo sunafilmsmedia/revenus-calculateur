@@ -715,16 +715,16 @@ function calc() {
 const LEVEL_FUNNELS = {
   immobilier: [
     // qualRate = % de leads qui deviennent des évaluations · closingRate = 30% standard
-    { label:'0 vidéo, 0 lead réseau, pas de pubs',       leadsMin:12,  leadsMax:20,  qualRate:0.25,  closingRate:0.30 },
-    { label:'Vidéos par lui-même, irrégulier',           leadsMin:18,  leadsMax:30,  qualRate:0.25,  closingRate:0.30 },
-    { label:'Contenu régulier, un peu de traction',      leadsMin:25,  leadsMax:40,  qualRate:0.25,  closingRate:0.30 },
-    { label:'Contenu + pubs déjà actives',               leadsMin:35,  leadsMax:60,  qualRate:0.25,  closingRate:0.30 },
+    { label:'Pas d\'IA, peu de clients via cette méthode',    leadsMin:8,  leadsMax:15, qualRate:0.25, closingRate:0.30 },
+    { label:'IA basique ou source sociale active',           leadsMin:12, leadsMax:22, qualRate:0.25, closingRate:0.30 },
+    { label:'IA intégrée OU pubs actives',                   leadsMin:20, leadsMax:32, qualRate:0.25, closingRate:0.30 },
+    { label:'IA intégrée + pubs actives',                    leadsMin:30, leadsMax:45, qualRate:0.25, closingRate:0.30 },
   ],
   hypothecaire: [
-    { label:'0 contenu, 0 lead, pas de pubs',            leadsMin:50,  leadsMax:70,  qualRate:0.50,  closingsMin:8,  closingsMax:12 },
-    { label:'Contenu irrégulier / vidéos par lui-même',  leadsMin:80,  leadsMax:110, qualRate:0.55,  closingsMin:12, closingsMax:18 },
-    { label:'Contenu régulier + quelques leads réseaux', leadsMin:110, leadsMax:150, qualRate:0.60,  closingsMin:18, closingsMax:28 },
-    { label:'Contenu + pubs déjà actives + CRM',         leadsMin:150, leadsMax:220, qualRate:0.625, closingsMin:28, closingsMax:45 },
+    { label:'Pas d\'IA, peu de clients via cette méthode',   leadsMin:20,  leadsMax:35,  qualRate:0.50,  closingsMin:3,  closingsMax:5  },
+    { label:'IA basique ou source sociale active',          leadsMin:35,  leadsMax:55,  qualRate:0.55,  closingsMin:5,  closingsMax:8  },
+    { label:'IA intégrée OU pubs actives',                  leadsMin:55,  leadsMax:85,  qualRate:0.60,  closingsMin:8,  closingsMax:13 },
+    { label:'IA intégrée + pubs actives + clients réguliers', leadsMin:85, leadsMax:130, qualRate:0.625, closingsMin:13, closingsMax:20 },
   ],
 }
 function getLevel() {
