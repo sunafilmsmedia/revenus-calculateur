@@ -284,9 +284,58 @@
     .field::placeholder { color: var(--w40); }
     .field:focus { border-color: rgba(255,255,255,0.65); }
 
-    /* ── SCREENS ── */
-    .screen { display: none; }
-    .screen.visible { display: flex; flex-direction: column; gap: 18px; }
+    /* ── SCREENS + TRANSITIONS IA ── */
+    .screen { display: none; position: relative; }
+    .screen.visible {
+      display: flex; flex-direction: column; gap: 18px;
+      animation: ai-glitch-in 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .screen.visible::before {
+      content: '';
+      position: absolute; left: -26px; right: -26px;
+      height: 3px;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.85) 50%, transparent 100%);
+      box-shadow: 0 0 12px rgba(255,255,255,0.5);
+      animation: ai-scanline 0.55s ease-out forwards;
+      pointer-events: none; z-index: 10;
+    }
+    @keyframes ai-glitch-in {
+      0%   { opacity: 0; transform: translateY(12px); filter: blur(6px); }
+      30%  { opacity: 0.5; filter: blur(3px) brightness(1.15); }
+      50%  { opacity: 1; filter: blur(2px); transform: translateY(2px); }
+      75%  { filter: blur(0.5px) brightness(1.05); }
+      100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+    }
+    @keyframes ai-scanline {
+      0%   { top: 0; opacity: 1; }
+      80%  { opacity: 0.6; }
+      100% { top: 100%; opacity: 0; }
+    }
+
+    /* ── LOGO (top-left, sur les écrans de questions) ── */
+    .logo-bar {
+      position: relative; z-index: 5;
+      display: flex; align-items: center; gap: 8px;
+      padding: 18px 26px 12px;
+    }
+    .logo-bar a { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .logo-mark {
+      width: 26px; height: 26px;
+      background: var(--white);
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--orange);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 18px;
+      letter-spacing: -0.02em;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .logo-text {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 14px;
+      letter-spacing: 0.14em;
+      color: var(--white);
+    }
 
     @media (max-width: 520px) {
       body { padding: 0 0 48px; }
@@ -305,7 +354,12 @@
 <body>
 <div class="calc" id="calc">
 
-  <div class="brand" id="brand" style="display:none"><a href="https://sunafilmsmedia.com" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">Suna Films Media</a></div>
+  <div class="logo-bar" id="brand" style="display:none">
+    <a href="https://sunafilmsmedia.com" target="_blank" rel="noopener">
+      <span class="logo-mark">S</span>
+      <span class="logo-text">SUNA FILMS MEDIA</span>
+    </a>
+  </div>
 
   <!-- ════ INTRO ════ -->
   <div class="screen" id="screen-intro">
@@ -379,34 +433,34 @@
         <div class="row between"><span class="small" id="prog-leads"></span><button class="btn-ghost" onclick="goBack()">← Retour</button></div>
         <div id="pb-leads" class="progress-bar"></div>
       </div>
-      <h2 class="bebas h2">Combien de leads via les réseaux ce mois-ci?</h2>
+      <div><h2 class="bebas h2">Combien de clients te génère cette méthode par mois?</h2><p class="small" style="margin-top:6px" id="leads-subtitle">Estimation moyenne — mensuelle</p></div>
       <div class="glass col center" style="gap:4px;padding:24px">
         <div class="bebas big-num" id="leads-display">0</div>
-        <div class="small">lead<span id="leads-plural"></span> ce mois</div>
+        <div class="small">client<span id="leads-plural"></span>/mois</div>
       </div>
       <div>
         <div class="slider-wrap">
           <div class="slider-track"></div><div class="slider-fill" id="leads-fill"></div>
           <div class="slider-thumb" id="leads-thumb"></div>
-          <input type="range" class="slider-input" id="leads-slider" min="0" max="15" step="1" value="0" oninput="onLeadsChange(this.value)"/>
+          <input type="range" class="slider-input" id="leads-slider" min="0" max="10" step="1" value="0" oninput="onLeadsChange(this.value)"/>
         </div>
-        <div class="slider-labels"><span class="tiny">0</span><span class="tiny">15+</span></div>
+        <div class="slider-labels"><span class="tiny">0</span><span class="tiny">10+</span></div>
       </div>
       <div id="leads-callout"></div>
       <button class="btn btn--primary" onclick="goNext()">Continuer →</button>
     </div>
   </div>
 
-  <!-- ════ VIDEO ════ -->
-  <div class="screen" id="screen-video">
+  <!-- ════ LOCATION ════ -->
+  <div class="screen" id="screen-location">
     <div class="calc-inner col">
       <div class="col--sm">
-        <div class="row between"><span class="small" id="prog-video"></span><button class="btn-ghost" onclick="goBack()">← Retour</button></div>
-        <div id="pb-video" class="progress-bar"></div>
+        <div class="row between"><span class="small" id="prog-location"></span><button class="btn-ghost" onclick="goBack()">← Retour</button></div>
+        <div id="pb-location" class="progress-bar"></div>
       </div>
-      <h2 class="bebas h2">Publies-tu du contenu vidéo pour ton business?</h2>
-      <div class="col--sm" id="opts-video"></div>
-      <button class="btn btn--primary btn--disabled" id="btn-video" onclick="goNext()">Continuer →</button>
+      <div><h2 class="bebas h2">Où es-tu situé?</h2><p class="small" style="margin-top:6px">On adapte nos recommandations selon ta région</p></div>
+      <div class="col--sm" id="opts-location"></div>
+      <button class="btn btn--primary btn--disabled" id="btn-location" onclick="goNext()">Continuer →</button>
     </div>
   </div>
 
@@ -507,7 +561,7 @@
 // ─────────────────────────────
 const state = {
   step: 'intro',
-  industry: null, source: null, socialLeads: 0, video: null,
+  industry: null, source: null, socialLeads: 0, location: null,
   closingRate: 30, avgValue: 3000,
   ai: null, challenge: null,
   resultsPage: 'diagnostic',
@@ -525,8 +579,8 @@ const FUNNEL = {
   autre:        { label:'Autre industrie',        totalLeads:35, qualRate:0.50, closingRate:null, avgMin:500,  avgMax:20000, avgDefault:3000,  avgStep:500 },
 }
 
-const STEPS_BASE  = ['intro','industry','source','leads','video','value','ai','challenge','results']
-const STEPS_AUTRE = ['intro','industry','source','leads','video','closing','value','ai','challenge','results']
+const STEPS_BASE  = ['intro','industry','source','leads','location','value','ai','challenge','results']
+const STEPS_AUTRE = ['intro','industry','source','leads','location','closing','value','ai','challenge','results']
 function getSteps() { return state.industry === 'autre' ? STEPS_AUTRE : STEPS_BASE }
 function getQSteps() { return getSteps().filter(s => s !== 'intro' && s !== 'results') }
 
@@ -562,7 +616,7 @@ function onLeadsChange(v) {
   state.socialLeads=+v
   document.getElementById('leads-display').textContent=v
   document.getElementById('leads-plural').textContent=v==1?'':'s'
-  updateSlider('leads-fill','leads-thumb',+v,0,15)
+  updateSlider('leads-fill','leads-thumb',+v,0,10)
   renderLeadsCallout()
 }
 function onClosingChange(v) {
@@ -617,8 +671,8 @@ function renderOptions(containerId, options, current, stateKey, btnId) {
 function renderLeadsCallout() {
   const el=document.getElementById('leads-callout'); if(!el) return
   const v=state.socialLeads
-  if(v===0) el.innerHTML=`<div class="callout">😬 <strong style="color:#fff">Tu n'es pas seul</strong> — la majorité des professionnels ne génèrent aucun lead via les réseaux. C'est exactement ce qu'on règle.</div>`
-  else if(v<5) el.innerHTML=`<div class="callout">📈 <strong style="color:#fff">C'est un début</strong> — avec un système structuré, nos clients génèrent 15–40 leads qualifiés/mois.</div>`
+  if(v===0) el.innerHTML=`<div class="callout">😬 <strong style="color:#fff">Tu n'es pas seul</strong> — la majorité des professionnels ne closent aucun client via cette méthode. C'est ce qu'on règle.</div>`
+  else if(v<3) el.innerHTML=`<div class="callout">📈 <strong style="color:#fff">C'est un début</strong> — avec un système structuré, nos clients atteignent 3 à 6+ clients/mois.</div>`
   else el.innerHTML=''
 }
 
@@ -630,11 +684,11 @@ function renderLeadsCallout() {
 // ─────────────────────────────
 function getLeadMult() {
   let m = 0.25 // base — part de zéro, système non structuré
-  if (state.video === 'oui')     m += 0.25 // contenu régulier = audience existante
-  else if (state.video === 'parfois') m += 0.10
+  if (state.ai === 'integre')    m += 0.20 // IA intégrée = système mature
+  else if (state.ai === 'basique') m += 0.05
   if (state.source === 'pubs')   m += 0.25 // déjà en pub = mindset digital
   else if (state.source === 'social') m += 0.15
-  if (state.socialLeads >= 5)    m += 0.15 // traction existante
+  if (state.socialLeads >= 3)    m += 0.20 // traction existante (clients/mois)
   return Math.min(m, 1.0)
 }
 
@@ -647,7 +701,7 @@ function calc() {
   const qualLeads  = Math.round(totalLeads * f.qualRate)
   let cr = state.industry === 'autre' ? state.closingRate/100 : f.closingRate
   if (state.ai === 'integre')          cr = Math.min(cr + 0.05, 0.65)
-  else if (state.ai === 'service')     cr = Math.min(cr + 0.02, 0.65)
+  else if (state.ai === 'basique')     cr = Math.min(cr + 0.02, 0.65)
   const clients = Math.round(qualLeads * cr)
   const monthly  = clients * state.avgValue
   const annual   = monthly * 12
@@ -674,15 +728,16 @@ const LEVEL_FUNNELS = {
   ],
 }
 function getLevel() {
-  if (state.video === 'oui' && state.source === 'pubs') return 3
-  if (state.video === 'oui') return 2
-  if (state.video === 'parfois') return 1
+  // Niveau basé sur IA + source (proxy de maturité du système)
+  if (state.ai === 'integre' && state.source === 'pubs') return 3
+  if (state.ai === 'integre' || state.source === 'pubs') return 2
+  if (state.ai === 'basique' || state.source === 'social') return 1
   return 0
 }
 function calcLevel(industry) {
   const level = getLevel()
   const L = LEVEL_FUNNELS[industry][level]
-  const aiBoost = state.ai === 'integre' ? 1 : (state.ai === 'service' ? 0.5 : 0)
+  const aiBoost = state.ai === 'integre' ? 1 : (state.ai === 'basique' ? 0.3 : 0)
   const qualMin = Math.round(L.leadsMin * L.qualRate)
   const qualMax = Math.round(L.leadsMax * L.qualRate)
   let closingsMin, closingsMax
@@ -716,9 +771,9 @@ function calcLevel(industry) {
 function getVisibilityScore() {
   let s=0
   if(state.source==='social'||state.source==='pubs') s++
-  if(state.socialLeads>=5) s++
-  if(state.video==='oui') s++
-  if(state.ai==='service'||state.ai==='integre') s++
+  if(state.socialLeads>=3) s++
+  if(state.ai==='basique'||state.ai==='integre') s++
+  if(state.ai==='integre') s++ // intégration profonde = bonus
   return s
 }
 
@@ -738,23 +793,19 @@ function buildRecommendation() {
     probs.push("Tu utilises l'IA en surface — comme un Google amélioré. Le vrai gain vient quand elle est branchée à ton CRM et tes leads.")
     recs.push({ order:1, icon:'🤖', title:'CRM + agents IA (GoHighLevel)', tag:'PRIORITÉ', tagColor:'#FF5F00', iconBg:'rgba(255,95,0,0.2)',
       desc:"On passe d'une utilisation basique de ChatGPT à un système d'IA intégré : qualification auto, nurturing par SMS/email, prises de RDV." })
-  } else if (state.ai === 'service') {
-    probs.push("Tu utilises l'IA pour gagner du temps — bonne base. La prochaine étape : la connecter à ton pipeline pour qualifier et closer plus vite.")
-    recs.push({ order:1, icon:'⚡', title:'Intégration IA + pipeline', tag:'OPTIMISATION', tagColor:'#FF9500', iconBg:'rgba(255,149,0,0.2)',
-      desc:"On branche l'IA à ton CRM pour automatiser le qualifying, le scoring des leads et les séquences de nurture." })
   } else {
     probs.push("Tu as une IA intégrée — c'est la bonne base. L'étape suivante est d'y alimenter du trafic qualifié en continu.")
   }
 
-  // ── CONTENU ──
-  if (state.video === 'non' || state.video === 'parfois') {
-    probs.push("Peu ou pas de contenu vidéo — impossible de bâtir ta crédibilité et d'attirer des leads qui te connaissent déjà avant d'appeler.")
+  // ── CONTENU (toujours recommandé sauf si déjà en pubs) ──
+  if (state.source !== 'pubs') {
+    probs.push("Sans système de contenu vidéo régulier, impossible de bâtir ta crédibilité et d'attirer des leads qui te connaissent déjà avant d'appeler.")
     recs.push({ order:2, icon:'🎬', title:'Système de contenu mensuel', tag:'FONDATION', tagColor:'#34C759', iconBg:'rgba(52,199,89,0.2)',
       desc:"10–20 vidéos/mois, 1 tournage de 3h. On script, on tourne, on monte. Tu te présentes — on s'occupe du reste." })
   }
 
   // ── ADS ──
-  if (state.socialLeads < 5 || (state.source !== 'pubs' && state.source !== 'social')) {
+  if (state.socialLeads < 3 || (state.source !== 'pubs' && state.source !== 'social')) {
     probs.push("Tu n'as pas de système publicitaire actif — pendant ce temps, tes concurrents capturent les leads que tu aurais pu avoir.")
     recs.push({ order:3, icon:'📢', title:'Campagnes Meta Ads', tag:'ACCÉLÉRATEUR', tagColor:'#5AC8FA', iconBg:'rgba(90,200,250,0.15)',
       desc:"2–3 campagnes ciblées → 120 000 vues/mois → leads qualifiés à 12–26$/lead. Le carburant de tout le système." })
@@ -788,12 +839,12 @@ function renderDiagnostic() {
   const criteria = [
     { label:'Source de clients', ok: state.source==='social'||state.source==='pubs',
       detail: (state.source==='social'||state.source==='pubs')?'Canaux digitaux actifs':'Dépendance aux références / réseau' },
-    { label:'Inbound via réseaux', ok: state.socialLeads>=5,
-      detail: state.socialLeads>=5?`${state.socialLeads} leads ce mois — bonne traction`:`Seulement ${state.socialLeads} lead${state.socialLeads>1?'s':''} ce mois` },
-    { label:'Contenu vidéo', ok: state.video==='oui',
-      detail: state.video==='oui'?'Publié régulièrement ✓':state.video==='parfois'?'Publication irrégulière':'Aucun contenu vidéo' },
-    { label:'Utilisation de l\'IA', ok: state.ai==='service'||state.ai==='integre',
-      detail: state.ai==='integre'?'IA intégrée dans le système ✓':state.ai==='service'?'Utilisée comme assistant — à optimiser':state.ai==='basique'?'Utilisation surface (style Google)':'Aucune utilisation de l\'IA' },
+    { label:'Clients/mois via cette méthode', ok: state.socialLeads>=3,
+      detail: state.socialLeads>=3?`${state.socialLeads} clients/mois — bonne traction`:`Seulement ${state.socialLeads} client${state.socialLeads>1?'s':''}/mois` },
+    { label:'Utilisation de l\'IA', ok: state.ai==='basique'||state.ai==='integre',
+      detail: state.ai==='integre'?'IA intégrée dans le système ✓':state.ai==='basique'?'Utilisation basique (style Google)':'Aucune utilisation de l\'IA' },
+    { label:'IA intégrée au business', ok: state.ai==='integre',
+      detail: state.ai==='integre'?'Automatisations + agents actifs ✓':'Pas d\'intégration IA dans le pipeline' },
   ]
 
   const cHTML = criteria.map(c=>`
@@ -830,7 +881,8 @@ function renderDiagnostic() {
 // ─────────────────────────────
 // RENDER: MON SYSTÈME
 // ─────────────────────────────
-const AI_LABELS = { aucun:'Aucune utilisation', basique:'Basique — comme un Google amélioré', service:'Pour m\'aider dans mon service', integre:'Intégrée dans mon système' }
+const AI_LABELS  = { aucun:'Aucune utilisation', basique:'Basique — comme un Google amélioré', integre:'Intégrée dans mon système' }
+const LOCATION_LABELS = { montreal:'Montréal', rive_nord:'Rive Nord', laurentides:'Laurentides', rive_sud:'Rive Sud', estrie:'Estrie / Magog', quebec:'Québec', autre_region:'Autre région' }
 const CHALLENGE_LABELS = { visibility:'Manque de visibilité', ads_dont_work:"Mes pubs ne marchent pas", start:'Je ne sais pas par où commencer' }
 
 function renderSysteme() {
@@ -978,7 +1030,6 @@ function handleSubmit() {
     const r=calc()
     const { probs, recs } = buildRecommendation()
     const SOURCE_LABELS = { references:'Références clients', reseau:'Réseau personnel', social:'Réseaux sociaux', pubs:'Publicités payantes', prospection:'Prospection directe' }
-    const VIDEO_LABELS  = { non:'Non', parfois:'Parfois / irrégulièrement', oui:'Oui, régulièrement' }
     fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
         // Contact
@@ -989,8 +1040,8 @@ function handleSubmit() {
         // Réponses quiz
         industrie:        FUNNEL[state.industry]?.label,
         source_clients:   SOURCE_LABELS[state.source] || state.source,
-        leads_sociaux:    state.socialLeads,
-        contenu_video:    VIDEO_LABELS[state.video] || state.video,
+        clients_actuels:  state.socialLeads,
+        localisation:     LOCATION_LABELS[state.location] || state.location,
         utilisation_ia:   AI_LABELS[state.ai] || state.ai,
         defi_principal:   CHALLENGE_LABELS[state.challenge] || state.challenge,
         valeur_client:    state.avgValue,
@@ -1038,13 +1089,13 @@ function setResultsPage(page) {
 // ─────────────────────────────
 function render() {
   const step=state.step
-  ;['intro','industry','source','leads','video','closing','value','ai','challenge','results'].forEach(s=>{
+  ;['intro','industry','source','leads','location','closing','value','ai','challenge','results'].forEach(s=>{
     const el=document.getElementById('screen-'+s)
     if(el) el.className='screen'+(s===step?' visible':'')
   })
 
   const brand=document.getElementById('brand')
-  brand.style.display=(step==='intro'||step==='results')?'block':'none'
+  brand.style.display = step==='intro' ? 'none' : 'flex'
 
   if(step!=='intro'&&step!=='results') renderProgress('pb-'+step,'prog-'+step,step)
 
@@ -1073,17 +1124,27 @@ function render() {
     document.getElementById('leads-display').textContent=v
     document.getElementById('leads-plural').textContent=v==1?'':'s'
     document.getElementById('leads-slider').value=v
-    updateSlider('leads-fill','leads-thumb',v,0,15)
+    updateSlider('leads-fill','leads-thumb',v,0,10)
+    // Subtitle dynamique selon la source
+    const sub=document.getElementById('leads-subtitle')
+    if(sub) {
+      const methodLabel = {references:'des références clients',reseau:'de ton réseau personnel',social:'des réseaux sociaux',pubs:'des publicités payantes',prospection:'de la prospection directe'}[state.source]||'cette méthode'
+      sub.textContent = `Combien de clients tu signes en moyenne par mois grâce à ${methodLabel}?`
+    }
     renderLeadsCallout()
   }
 
-  if(step==='video') {
-    renderOptions('opts-video',[
-      {value:'non',    icon:'🚫',label:'Non, pas du tout',         sub:'Aucun contenu vidéo publié'},
-      {value:'parfois',icon:'📹',label:'Parfois / irrégulièrement',sub:'Quelques publications sans système'},
-      {value:'oui',    icon:'🎬',label:'Oui, régulièrement',       sub:'Contenu publié chaque semaine'},
-    ], state.video,'video','btn-video')
-    if(state.video) document.getElementById('btn-video')?.classList.remove('btn--disabled')
+  if(step==='location') {
+    renderOptions('opts-location',[
+      {value:'montreal',     icon:'🏙',label:'Montréal',          sub:'Métropole'},
+      {value:'rive_nord',    icon:'🌳',label:'Rive Nord',         sub:'Laval, Terrebonne, Repentigny'},
+      {value:'laurentides',  icon:'⛰',label:'Laurentides',       sub:'Saint-Sauveur, Mont-Tremblant, etc.'},
+      {value:'rive_sud',     icon:'🌉',label:'Rive Sud',          sub:'Brossard, Longueuil, Boucherville'},
+      {value:'estrie',       icon:'🏞',label:'Estrie / Magog',    sub:'Sherbrooke, Magog, Cantons'},
+      {value:'quebec',       icon:'🏰',label:'Québec',            sub:'Ville de Québec et alentours'},
+      {value:'autre_region', icon:'📍',label:'Autre région',      sub:'Ailleurs au Québec'},
+    ], state.location,'location','btn-location')
+    if(state.location) document.getElementById('btn-location')?.classList.remove('btn--disabled')
   }
 
   if(step==='closing') {
@@ -1106,8 +1167,7 @@ function render() {
     renderOptions('opts-ai',[
       {value:'aucun',    icon:'❌',label:'Pas du tout',         sub:'Je ne l\'utilise jamais'},
       {value:'basique',  icon:'🔍',label:'Comme tout le monde', sub:'Un peu comme Google amélioré (ChatGPT)'},
-      {value:'service',  icon:'💡',label:'Pour m\'aider',       sub:'Rédaction, emails, contenu, idées'},
-      {value:'integre',  icon:'🤖',label:'Intégrée dans mon système', sub:'Automations, agents IA, qualifications'},
+      {value:'integre',  icon:'🤖',label:'Intégrée dans mon business', sub:'Dans mes relances, des parties de mon service, automations'},
     ], state.ai,'ai','btn-ai')
     if(state.ai) document.getElementById('btn-ai')?.classList.remove('btn--disabled')
   }
