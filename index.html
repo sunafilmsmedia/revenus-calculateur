@@ -213,16 +213,42 @@
     .option__title { font-size: 14px; font-weight: 700; }
     .option__sub { font-size: 11px; opacity: 0.6; margin-top: 2px; }
 
-    /* ── SLIDER ── */
-    .slider-wrap { position: relative; width: 100%; height: 44px; display: flex; align-items: center; }
-    .slider-track { position: absolute; left: 0; right: 0; height: 4px; border-radius: 2px; background: var(--w25); }
-    .slider-fill { position: absolute; left: 0; height: 4px; border-radius: 2px; background: var(--white); }
-    .slider-thumb { position: absolute; width: 26px; height: 26px; border-radius: 50%; background: var(--white); box-shadow: 0 2px 12px rgba(0,0,0,0.3), 0 0 0 3px rgba(255,255,255,0.3); pointer-events: none; }
-    .slider-input { position: absolute; width: 100%; height: 44px; opacity: 0; cursor: pointer; z-index: 2; }
-    input[type=range] { -webkit-appearance: none; appearance: none; background: transparent; }
-    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 1px; height: 1px; }
-    input[type=range]::-moz-range-thumb { width: 1px; height: 1px; opacity: 0; border: none; }
-    .slider-labels { display: flex; justify-content: space-between; margin-top: 4px; }
+    /* ── STEPPER ── */
+    .stepper-row { display: flex; align-items: center; justify-content: center; gap: 18px; }
+    .step-btn {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      border: 2px solid var(--w25);
+      background: var(--blk25);
+      color: var(--white);
+      font-size: 28px; font-weight: 500; line-height: 1;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s ease;
+      flex-shrink: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .step-btn:hover { background: var(--white); color: var(--orange); border-color: var(--white); }
+    .step-btn:active { transform: scale(0.92); }
+    .step-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+    .step-input {
+      font-family: 'Bebas Neue', sans-serif;
+      color: var(--white);
+      background: transparent;
+      border: none; outline: none;
+      text-align: center;
+      letter-spacing: 0.03em;
+      line-height: 1;
+      width: 100%;
+      max-width: 220px;
+      padding: 0;
+      caret-color: var(--white);
+    }
+    .step-input::placeholder { color: var(--w40); }
+    .step-input:focus { color: var(--white); }
+    .step-input--num { font-size: 86px; }
+    .step-input--md  { font-size: 56px; }
+    .step-range-hint { font-size: 11px; color: var(--w40); margin-top: 6px; text-align: center; }
 
     /* ── GLASS ── */
     .glass { background: var(--blk15); border-radius: 14px; padding: 16px; border: 1px solid var(--w08); }
@@ -434,17 +460,14 @@
         <div id="pb-leads" class="progress-bar"></div>
       </div>
       <div><h2 class="bebas h2">Combien de clients te génère cette méthode par mois?</h2><p class="small" style="margin-top:6px" id="leads-subtitle">Estimation moyenne — mensuelle</p></div>
-      <div class="glass col center" style="gap:4px;padding:24px">
-        <div class="bebas big-num" id="leads-display">0</div>
-        <div class="small">client<span id="leads-plural"></span>/mois</div>
-      </div>
-      <div>
-        <div class="slider-wrap">
-          <div class="slider-track"></div><div class="slider-fill" id="leads-fill"></div>
-          <div class="slider-thumb" id="leads-thumb"></div>
-          <input type="range" class="slider-input" id="leads-slider" min="0" max="10" step="1" value="0" oninput="onLeadsChange(this.value)"/>
+      <div class="glass col center" style="gap:10px;padding:24px">
+        <div class="stepper-row">
+          <button type="button" class="step-btn" onclick="stepLeads(-1)">−</button>
+          <input class="step-input step-input--num" id="leads-display" type="text" inputmode="numeric" value="0" oninput="onLeadsInput(this.value)" onblur="onLeadsBlur()" />
+          <button type="button" class="step-btn" onclick="stepLeads(1)">+</button>
         </div>
-        <div class="slider-labels"><span class="tiny">0</span><span class="tiny">10+</span></div>
+        <div class="small">client<span id="leads-plural"></span>/mois</div>
+        <div class="step-range-hint">de 0 à 10+ · Tape ou utilise les boutons</div>
       </div>
       <div id="leads-callout"></div>
       <button class="btn btn--primary" onclick="goNext()">Continuer →</button>
@@ -472,17 +495,17 @@
         <div id="pb-closing" class="progress-bar"></div>
       </div>
       <div><h2 class="bebas h2">Quel est ton taux de closing habituel?</h2><p class="small" style="margin-top:6px">Sur 100 prospects qualifiés, combien deviennent clients?</p></div>
-      <div class="glass col center" style="gap:4px;padding:24px">
-        <div class="bebas big-num" id="closing-display">30%</div>
-        <div class="small">des leads convertis</div>
-      </div>
-      <div>
-        <div class="slider-wrap">
-          <div class="slider-track"></div><div class="slider-fill" id="closing-fill"></div>
-          <div class="slider-thumb" id="closing-thumb"></div>
-          <input type="range" class="slider-input" id="closing-slider" min="5" max="70" step="5" value="30" oninput="onClosingChange(this.value)"/>
+      <div class="glass col center" style="gap:10px;padding:24px">
+        <div class="stepper-row">
+          <button type="button" class="step-btn" onclick="stepClosing(-5)">−</button>
+          <div class="row" style="align-items:baseline;gap:4px">
+            <input class="step-input step-input--num" id="closing-display" type="text" inputmode="numeric" value="30" oninput="onClosingInput(this.value)" onblur="onClosingBlur()" style="width:auto;min-width:120px" />
+            <span class="bebas" style="font-size:60px;color:var(--white);line-height:1">%</span>
+          </div>
+          <button type="button" class="step-btn" onclick="stepClosing(5)">+</button>
         </div>
-        <div class="slider-labels"><span class="tiny">5%</span><span class="tiny">70%</span></div>
+        <div class="small">des leads convertis</div>
+        <div class="step-range-hint">de 5% à 70% · Pas de 5%</div>
       </div>
       <button class="btn btn--primary" onclick="goNext()">Continuer →</button>
     </div>
@@ -496,17 +519,14 @@
         <div id="pb-value" class="progress-bar"></div>
       </div>
       <div><h2 class="bebas h2">Quelle est ta valeur moyenne par client?</h2><p class="small" style="margin-top:6px">Commission ou revenu moyen par dossier / mandat</p></div>
-      <div class="glass col center" style="gap:4px;padding:24px">
-        <div class="bebas big-num-md" id="value-display">3 000 $</div>
-        <div class="small">par client</div>
-      </div>
-      <div>
-        <div class="slider-wrap">
-          <div class="slider-track"></div><div class="slider-fill" id="value-fill"></div>
-          <div class="slider-thumb" id="value-thumb"></div>
-          <input type="range" class="slider-input" id="value-slider" oninput="onValueChange(this.value)"/>
+      <div class="glass col center" style="gap:10px;padding:24px">
+        <div class="stepper-row">
+          <button type="button" class="step-btn" onclick="stepValue(-1)">−</button>
+          <input class="step-input step-input--md" id="value-display" type="text" inputmode="numeric" value="3 000 $" oninput="onValueInput(this.value)" onblur="onValueBlur()" style="width:auto;min-width:180px" />
+          <button type="button" class="step-btn" onclick="stepValue(1)">+</button>
         </div>
-        <div class="slider-labels"><span class="tiny" id="value-min-label"></span><span class="tiny" id="value-max-label"></span></div>
+        <div class="small">par client</div>
+        <div class="step-range-hint" id="value-range-hint"></div>
       </div>
       <button class="btn btn--primary" onclick="goNext()">Continuer →</button>
     </div>
@@ -605,31 +625,65 @@ function goBack() {
 }
 
 // ─────────────────────────────
-// SLIDERS
+// STEPPERS — clients/mois (leads)
 // ─────────────────────────────
-function updateSlider(fillId, thumbId, value, min, max) {
-  const pct = ((value-min)/(max-min))*100
-  document.getElementById(fillId).style.width = pct+'%'
-  document.getElementById(thumbId).style.left = 'calc('+pct+'% - 13px)'
+const LEADS_MIN = 0, LEADS_MAX = 10
+function stepLeads(delta) {
+  const next = clamp(state.socialLeads + delta, LEADS_MIN, LEADS_MAX)
+  setLeads(next)
 }
-function onLeadsChange(v) {
-  state.socialLeads=+v
-  document.getElementById('leads-display').textContent=v
-  document.getElementById('leads-plural').textContent=v==1?'':'s'
-  updateSlider('leads-fill','leads-thumb',+v,0,10)
+function onLeadsInput(v) {
+  const num = parseInt(String(v).replace(/\D/g,'')) || 0
+  state.socialLeads = clamp(num, LEADS_MIN, LEADS_MAX)
+  document.getElementById('leads-plural').textContent = state.socialLeads==1?'':'s'
   renderLeadsCallout()
 }
-function onClosingChange(v) {
-  state.closingRate=+v
-  document.getElementById('closing-display').textContent=v+'%'
-  updateSlider('closing-fill','closing-thumb',+v,5,70)
+function onLeadsBlur() { setLeads(state.socialLeads) }
+function setLeads(v) {
+  state.socialLeads = clamp(v, LEADS_MIN, LEADS_MAX)
+  const el = document.getElementById('leads-display'); if(el) el.value = state.socialLeads
+  const pl = document.getElementById('leads-plural'); if(pl) pl.textContent = state.socialLeads==1?'':'s'
+  renderLeadsCallout()
 }
-function onValueChange(v) {
-  state.avgValue=+v
-  document.getElementById('value-display').textContent=fmtCAD(+v)
-  const f=FUNNEL[state.industry]
-  updateSlider('value-fill','value-thumb',+v,f.avgMin,f.avgMax)
+
+// ─────────────────────────────
+// STEPPERS — closing rate
+// ─────────────────────────────
+const CLOSING_MIN = 5, CLOSING_MAX = 70
+function stepClosing(delta) { setClosing(state.closingRate + delta) }
+function onClosingInput(v) {
+  const num = parseInt(String(v).replace(/\D/g,'')) || 0
+  state.closingRate = clamp(num, CLOSING_MIN, CLOSING_MAX)
 }
+function onClosingBlur() { setClosing(state.closingRate) }
+function setClosing(v) {
+  state.closingRate = clamp(v, CLOSING_MIN, CLOSING_MAX)
+  const el = document.getElementById('closing-display'); if(el) el.value = state.closingRate
+}
+
+// ─────────────────────────────
+// STEPPERS — valeur moyenne ($)
+// ─────────────────────────────
+function stepValue(direction) {
+  if(!state.industry) return
+  const f = FUNNEL[state.industry]
+  setValue(state.avgValue + direction * f.avgStep)
+}
+function onValueInput(v) {
+  const num = parseInt(String(v).replace(/\D/g,'')) || 0
+  if(!state.industry) return
+  const f = FUNNEL[state.industry]
+  state.avgValue = clamp(num, f.avgMin, f.avgMax)
+}
+function onValueBlur() { setValue(state.avgValue) }
+function setValue(v) {
+  if(!state.industry) return
+  const f = FUNNEL[state.industry]
+  state.avgValue = clamp(v, f.avgMin, f.avgMax)
+  const el = document.getElementById('value-display'); if(el) el.value = fmtCAD(state.avgValue)
+}
+
+function clamp(v, min, max) { return Math.max(min, Math.min(max, v)) }
 
 // ─────────────────────────────
 // PROGRESS
@@ -1128,18 +1182,12 @@ function render() {
   }
 
   if(step==='leads') {
-    const v=state.socialLeads
-    document.getElementById('leads-display').textContent=v
-    document.getElementById('leads-plural').textContent=v==1?'':'s'
-    document.getElementById('leads-slider').value=v
-    updateSlider('leads-fill','leads-thumb',v,0,10)
-    // Subtitle dynamique selon la source
+    setLeads(state.socialLeads)
     const sub=document.getElementById('leads-subtitle')
     if(sub) {
       const methodLabel = {references:'des références clients',reseau:'de ton réseau personnel',social:'des réseaux sociaux',pubs:'des publicités payantes',prospection:'de la prospection directe'}[state.source]||'cette méthode'
       sub.textContent = `Combien de clients tu signes en moyenne par mois grâce à ${methodLabel}?`
     }
-    renderLeadsCallout()
   }
 
   if(step==='location') {
@@ -1156,19 +1204,14 @@ function render() {
   }
 
   if(step==='closing') {
-    document.getElementById('closing-display').textContent=state.closingRate+'%'
-    document.getElementById('closing-slider').value=state.closingRate
-    updateSlider('closing-fill','closing-thumb',state.closingRate,5,70)
+    setClosing(state.closingRate)
   }
 
   if(step==='value'&&state.industry) {
+    setValue(state.avgValue)
     const f=FUNNEL[state.industry]
-    const sl=document.getElementById('value-slider')
-    sl.min=f.avgMin; sl.max=f.avgMax; sl.step=f.avgStep; sl.value=state.avgValue
-    document.getElementById('value-display').textContent=fmtCAD(state.avgValue)
-    document.getElementById('value-min-label').textContent=fmtCAD(f.avgMin)
-    document.getElementById('value-max-label').textContent=fmtCAD(f.avgMax)
-    updateSlider('value-fill','value-thumb',state.avgValue,f.avgMin,f.avgMax)
+    const hint=document.getElementById('value-range-hint')
+    if(hint) hint.textContent = `de ${fmtCAD(f.avgMin)} à ${fmtCAD(f.avgMax)} · Pas de ${fmtCAD(f.avgStep)}`
   }
 
   if(step==='ai') {
