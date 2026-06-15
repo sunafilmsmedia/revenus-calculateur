@@ -821,9 +821,17 @@ function buildRecommendation() {
     probs.push("Ne pas savoir par où commencer, c'est souvent vouloir tout faire en même temps. On a une séquence testée qui fonctionne.")
   }
   if (state.challenge === 'ads_dont_work') {
-    probs.push("Des pubs qui ne fonctionnent pas, c'est presque toujours un problème de contenu, de ciblage ou de landing page — pas de budget.")
-    recs.push({ order:2.5, icon:'🎯', title:'Audit de tes campagnes actuelles', tag:'DIAGNOSTIC', tagColor:'#FF9500', iconBg:'rgba(255,149,0,0.15)',
+    probs.push("Quand les efforts marketing ne convertissent pas, c'est presque toujours un problème de contenu, de ciblage ou de landing page — pas de budget.")
+    recs.push({ order:2.5, icon:'🎯', title:'Audit de ton marketing actuel', tag:'DIAGNOSTIC', tagColor:'#FF9500', iconBg:'rgba(255,149,0,0.15)',
       desc:"On analyse tes créatifs, ton ciblage et ta page de destination pour identifier exactement ce qui bloque la conversion." })
+  }
+  if (state.challenge === 'system') {
+    probs.push("Un système manuel = des leads qui passent entre les craques, et toi qui plafonnes parce que tu fais tout toi-même.")
+    recs.push({ order:1.5, icon:'⚡', title:'Automation IA + relances intelligentes', tag:'AUTOMATISATION', tagColor:'#AF52DE', iconBg:'rgba(175,82,222,0.15)',
+      desc:"Agents IA qui qualifient tes leads, séquences de relance automatiques, prises de RDV. Tu te concentres sur le closing." })
+  }
+  if (state.challenge === 'visibility') {
+    probs.push("Si personne ne te connaît dans ta région, tu dépends des clients qui te trouvent par hasard — zéro contrôle.")
   }
 
   recs.sort((a,b)=>a.order-b.order)
@@ -883,7 +891,7 @@ function renderDiagnostic() {
 // ─────────────────────────────
 const AI_LABELS  = { aucun:'Aucune utilisation', basique:'Basique — comme un Google amélioré', integre:'Intégrée dans mon système' }
 const LOCATION_LABELS = { montreal:'Montréal', rive_nord:'Rive Nord', laurentides:'Laurentides', rive_sud:'Rive Sud', estrie:'Estrie / Magog', quebec:'Québec', autre_region:'Autre région' }
-const CHALLENGE_LABELS = { visibility:'Manque de visibilité', ads_dont_work:"Mes pubs ne marchent pas", start:'Je ne sais pas par où commencer' }
+const CHALLENGE_LABELS = { visibility:'Manque de visibilité dans ma région', ads_dont_work:"Mes efforts ne convertissent pas", system:'Système non optimisé (manuel, sans IA)', start:'Je ne sais pas par où commencer' }
 
 function renderSysteme() {
   const { recs } = buildRecommendation()
@@ -1174,8 +1182,9 @@ function render() {
 
   if(step==='challenge') {
     renderOptions('opts-challenge',[
-      {value:'visibility',    icon:'👻',label:'Manque de visibilité',           sub:"Personne ne me connaît en ligne"},
-      {value:'ads_dont_work', icon:'📉',label:"Mes pubs ne marchent pas",       sub:"J'investis mais je ne vois pas de résultats"},
+      {value:'visibility',    icon:'👻',label:'Manque de visibilité',           sub:"Trop peu de gens me connaissent dans ma région"},
+      {value:'ads_dont_work', icon:'🎯',label:"Mes efforts ne convertissent pas", sub:"Pubs ou actions actuelles = peu de clients qualifiés"},
+      {value:'system',        icon:'🤖',label:'Mon système n\'est pas optimisé', sub:'Je gère tout à la main, aucune automation/IA'},
       {value:'start',         icon:'🧭',label:'Je ne sais pas par où commencer',sub:'Trop d\'options, besoin d\'une feuille de route'},
     ], state.challenge,'challenge','btn-challenge')
     if(state.challenge) document.getElementById('btn-challenge')?.classList.remove('btn--disabled')
