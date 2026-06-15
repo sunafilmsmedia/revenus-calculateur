@@ -458,19 +458,19 @@
     </div>
   </div>
 
-  <!-- ════ CRM ════ -->
-  <div class="screen" id="screen-crm">
+  <!-- ════ AI ════ -->
+  <div class="screen" id="screen-ai">
     <div class="calc-inner col">
       <div class="col--sm">
-        <div class="row between"><span class="small" id="prog-crm"></span><button class="btn-ghost" onclick="goBack()">← Retour</button></div>
-        <div id="pb-crm" class="progress-bar"></div>
+        <div class="row between"><span class="small" id="prog-ai"></span><button class="btn-ghost" onclick="goBack()">← Retour</button></div>
+        <div id="pb-ai" class="progress-bar"></div>
       </div>
       <div>
-        <h2 class="bebas h2">Utilises-tu un CRM pour suivre tes leads?</h2>
-        <p class="small" style="margin-top:6px">Un CRM = système de gestion de tes prospects et clients</p>
+        <h2 class="bebas h2">Comment utilises-tu l'IA dans ton business?</h2>
+        <p class="small" style="margin-top:6px">Sois honnête — ça indique le niveau d'optimisation de ton système</p>
       </div>
-      <div class="col--sm" id="opts-crm"></div>
-      <button class="btn btn--primary btn--disabled" id="btn-crm" onclick="goNext()">Continuer →</button>
+      <div class="col--sm" id="opts-ai"></div>
+      <button class="btn btn--primary btn--disabled" id="btn-ai" onclick="goNext()">Continuer →</button>
     </div>
   </div>
 
@@ -509,7 +509,7 @@ const state = {
   step: 'intro',
   industry: null, source: null, socialLeads: 0, video: null,
   closingRate: 30, avgValue: 3000,
-  crm: null, challenge: null,
+  ai: null, challenge: null,
   resultsPage: 'diagnostic',
   form: { nom: '', telephone: '', email: '', entreprise: '' },
   submitted: false,
@@ -525,8 +525,8 @@ const FUNNEL = {
   autre:        { label:'Autre industrie',        totalLeads:35, qualRate:0.50, closingRate:null, avgMin:500,  avgMax:20000, avgDefault:3000,  avgStep:500 },
 }
 
-const STEPS_BASE  = ['intro','industry','source','leads','video','value','crm','challenge','results']
-const STEPS_AUTRE = ['intro','industry','source','leads','video','closing','value','crm','challenge','results']
+const STEPS_BASE  = ['intro','industry','source','leads','video','value','ai','challenge','results']
+const STEPS_AUTRE = ['intro','industry','source','leads','video','closing','value','ai','challenge','results']
 function getSteps() { return state.industry === 'autre' ? STEPS_AUTRE : STEPS_BASE }
 function getQSteps() { return getSteps().filter(s => s !== 'intro' && s !== 'results') }
 
@@ -540,10 +540,12 @@ function fmtN(n)   { return new Intl.NumberFormat('fr-CA').format(Math.round(n))
 // NAV
 // ─────────────────────────────
 function goNext() {
+  if(autoAdvanceTimer) { clearTimeout(autoAdvanceTimer); autoAdvanceTimer = null }
   const steps = getSteps(), idx = steps.indexOf(state.step)
   if (idx < steps.length - 1) { state.step = steps[idx+1]; render() }
 }
 function goBack() {
+  if(autoAdvanceTimer) { clearTimeout(autoAdvanceTimer); autoAdvanceTimer = null }
   const steps = getSteps(), idx = steps.indexOf(state.step)
   if (idx > 0) { state.step = steps[idx-1]; render() }
 }
@@ -589,6 +591,7 @@ function renderProgress(pbId, progId, step) {
 // ─────────────────────────────
 // OPTIONS
 // ─────────────────────────────
+let autoAdvanceTimer = null
 function renderOptions(containerId, options, current, stateKey, btnId) {
   const c=document.getElementById(containerId); c.innerHTML=''
   options.forEach(opt=>{
@@ -600,6 +603,9 @@ function renderOptions(containerId, options, current, stateKey, btnId) {
       if(stateKey==='industry') state.avgValue=FUNNEL[opt.value].avgDefault
       renderOptions(containerId,options,opt.value,stateKey,btnId)
       if(btnId) document.getElementById(btnId)?.classList.remove('btn--disabled')
+      // Auto-advance — laisse le temps de voir la sélection
+      if(autoAdvanceTimer) clearTimeout(autoAdvanceTimer)
+      autoAdvanceTimer = setTimeout(()=>{ if(state[stateKey]===opt.value) goNext() }, 650)
     }
     c.appendChild(d)
   })
@@ -640,8 +646,8 @@ function calc() {
   const totalLeads = Math.round(f.totalLeads * mult)
   const qualLeads  = Math.round(totalLeads * f.qualRate)
   let cr = state.industry === 'autre' ? state.closingRate/100 : f.closingRate
-  if (state.crm === 'ghl')               cr = Math.min(cr + 0.05, 0.65)
-  else if (state.crm && state.crm !== 'none') cr = Math.min(cr + 0.02, 0.65)
+  if (state.ai === 'integre')          cr = Math.min(cr + 0.05, 0.65)
+  else if (state.ai === 'service')     cr = Math.min(cr + 0.02, 0.65)
   const clients = Math.round(qualLeads * cr)
   const monthly  = clients * state.avgValue
   const annual   = monthly * 12
@@ -676,18 +682,18 @@ function getLevel() {
 function calcLevel(industry) {
   const level = getLevel()
   const L = LEVEL_FUNNELS[industry][level]
-  const crmBoost = state.crm === 'ghl' ? 1 : (state.crm && state.crm !== 'none' ? 0.5 : 0)
+  const aiBoost = state.ai === 'integre' ? 1 : (state.ai === 'service' ? 0.5 : 0)
   const qualMin = Math.round(L.leadsMin * L.qualRate)
   const qualMax = Math.round(L.leadsMax * L.qualRate)
   let closingsMin, closingsMax
   if (L.closingRate != null) {
     // Mode taux de closing dynamique (immobilier)
     closingsMin = Math.max(1, Math.round(qualMin * L.closingRate))
-    closingsMax = Math.round(qualMax * L.closingRate) + Math.floor(crmBoost)
+    closingsMax = Math.round(qualMax * L.closingRate) + Math.floor(aiBoost)
   } else {
     // Mode closings explicites (hypothécaire — L3 inclut "+ CRM")
     closingsMin = L.closingsMin
-    closingsMax = L.closingsMax + Math.round(crmBoost * 2)
+    closingsMax = L.closingsMax + Math.round(aiBoost * 2)
   }
   return {
     isRange: true,
@@ -712,6 +718,7 @@ function getVisibilityScore() {
   if(state.source==='social'||state.source==='pubs') s++
   if(state.socialLeads>=5) s++
   if(state.video==='oui') s++
+  if(state.ai==='service'||state.ai==='integre') s++
   return s
 }
 
@@ -722,20 +729,21 @@ function buildRecommendation() {
   const probs = []
   const recs  = []
 
-  const hasCRM = state.crm && state.crm !== 'none'
-  const hasGHL = state.crm === 'ghl'
-
-  // ── CRM ──
-  if (!hasCRM) {
-    probs.push("Aucun CRM — tes leads disparaissent après le premier contact. Tu laisses de l'argent sur la table à chaque conversation.")
-    recs.push({ order:1, icon:'🔧', title:'GoHighLevel (GHL)', tag:'PRIORITÉ', tagColor:'#FF5F00', iconBg:'rgba(255,95,0,0.2)',
-      desc:"Pipeline automatisé, relances, nurturing et landing pages dans un seul système. Le choix #1 de nos clients courtiers au Québec." })
-  } else if (!hasGHL) {
-    probs.push(`Tu utilises un CRM, mais GHL intègre les pubs Meta, les landing pages et les automatisations spécifiques au marché immobilier/hypothécaire.`)
-    recs.push({ order:1, icon:'🔄', title:'Migration vers GoHighLevel', tag:'RECOMMANDÉ', tagColor:'#FF9500', iconBg:'rgba(255,149,0,0.2)',
-      desc:"On configure ton pipeline selon ta réalité — courtier hypothécaire ou immobilier. Transition sans perte de données." })
+  // ── IA / SYSTÈME ──
+  if (state.ai === 'aucun') {
+    probs.push("L'IA n'est pas dans ton business — tu fais à la main ce que des concurrents automatisent déjà. Tu perds du temps et des leads.")
+    recs.push({ order:1, icon:'🤖', title:'Système CRM + IA (GoHighLevel)', tag:'PRIORITÉ', tagColor:'#FF5F00', iconBg:'rgba(255,95,0,0.2)',
+      desc:"Pipeline, relances et agents IA dans un seul système. On configure des agents qui qualifient et nurturent tes leads 24/7." })
+  } else if (state.ai === 'basique') {
+    probs.push("Tu utilises l'IA en surface — comme un Google amélioré. Le vrai gain vient quand elle est branchée à ton CRM et tes leads.")
+    recs.push({ order:1, icon:'🤖', title:'CRM + agents IA (GoHighLevel)', tag:'PRIORITÉ', tagColor:'#FF5F00', iconBg:'rgba(255,95,0,0.2)',
+      desc:"On passe d'une utilisation basique de ChatGPT à un système d'IA intégré : qualification auto, nurturing par SMS/email, prises de RDV." })
+  } else if (state.ai === 'service') {
+    probs.push("Tu utilises l'IA pour gagner du temps — bonne base. La prochaine étape : la connecter à ton pipeline pour qualifier et closer plus vite.")
+    recs.push({ order:1, icon:'⚡', title:'Intégration IA + pipeline', tag:'OPTIMISATION', tagColor:'#FF9500', iconBg:'rgba(255,149,0,0.2)',
+      desc:"On branche l'IA à ton CRM pour automatiser le qualifying, le scoring des leads et les séquences de nurture." })
   } else {
-    probs.push("Tu as GHL — c'est la bonne base. L'étape suivante est d'y alimenter du trafic qualifié en continu.")
+    probs.push("Tu as une IA intégrée — c'est la bonne base. L'étape suivante est d'y alimenter du trafic qualifié en continu.")
   }
 
   // ── CONTENU ──
@@ -784,8 +792,8 @@ function renderDiagnostic() {
       detail: state.socialLeads>=5?`${state.socialLeads} leads ce mois — bonne traction`:`Seulement ${state.socialLeads} lead${state.socialLeads>1?'s':''} ce mois` },
     { label:'Contenu vidéo', ok: state.video==='oui',
       detail: state.video==='oui'?'Publié régulièrement ✓':state.video==='parfois'?'Publication irrégulière':'Aucun contenu vidéo' },
-    { label:'Système CRM', ok: state.crm&&state.crm!=='none',
-      detail: state.crm==='ghl'?'GoHighLevel configuré ✓':state.crm&&state.crm!=='none'?`${CRM_LABELS[state.crm]} — migratable vers GHL`:'Aucun CRM — leads non suivis' },
+    { label:'Utilisation de l\'IA', ok: state.ai==='service'||state.ai==='integre',
+      detail: state.ai==='integre'?'IA intégrée dans le système ✓':state.ai==='service'?'Utilisée comme assistant — à optimiser':state.ai==='basique'?'Utilisation surface (style Google)':'Aucune utilisation de l\'IA' },
   ]
 
   const cHTML = criteria.map(c=>`
@@ -822,7 +830,7 @@ function renderDiagnostic() {
 // ─────────────────────────────
 // RENDER: MON SYSTÈME
 // ─────────────────────────────
-const CRM_LABELS = { none:'Aucun', ghl:'GoHighLevel', hubspot:'HubSpot', pipedrive:'Pipedrive/Salesforce', autre:'Autre CRM' }
+const AI_LABELS = { aucun:'Aucune utilisation', basique:'Basique — comme un Google amélioré', service:'Pour m\'aider dans mon service', integre:'Intégrée dans mon système' }
 const CHALLENGE_LABELS = { visibility:'Manque de visibilité', ads_dont_work:"Mes pubs ne marchent pas", start:'Je ne sais pas par où commencer' }
 
 function renderSysteme() {
@@ -983,7 +991,7 @@ function handleSubmit() {
         source_clients:   SOURCE_LABELS[state.source] || state.source,
         leads_sociaux:    state.socialLeads,
         contenu_video:    VIDEO_LABELS[state.video] || state.video,
-        crm:              CRM_LABELS[state.crm] || state.crm,
+        utilisation_ia:   AI_LABELS[state.ai] || state.ai,
         defi_principal:   CHALLENGE_LABELS[state.challenge] || state.challenge,
         valeur_client:    state.avgValue,
         // Résultats
@@ -1030,7 +1038,7 @@ function setResultsPage(page) {
 // ─────────────────────────────
 function render() {
   const step=state.step
-  ;['intro','industry','source','leads','video','closing','value','crm','challenge','results'].forEach(s=>{
+  ;['intro','industry','source','leads','video','closing','value','ai','challenge','results'].forEach(s=>{
     const el=document.getElementById('screen-'+s)
     if(el) el.className='screen'+(s===step?' visible':'')
   })
@@ -1094,15 +1102,14 @@ function render() {
     updateSlider('value-fill','value-thumb',state.avgValue,f.avgMin,f.avgMax)
   }
 
-  if(step==='crm') {
-    renderOptions('opts-crm',[
-      {value:'none',     icon:'❌',label:'Aucun CRM',           sub:'Je gère dans Excel, papier ou messages'},
-      {value:'ghl',      icon:'⚡',label:'GoHighLevel (GHL)',   sub:'Le plus complet pour les courtiers'},
-      {value:'hubspot',  icon:'🟠',label:'HubSpot',             sub:'CRM marketing populaire'},
-      {value:'pipedrive',icon:'🔵',label:'Pipedrive / Salesforce', sub:'CRM orienté ventes'},
-      {value:'autre',    icon:'🔧',label:'Autre CRM',            sub:'Autre système de gestion'},
-    ], state.crm,'crm','btn-crm')
-    if(state.crm) document.getElementById('btn-crm')?.classList.remove('btn--disabled')
+  if(step==='ai') {
+    renderOptions('opts-ai',[
+      {value:'aucun',    icon:'❌',label:'Pas du tout',         sub:'Je ne l\'utilise jamais'},
+      {value:'basique',  icon:'🔍',label:'Comme tout le monde', sub:'Un peu comme Google amélioré (ChatGPT)'},
+      {value:'service',  icon:'💡',label:'Pour m\'aider',       sub:'Rédaction, emails, contenu, idées'},
+      {value:'integre',  icon:'🤖',label:'Intégrée dans mon système', sub:'Automations, agents IA, qualifications'},
+    ], state.ai,'ai','btn-ai')
+    if(state.ai) document.getElementById('btn-ai')?.classList.remove('btn--disabled')
   }
 
   if(step==='challenge') {
