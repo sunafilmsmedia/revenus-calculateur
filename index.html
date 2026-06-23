@@ -620,20 +620,6 @@
     </div>
   </div>
 
-  <!-- ════ EMAIL CAPTURE ════ -->
-  <div class="screen" id="screen-email">
-    <div class="calc-inner col">
-      <div style="text-align:center;padding-top:8px">
-        <div style="font-size:48px;margin-bottom:8px">✨</div>
-        <h2 class="bebas h2">Ton plan personnalisé est prêt</h2>
-        <p class="small" style="margin-top:8px;line-height:1.6">Entre ton courriel pour recevoir ton plan personnalisé<br/>+ voir ton potentiel.</p>
-      </div>
-      <input class="field" type="email" placeholder="ton@email.com" id="f-email" oninput="state.form.email=this.value;updateEmailBtn()" />
-      <button class="btn btn--primary btn--disabled" id="btn-email" onclick="submitEmail()" style="margin:0 auto;max-width:340px">Voir mon potentiel →</button>
-      <p class="tiny">Tes informations restent confidentielles</p>
-    </div>
-  </div>
-
   <!-- ════ CALCULATING (animation 2s) ════ -->
   <div class="screen" id="screen-calculating">
     <div class="calc-inner col center" style="gap:24px;padding-top:60px;padding-bottom:60px;align-items:center">
@@ -679,7 +665,7 @@ const state = {
   avgValue: 3000,       // Q5
   ai: null, challenge: null,
   qualified: null,
-  form: { email: '' },
+  form: { nom: '', telephone: '', email: '' },
   submitted: false,
 }
 
@@ -716,7 +702,7 @@ function getVolumeConfig() {
            unit: 'clients/mois' }
 }
 
-const STEPS = ['intro','industry','source','leads','location','value','ai','challenge','email','calculating','result','video']
+const STEPS = ['intro','industry','source','leads','location','value','ai','challenge','calculating','result','video']
 function getSteps() { return STEPS }
 function getQSteps() {
   // Étapes "questions" pour le compteur de progression (exclut les écrans finaux)
@@ -926,16 +912,34 @@ function buildRecommendation() {
 }
 
 // ─────────────────────────────
-// RENDER: EMAIL CAPTURE
+// CALCULATING (déclenché quand on entre dans cet écran)
 // ─────────────────────────────
-function updateEmailBtn() {
-  const btn = document.getElementById('btn-email'); if(!btn) return
-  const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.form.email||'')
-  btn.classList.toggle('btn--disabled', !ok)
-}
-function submitEmail() {
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.form.email||'')) return
+let calculatingTimer = null
+function startCalculating() {
+  if(calculatingTimer) clearTimeout(calculatingTimer)
   state.qualified = isQualified()
+  calculatingTimer = setTimeout(()=>{
+    state.step = state.qualified ? 'result' : 'video'
+    render()
+  }, 2000)
+}
+
+// ─────────────────────────────
+// CONTACT FORM (sur l'écran résultat)
+// ─────────────────────────────
+function updateContactBtn() {
+  const btn = document.getElementById('btn-contact'); if(!btn) return
+  const nomOk   = (state.form.nom||'').trim().length >= 2
+  const telOk   = (state.form.telephone||'').replace(/\D/g,'').length >= 10
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.form.email||'')
+  btn.classList.toggle('btn--disabled', !(nomOk && telOk && emailOk))
+}
+function submitContactForm() {
+  const nomOk   = (state.form.nom||'').trim().length >= 2
+  const telOk   = (state.form.telephone||'').replace(/\D/g,'').length >= 10
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.form.email||'')
+  if(!(nomOk && telOk && emailOk)) return
+  state.submitted = true
   // Meta Pixel
   if(window.fbq) {
     const r = calc()
@@ -946,7 +950,7 @@ function submitEmail() {
       currency: 'CAD',
     })
   }
-  // Webhook GHL
+  // Webhook GHL — TOUTES les données + contact
   const url=document.querySelector('meta[name="webhook-url"]')?.content
   if(url) {
     const r = calc()
@@ -954,7 +958,9 @@ function submitEmail() {
     const SOURCE_LABELS = { references:'Références clients', reseau:'Réseau personnel', social:'Réseaux sociaux', pubs:'Publicités payantes', prospection:'Prospection directe' }
     fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
+        prenom:          state.form.nom,
         email:           state.form.email,
+        telephone:       state.form.telephone,
         industrie:       FUNNEL[state.industry]?.label,
         source_clients:  SOURCE_LABELS[state.source] || state.source,
         volume_actuel:   state.volume,
@@ -973,13 +979,7 @@ function submitEmail() {
       })
     }).catch(()=>{})
   }
-  // Animation calc → puis routing vers result ou video
-  state.step = 'calculating'
-  render()
-  setTimeout(()=>{
-    state.step = state.qualified ? 'result' : 'video'
-    render()
-  }, 2000)
+  renderResult()
 }
 
 // ─────────────────────────────
@@ -1001,13 +1001,34 @@ function renderResult() {
     ? `<strong style="color:#fff">${r.closingsMin}</strong> closing${r.closingsMin>1?'s':''}/mois en plus`
     : `<strong style="color:#fff">${r.closingsMin} à ${r.closingsMax}</strong> closings/mois en plus`
 
+  const formHTML = state.submitted ? `
+    <div class="glass glass--dark col center" style="gap:10px;padding:28px 20px;align-items:center">
+      <div style="font-size:52px">🎉</div>
+      <h3 class="bebas h3">Ton plan arrive!</h3>
+      <p class="body" style="text-align:center;font-size:14px">On t'envoie ton plan personnalisé par courriel sous 24h. Tu vas aussi recevoir un texto pour planifier ton appel stratégique.</p>
+    </div>
+    <a href="https://sunafilmsmedia.com" target="_blank" rel="noopener" class="btn btn--primary" style="margin:0 auto;max-width:340px">Retour au site →</a>
+  ` : `
+    <div class="glass" style="display:flex;flex-direction:column;gap:12px;padding:20px">
+      <div style="text-align:center">
+        <h3 class="bebas h3" style="margin-bottom:6px">Ton plan personnalisé arrive</h3>
+        <p class="small">Ton plan personnalisé pour atteindre ces résultats va être envoyé à ces coordonnées :</p>
+      </div>
+      <input class="field" type="text"  placeholder="Ton nom complet"  id="f-nom"   autocomplete="name"        oninput="state.form.nom=this.value;updateContactBtn()" />
+      <input class="field" type="email" placeholder="Ton courriel"      id="f-email" autocomplete="email"       oninput="state.form.email=this.value;updateContactBtn()" />
+      <input class="field" type="tel"   placeholder="Ton téléphone"     id="f-tel"   autocomplete="tel"         oninput="state.form.telephone=this.value;updateContactBtn()" />
+      <button class="btn btn--primary btn--disabled" id="btn-contact" onclick="submitContactForm()" style="margin:6px auto 0;max-width:340px">Recevoir mon plan personnalisé →</button>
+      <p class="tiny">Aucun spam · Tes informations restent confidentielles</p>
+    </div>
+  `
+
   document.getElementById('result-body').innerHTML=`
     <div style="text-align:center">
       <h2 class="bebas h2" style="font-size:34px">Voici ton potentiel</h2>
-      <p class="small" style="margin-top:6px">On t'envoie ton plan personnalisé par courriel. En attendant, voici ton potentiel.</p>
+      <p class="small" style="margin-top:6px">Avec notre système, voici brièvement combien tu pourrais générer en plus :</p>
     </div>
     <div class="glass glass--dark col center" style="gap:6px;padding:24px 20px">
-      <div class="label">Ton revenu extra mensuel</div>
+      <div class="label">Revenu extra par mois</div>
       <div class="bebas" style="font-size:42px;line-height:1.05;color:#fff">${heroBig}</div>
       <div style="font-size:15px;font-weight:600;color:var(--w60)">soit ${closingsLabel}</div>
     </div>
@@ -1020,11 +1041,10 @@ function renderResult() {
         </div>`).join('')}
     </div>
     <div class="glass glass--border row between" style="padding:14px 18px">
-      <div class="label">Extra revenu annuel</div>
+      <div class="label">Sur 12 mois, ça fait</div>
       <div class="bebas" style="font-size:22px;color:#fff">${rangeCAD(r.annualMin, r.annualMax)}</div>
     </div>
-    <a href="https://sunafilmsmedia.com" target="_blank" rel="noopener" class="btn btn--primary" style="margin:0 auto;max-width:340px">Réserve ton appel stratégique →</a>
-    <p class="tiny">Ces chiffres sont des estimations basées sur tes réponses</p>
+    ${formHTML}
   `
 }
 
@@ -1040,7 +1060,7 @@ const CHALLENGE_LABELS = { visibility:'Manque de visibilité dans ma région', a
 // ─────────────────────────────
 function render() {
   const step=state.step
-  ;['intro','industry','source','leads','location','value','ai','challenge','email','calculating','result','video'].forEach(s=>{
+  ;['intro','industry','source','leads','location','value','ai','challenge','calculating','result','video'].forEach(s=>{
     const el=document.getElementById('screen-'+s)
     if(el) el.className='screen'+(s===step?' visible':'')
   })
@@ -1122,8 +1142,8 @@ function render() {
     if(state.challenge) document.getElementById('btn-challenge')?.classList.remove('btn--disabled')
   }
 
-  if(step==='email') updateEmailBtn()
-  if(step==='result') renderResult()
+  if(step==='calculating') startCalculating()
+  if(step==='result') { renderResult(); updateContactBtn() }
 
   window.scrollTo({top:0,behavior:'smooth'})
 }
