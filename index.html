@@ -593,6 +593,20 @@
     </div>
   </div>
 
+  <!-- ════ NOT QUALIFIED (redirection /potentiel) ════ -->
+  <div class="screen" id="screen-notqualified">
+    <div class="result-screen">
+      <div class="result-lbl">ON A MIEUX POUR TOI</div>
+      <div class="result-script">Petite mise au point</div>
+      <h2 class="anton" style="font-size:42px;margin:18px 0 16px;line-height:1.05">CE NIVEAU<br/>N'EST PAS ENCORE<br/>POUR TOI</h2>
+      <p class="result-desc" id="notqual-reason">Notre système est conçu pour les courtiers qui ont déjà du volume. Avant de t'embarquer là-dedans, on t'a préparé une ressource pour t'aider à bâtir ta base.</p>
+
+      <a href="https://sunafilmsmedia.com/potentiel" target="_blank" rel="noopener" class="btn">VOIR LA RESSOURCE GRATUITE →</a>
+
+      <button class="result-restart" onclick="restart()">↺ Recommencer le quiz</button>
+    </div>
+  </div>
+
   <!-- ════ RESULT ════ -->
   <div class="screen" id="screen-result">
     <div class="result-screen">
@@ -722,7 +736,7 @@ let autoAdvanceTimer = null
 // ─────────────────────────────
 function showScreen(name, back) {
   state.view = name
-  ;['intro','question','loading','result'].forEach(n => {
+  ;['intro','question','loading','result','notqualified'].forEach(n => {
     const el = document.getElementById('screen-'+n)
     if (!el) return
     el.classList.remove('visible','back')
@@ -734,6 +748,23 @@ function showScreen(name, back) {
   document.getElementById('topbar').style.display = name === 'intro' ? 'flex' : 'none'
   document.getElementById('qlogo').style.display = (name === 'question' || name === 'loading') ? 'flex' : 'none'
   window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+// ─────────────────────────────
+// QUALIFICATION (gates)
+// ─────────────────────────────
+function isQualified() {
+  const a = state.answers
+  // Gate 1 : Je démarre (moins d'un an) → non qualifié
+  if (a.years === 'less1') return { ok: false, reason:'years' }
+  // Gate 2 : Hypothécaire avec faible volume → non qualifié (besoin 6+/mois)
+  if (a.industry === 'hypothecaire' && a.clients !== 'high' && a.clients !== 'top') return { ok: false, reason:'volume' }
+  // Immobilier 0-2 clients = OK (ticket élevé)
+  return { ok: true }
+}
+const NOTQUAL_REASONS = {
+  years:  "Notre système amène le meilleur retour quand t'as déjà une base de clients établie. Pendant que tu bâtis ta première année, on t'a préparé une ressource gratuite pour bien démarrer.",
+  volume: "Pour un courtier hypothécaire, notre système devient vraiment rentable à partir de 6+ dossiers/mois. Voici une ressource gratuite pour t'aider à augmenter ton volume d'abord.",
 }
 
 // ─────────────────────────────
@@ -754,14 +785,43 @@ function goNext() {
     renderQuestion()
     showScreen('question')
   } else {
-    // Last question — go to loading then result
+    // Last question — loading, puis route selon qualification
     showScreen('loading')
     setTimeout(() => {
-      state.amount = calcMoneyOnTable()
-      renderResult()
-      showScreen('result')
+      const q = isQualified()
+      if (q.ok) {
+        state.amount = calcMoneyOnTable()
+        renderResult()
+        showScreen('result')
+      } else {
+        state.notqualReason = q.reason
+        document.getElementById('notqual-reason').textContent = NOTQUAL_REASONS[q.reason]
+        // Webhook GHL pour les non qualifiés aussi (segmentation)
+        sendNotQualifiedWebhook(q.reason)
+        showScreen('notqualified')
+      }
     }, 1600)
   }
+}
+
+function sendNotQualifiedWebhook(reason) {
+  const url = document.querySelector('meta[name="webhook-url"]')?.content
+  if (!url) return
+  fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      qualifie:         'NON',
+      raison_disqual:   reason === 'years' ? 'Moins d\'un an en affaires' : 'Hypothécaire — volume insuffisant',
+      industrie:        LABELS.industry[state.answers.industry],
+      annees_affaires:  LABELS.years[state.answers.years],
+      clients_mois:     LABELS.clients[state.answers.clients],
+      acquisition:      LABELS.acquisition[state.answers.acquisition],
+      systeme_suivi:    LABELS.system[state.answers.system],
+      defi_principal:   LABELS.challenge[state.answers.challenge],
+      objectif_revenus: LABELS.goal[state.answers.goal],
+    })
+  }).catch(()=>{})
 }
 
 function goBack() {
@@ -928,6 +988,7 @@ function submitForm() {
         prenom:                 state.form.nom,
         email:                  state.form.email,
         telephone:              state.form.telephone,
+        qualifie:               'OUI',
         industrie:              LABELS.industry[state.answers.industry],
         annees_affaires:        LABELS.years[state.answers.years],
         clients_mois:           LABELS.clients[state.answers.clients],
