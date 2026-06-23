@@ -461,30 +461,46 @@
     .screen { display: none; }
     .screen.visible {
       display: block;
-      animation: slide-in 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+      animation: slide-in 0.32s cubic-bezier(0.22, 1, 0.36, 1);
     }
-    .screen.visible.back { animation: slide-in-back 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
+    .screen.visible.back { animation: slide-in-back 0.32s cubic-bezier(0.22, 1, 0.36, 1); }
     @keyframes slide-in {
-      0%   { opacity: 0; transform: translateX(28px); filter: blur(4px); }
-      100% { opacity: 1; transform: translateX(0); filter: blur(0); }
+      0%   { opacity: 0; transform: translateX(20px); }
+      100% { opacity: 1; transform: translateX(0); }
     }
     @keyframes slide-in-back {
-      0%   { opacity: 0; transform: translateX(-28px); filter: blur(4px); }
-      100% { opacity: 1; transform: translateX(0); filter: blur(0); }
+      0%   { opacity: 0; transform: translateX(-20px); }
+      100% { opacity: 1; transform: translateX(0); }
     }
 
-    /* Options cascade animation */
+    /* Inner content swap — anime juste le titre + options entre questions */
+    .q-wrapper.swap-in {
+      animation: q-swap-in 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .q-wrapper.swap-in-back {
+      animation: q-swap-in-back 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    @keyframes q-swap-in {
+      0%   { opacity: 0; transform: translateX(16px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes q-swap-in-back {
+      0%   { opacity: 0; transform: translateX(-16px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+
+    /* Options cascade — plus rapide */
     .opt {
       opacity: 0;
-      animation: opt-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      animation: opt-in 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
-    .opt:nth-child(1) { animation-delay: 0.10s; }
-    .opt:nth-child(2) { animation-delay: 0.18s; }
-    .opt:nth-child(3) { animation-delay: 0.26s; }
-    .opt:nth-child(4) { animation-delay: 0.34s; }
+    .opt:nth-child(1) { animation-delay: 0.04s; }
+    .opt:nth-child(2) { animation-delay: 0.09s; }
+    .opt:nth-child(3) { animation-delay: 0.14s; }
+    .opt:nth-child(4) { animation-delay: 0.19s; }
     @keyframes opt-in {
-      0%   { opacity: 0; transform: translateY(10px); filter: blur(3px); }
-      100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+      0%   { opacity: 0; transform: translateY(8px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
 
     /* Result counter pulse on appear */
@@ -578,8 +594,10 @@
   <div class="screen" id="screen-question">
     <span class="q-counter" id="q-counter">QUESTION 1 / 7</span>
     <div class="progress" id="progress"></div>
-    <h2 class="q-title" id="q-title"></h2>
-    <div class="options" id="options"></div>
+    <div class="q-wrapper" id="q-wrapper">
+      <h2 class="q-title" id="q-title"></h2>
+      <div class="options" id="options"></div>
+    </div>
     <button class="btn btn--disabled" id="btn-continue" onclick="goNext()">CONTINUER →</button>
     <button class="back-link" onclick="goBack()">← Retour</button>
   </div>
@@ -735,19 +753,30 @@ let autoAdvanceTimer = null
 // SCREEN MGMT
 // ─────────────────────────────
 function showScreen(name, back) {
+  const prev = state.view
   state.view = name
   ;['intro','question','loading','result','notqualified'].forEach(n => {
     const el = document.getElementById('screen-'+n)
     if (!el) return
-    el.classList.remove('visible','back')
     if (n === name) {
-      el.classList.add('visible')
-      if (back) el.classList.add('back')
+      const wasVisible = el.classList.contains('visible')
+      if (!wasVisible) {
+        // Première fois qu'on montre cet écran — animer la transition
+        el.classList.remove('back')
+        el.classList.add('visible')
+        if (back) el.classList.add('back')
+      }
+      // Si déjà visible, on ne re-déclenche pas l'animation de screen
+      // (renderQuestion gère l'animation du contenu interne)
+    } else {
+      el.classList.remove('visible','back')
     }
   })
   document.getElementById('topbar').style.display = name === 'intro' ? 'flex' : 'none'
   document.getElementById('qlogo').style.display = (name === 'question' || name === 'loading') ? 'flex' : 'none'
-  window.scrollTo({ top: 0, behavior: 'smooth' })
+  // Scroll instantané pour ne pas avoir l'effet "loading" entre questions
+  const instant = (prev === name)
+  window.scrollTo({ top: 0, behavior: instant ? 'instant' : 'smooth' })
 }
 
 // ─────────────────────────────
@@ -782,7 +811,7 @@ function goNext() {
   if (!state.answers[q.key]) return
   if (state.qIndex < QUESTIONS.length - 1) {
     state.qIndex++
-    renderQuestion()
+    renderQuestion('forward')
     showScreen('question')
   } else {
     // Last question — loading, puis route selon qualification
@@ -831,7 +860,7 @@ function goBack() {
     return
   }
   state.qIndex--
-  renderQuestion()
+  renderQuestion('back')
   showScreen('question', true)
 }
 
@@ -851,7 +880,7 @@ function restart() {
 // ─────────────────────────────
 // RENDER QUESTION
 // ─────────────────────────────
-function renderQuestion() {
+function renderQuestion(direction) {
   const q = QUESTIONS[state.qIndex]
   document.getElementById('q-counter').textContent = `QUESTION ${state.qIndex+1} / 7`
 
@@ -862,6 +891,14 @@ function renderQuestion() {
     const seg = document.createElement('div')
     seg.className = 'progress-seg' + (i < state.qIndex ? ' done' : i === state.qIndex ? ' current' : '')
     progEl.appendChild(seg)
+  }
+
+  // Animer le swap interne (titre + options) — seulement entre questions
+  const wrapper = document.getElementById('q-wrapper')
+  if (wrapper && direction) {
+    wrapper.classList.remove('swap-in', 'swap-in-back')
+    void wrapper.offsetWidth // force reflow
+    wrapper.classList.add(direction === 'back' ? 'swap-in-back' : 'swap-in')
   }
 
   document.getElementById('q-title').textContent = q.title
@@ -885,7 +922,7 @@ function renderQuestion() {
       state.answers[q.key] = opt.value
       renderQuestion()
       if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer)
-      autoAdvanceTimer = setTimeout(() => { if (state.answers[q.key] === opt.value) goNext() }, 600)
+      autoAdvanceTimer = setTimeout(() => { if (state.answers[q.key] === opt.value) goNext() }, 320)
     }
     optsEl.appendChild(div)
   })
