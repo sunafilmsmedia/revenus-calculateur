@@ -1022,16 +1022,7 @@ function renderResult() {
     </div>
   `
 
-  document.getElementById('result-body').innerHTML=`
-    <div style="text-align:center">
-      <h2 class="bebas h2" style="font-size:34px">Voici ton potentiel</h2>
-      <p class="small" style="margin-top:6px">Avec notre système, voici brièvement combien tu pourrais générer en plus :</p>
-    </div>
-    <div class="glass glass--dark col center" style="gap:6px;padding:24px 20px">
-      <div class="label">Revenu extra par mois</div>
-      <div class="bebas" style="font-size:42px;line-height:1.05;color:#fff">${heroBig}</div>
-      <div style="font-size:15px;font-weight:600;color:var(--w60)">soit ${closingsLabel}</div>
-    </div>
+  const funnelHTML = `
     <div class="glass funnel-grid" style="display:flex;flex-direction:column;gap:0">
       <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:10px;grid-column:1/-1">📊 Ton funnel projeté</div>
       ${rows.map(row=>`
@@ -1044,7 +1035,20 @@ function renderResult() {
       <div class="label">Sur 12 mois, ça fait</div>
       <div class="bebas" style="font-size:22px;color:#fff">${rangeCAD(r.annualMin, r.annualMax)}</div>
     </div>
+  `
+
+  document.getElementById('result-body').innerHTML=`
+    <div style="text-align:center">
+      <h2 class="bebas h2" style="font-size:34px">Voici ton potentiel</h2>
+      <p class="small" style="margin-top:6px">Avec notre système, voici brièvement combien tu pourrais générer en plus :</p>
+    </div>
+    <div class="glass glass--dark col center" style="gap:6px;padding:24px 20px">
+      <div class="label">Revenu extra par mois</div>
+      <div class="bebas" style="font-size:42px;line-height:1.05;color:#fff">${heroBig}</div>
+      <div style="font-size:15px;font-weight:600;color:var(--w60)">soit ${closingsLabel}</div>
+    </div>
     ${formHTML}
+    ${funnelHTML}
   `
 }
 
