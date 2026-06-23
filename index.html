@@ -256,9 +256,64 @@
     .glass--border { border: 2px solid var(--w25); background: transparent; }
     .divider { height: 1px; background: var(--w08); }
 
-    /* ── RESULT PAGES ── */
-    .result-page { display: none; flex-direction: column; gap: 16px; }
-    .result-page.visible { display: flex; }
+    /* ── RAINBOW ANIMATION (calcul IA) ── */
+    @keyframes rainbow-shift {
+      0%   { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
+    }
+    @keyframes rainbow-pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50%      { transform: scale(1.08); opacity: 0.85; }
+    }
+    @keyframes rainbow-fill {
+      0%   { width: 0%; }
+      100% { width: 100%; }
+    }
+    .rainbow-text {
+      background: linear-gradient(90deg, #ff5f00, #ffd60a, #34c759, #5ac8fa, #af52de, #ff3b30, #ff5f00);
+      background-size: 200% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: rainbow-shift 2s linear infinite;
+    }
+    .rainbow-pulse {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ff5f00, #ffd60a, #34c759, #5ac8fa, #af52de, #ff3b30, #ff5f00);
+      background-size: 300% 300%;
+      animation: rainbow-shift 2s linear infinite, rainbow-pulse 1.2s ease-in-out infinite;
+      box-shadow: 0 0 40px rgba(255,255,255,0.35);
+    }
+    .rainbow-bar {
+      width: 100%; max-width: 260px; height: 6px;
+      border-radius: 99px;
+      background: rgba(0,0,0,0.25);
+      overflow: hidden;
+    }
+    .rainbow-bar__fill {
+      height: 100%;
+      background: linear-gradient(90deg, #ff5f00, #ffd60a, #34c759, #5ac8fa, #af52de, #ff3b30);
+      background-size: 200% 100%;
+      animation: rainbow-fill 2s ease-out forwards, rainbow-shift 1.5s linear infinite;
+    }
+
+    /* ── VIDEO EMBED PLACEHOLDER ── */
+    .video-embed {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: var(--blk25);
+      border-radius: 14px;
+      border: 1px solid var(--w08);
+      overflow: hidden;
+      position: relative;
+    }
+    .video-placeholder {
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      color: var(--w60);
+    }
 
     /* ── CRITERIA ── */
     .criteria-item { display: flex; align-items: flex-start; gap: 10px; }
@@ -375,6 +430,30 @@
       .big-num { font-size: 76px; }
       .tabs { font-size: 13px; }
     }
+
+    /* ── DESKTOP — carte plus large, funnel en grille ── */
+    @media (min-width: 768px) {
+      body { padding: 40px 24px 80px; }
+      .calc { max-width: 680px; padding-bottom: 40px; }
+      .calc-inner { padding: 0 40px; }
+      .hero-lockup { height: 280px; }
+      .hero-potentiel { font-size: 96px; }
+      .hero-decouvre { font-size: 30px; bottom: 110px; }
+      .h2 { font-size: 42px; }
+      .funnel-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 16px; }
+      .funnel-grid .funnel-row {
+        border-bottom: none !important;
+        background: var(--blk25);
+        border-radius: 12px;
+        padding: 14px 16px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .funnel-grid .funnel-row > div:last-child { text-align: left; }
+      .stepper-row { gap: 24px; }
+      .step-btn { width: 56px; height: 56px; font-size: 32px; }
+    }
   </style>
 </head>
 <body>
@@ -459,15 +538,15 @@
         <div class="row between"><span class="small" id="prog-leads"></span><button class="btn-ghost" onclick="goBack()">← Retour</button></div>
         <div id="pb-leads" class="progress-bar"></div>
       </div>
-      <div><h2 class="bebas h2">Combien de clients te génère cette méthode par mois?</h2><p class="small" style="margin-top:6px" id="leads-subtitle">Estimation moyenne — mensuelle</p></div>
+      <div><h2 class="bebas h2" id="volume-title">Volume</h2><p class="small" style="margin-top:6px" id="volume-subtitle"></p></div>
       <div class="glass col center" style="gap:10px;padding:24px">
         <div class="stepper-row">
-          <button type="button" class="step-btn" onclick="stepLeads(-1)">−</button>
-          <input class="step-input step-input--num" id="leads-display" type="text" inputmode="numeric" value="0" oninput="onLeadsInput(this.value)" onblur="onLeadsBlur()" />
-          <button type="button" class="step-btn" onclick="stepLeads(1)">+</button>
+          <button type="button" class="step-btn" onclick="stepVolume(-1)">−</button>
+          <input class="step-input step-input--md" id="volume-display" type="text" inputmode="numeric" value="0" oninput="onVolumeInput(this.value)" onblur="onVolumeBlur()" style="width:auto;min-width:200px" />
+          <button type="button" class="step-btn" onclick="stepVolume(1)">+</button>
         </div>
-        <div class="small">client<span id="leads-plural"></span>/mois</div>
-        <div class="step-range-hint">de 0 à 10+ · Tape ou utilise les boutons</div>
+        <div class="small" id="volume-unit">clients/mois</div>
+        <div class="step-range-hint" id="volume-range-hint"></div>
       </div>
       <div id="leads-callout"></div>
       <button class="btn btn--primary" onclick="goNext()">Continuer →</button>
@@ -487,29 +566,6 @@
     </div>
   </div>
 
-  <!-- ════ CLOSING (Autre) ════ -->
-  <div class="screen" id="screen-closing">
-    <div class="calc-inner col">
-      <div class="col--sm">
-        <div class="row between"><span class="small" id="prog-closing"></span><button class="btn-ghost" onclick="goBack()">← Retour</button></div>
-        <div id="pb-closing" class="progress-bar"></div>
-      </div>
-      <div><h2 class="bebas h2">Quel est ton taux de closing habituel?</h2><p class="small" style="margin-top:6px">Sur 100 prospects qualifiés, combien deviennent clients?</p></div>
-      <div class="glass col center" style="gap:10px;padding:24px">
-        <div class="stepper-row">
-          <button type="button" class="step-btn" onclick="stepClosing(-5)">−</button>
-          <div class="row" style="align-items:baseline;gap:4px">
-            <input class="step-input step-input--num" id="closing-display" type="text" inputmode="numeric" value="30" oninput="onClosingInput(this.value)" onblur="onClosingBlur()" style="width:auto;min-width:120px" />
-            <span class="bebas" style="font-size:60px;color:var(--white);line-height:1">%</span>
-          </div>
-          <button type="button" class="step-btn" onclick="stepClosing(5)">+</button>
-        </div>
-        <div class="small">des leads convertis</div>
-        <div class="step-range-hint">de 5% à 70% · Pas de 5%</div>
-      </div>
-      <button class="btn btn--primary" onclick="goNext()">Continuer →</button>
-    </div>
-  </div>
 
   <!-- ════ VALUE ════ -->
   <div class="screen" id="screen-value">
@@ -564,12 +620,49 @@
     </div>
   </div>
 
-  <!-- ════ RESULTS ════ -->
-  <div class="screen" id="screen-results">
+  <!-- ════ EMAIL CAPTURE ════ -->
+  <div class="screen" id="screen-email">
     <div class="calc-inner col">
-      <div id="rp-diagnostic" class="result-page"></div>
-      <div id="rp-systeme"    class="result-page"></div>
-      <div id="rp-potentiel"  class="result-page"></div>
+      <div style="text-align:center;padding-top:8px">
+        <div style="font-size:48px;margin-bottom:8px">✨</div>
+        <h2 class="bebas h2">Ton plan personnalisé est prêt</h2>
+        <p class="small" style="margin-top:8px;line-height:1.6">Entre ton courriel pour recevoir ton plan personnalisé<br/>+ voir ton potentiel.</p>
+      </div>
+      <input class="field" type="email" placeholder="ton@email.com" id="f-email" oninput="state.form.email=this.value;updateEmailBtn()" />
+      <button class="btn btn--primary btn--disabled" id="btn-email" onclick="submitEmail()" style="margin:0 auto;max-width:340px">Voir mon potentiel →</button>
+      <p class="tiny">Tes informations restent confidentielles</p>
+    </div>
+  </div>
+
+  <!-- ════ CALCULATING (animation 2s) ════ -->
+  <div class="screen" id="screen-calculating">
+    <div class="calc-inner col center" style="gap:24px;padding-top:60px;padding-bottom:60px;align-items:center">
+      <div class="rainbow-pulse"></div>
+      <h2 class="bebas h2 rainbow-text" style="text-align:center;font-size:34px">L'IA calcule ton potentiel...</h2>
+      <div class="rainbow-bar"><div class="rainbow-bar__fill"></div></div>
+    </div>
+  </div>
+
+  <!-- ════ RESULT (qualifié) ════ -->
+  <div class="screen" id="screen-result">
+    <div class="calc-inner col" id="result-body"></div>
+  </div>
+
+  <!-- ════ VIDEO (non qualifié) ════ -->
+  <div class="screen" id="screen-video">
+    <div class="calc-inner col">
+      <div style="text-align:center;padding-top:8px">
+        <div style="font-size:48px;margin-bottom:8px">📺</div>
+        <h2 class="bebas h2">T'es pas encore qualifié</h2>
+        <p class="small" style="margin-top:10px;line-height:1.6">Voici un guide pour comprendre le système et commencer à le tester de ton bord. Quand t'auras le volume requis, reviens nous voir.</p>
+      </div>
+      <div class="video-embed">
+        <div class="video-placeholder">
+          <div style="font-size:42px;opacity:0.6">▶</div>
+          <p class="small" style="margin-top:8px;text-align:center;opacity:0.7">Vidéo guide (à venir)</p>
+        </div>
+      </div>
+      <a href="https://sunafilmsmedia.com" target="_blank" rel="noopener" class="btn btn--primary" style="margin:0 auto;max-width:340px">Retour au site →</a>
     </div>
   </div>
 
@@ -581,28 +674,54 @@
 // ─────────────────────────────
 const state = {
   step: 'intro',
-  industry: null, source: null, socialLeads: 0, location: null,
-  closingRate: 30, avgValue: 3000,
+  industry: null, source: null, location: null,
+  volume: 0,            // Q3 — mensuel (immo/autre) ou annuel $ (hypo)
+  avgValue: 3000,       // Q5
   ai: null, challenge: null,
-  resultsPage: 'diagnostic',
-  form: { nom: '', telephone: '', email: '', entreprise: '' },
+  qualified: null,
+  form: { email: '' },
   submitted: false,
 }
 
 // ─────────────────────────────
 // FUNNEL DATA
+// Q5 (valeur moyenne) : unifié 500-50000$ pour toutes industries, step 500
 // ─────────────────────────────
 const FUNNEL = {
-  // totalLeads = potentiel max avec système complet — multiplié par le score du profil
-  hypothecaire: { label:'Courtier hypothécaire', totalLeads:35, qualRate:0.90, closingRate:0.37, avgMin:1000, avgMax:10000, avgDefault:3000, avgStep:500 },
-  immobilier:   { label:'Courtier immobilier',   totalLeads:15, qualRate:0.60, closingRate:0.28, avgMin:5000, avgMax:50000, avgDefault:15000, avgStep:1000 },
-  autre:        { label:'Autre industrie',        totalLeads:35, qualRate:0.50, closingRate:null, avgMin:500,  avgMax:20000, avgDefault:3000,  avgStep:500 },
+  hypothecaire: { label:'Courtier hypothécaire', avgDefault:3000  },
+  immobilier:   { label:'Courtier immobilier',   avgDefault:15000 },
+  autre:        { label:'Autre industrie',        avgDefault:3000  },
+}
+const VALUE_MIN  = 500
+const VALUE_MAX  = 50000
+const VALUE_STEP = 500
+
+// Q3 — Volume input config selon industrie
+function getVolumeConfig() {
+  if (state.industry === 'hypothecaire') {
+    return { min: 2000000, max: 30000000, step: 1000000, isCurrency: true, default: 5000000,
+             title: "C'est quoi ton volume annuel en prêts?",
+             subtitle: "Volume total des prêts générés sur 12 mois",
+             unit: 'volume annuel' }
+  }
+  if (state.industry === 'immobilier') {
+    return { min: 0, max: 10, step: 1, isCurrency: false, default: 0,
+             title: 'Combien de transactions tu closes en moyenne par mois?',
+             subtitle: 'Estimation moyenne — par mois',
+             unit: 'transactions/mois' }
+  }
+  return { min: 0, max: 10, step: 1, isCurrency: false, default: 0,
+           title: 'Combien de clients tu signes en moyenne par mois?',
+           subtitle: 'Estimation moyenne — par mois',
+           unit: 'clients/mois' }
 }
 
-const STEPS_BASE  = ['intro','industry','source','leads','location','value','ai','challenge','results']
-const STEPS_AUTRE = ['intro','industry','source','leads','location','closing','value','ai','challenge','results']
-function getSteps() { return state.industry === 'autre' ? STEPS_AUTRE : STEPS_BASE }
-function getQSteps() { return getSteps().filter(s => s !== 'intro' && s !== 'results') }
+const STEPS = ['intro','industry','source','leads','location','value','ai','challenge','email','calculating','result','video']
+function getSteps() { return STEPS }
+function getQSteps() {
+  // Étapes "questions" pour le compteur de progression (exclut les écrans finaux)
+  return ['industry','source','leads','location','value','ai','challenge']
+}
 
 // ─────────────────────────────
 // FORMAT
@@ -624,66 +743,45 @@ function goBack() {
   if (idx > 0) { state.step = steps[idx-1]; render() }
 }
 
+function clamp(v, min, max) { return Math.max(min, Math.min(max, v)) }
+
 // ─────────────────────────────
-// STEPPERS — clients/mois (leads)
+// STEPPER — VOLUME (Q3, adaptatif selon industrie)
 // ─────────────────────────────
-const LEADS_MIN = 0, LEADS_MAX = 10
-function stepLeads(delta) {
-  const next = clamp(state.socialLeads + delta, LEADS_MIN, LEADS_MAX)
-  setLeads(next)
+function stepVolume(direction) {
+  const c = getVolumeConfig()
+  setVolume(state.volume + direction * c.step)
 }
-function onLeadsInput(v) {
+function onVolumeInput(v) {
+  const c = getVolumeConfig()
   const num = parseInt(String(v).replace(/\D/g,'')) || 0
-  state.socialLeads = clamp(num, LEADS_MIN, LEADS_MAX)
-  document.getElementById('leads-plural').textContent = state.socialLeads==1?'':'s'
-  renderLeadsCallout()
+  state.volume = clamp(num, c.min, c.max)
 }
-function onLeadsBlur() { setLeads(state.socialLeads) }
-function setLeads(v) {
-  state.socialLeads = clamp(v, LEADS_MIN, LEADS_MAX)
-  const el = document.getElementById('leads-display'); if(el) el.value = state.socialLeads
-  const pl = document.getElementById('leads-plural'); if(pl) pl.textContent = state.socialLeads==1?'':'s'
+function onVolumeBlur() { setVolume(state.volume) }
+function setVolume(v) {
+  const c = getVolumeConfig()
+  state.volume = clamp(v, c.min, c.max)
+  const el = document.getElementById('volume-display')
+  if(el) el.value = c.isCurrency ? fmtCAD(state.volume) : String(state.volume)
   renderLeadsCallout()
 }
 
 // ─────────────────────────────
-// STEPPERS — closing rate
-// ─────────────────────────────
-const CLOSING_MIN = 5, CLOSING_MAX = 70
-function stepClosing(delta) { setClosing(state.closingRate + delta) }
-function onClosingInput(v) {
-  const num = parseInt(String(v).replace(/\D/g,'')) || 0
-  state.closingRate = clamp(num, CLOSING_MIN, CLOSING_MAX)
-}
-function onClosingBlur() { setClosing(state.closingRate) }
-function setClosing(v) {
-  state.closingRate = clamp(v, CLOSING_MIN, CLOSING_MAX)
-  const el = document.getElementById('closing-display'); if(el) el.value = state.closingRate
-}
-
-// ─────────────────────────────
-// STEPPERS — valeur moyenne ($)
+// STEPPER — VALEUR MOYENNE (Q5)
+// 500$ à 50 000$, step 500$ pour toutes industries
 // ─────────────────────────────
 function stepValue(direction) {
-  if(!state.industry) return
-  const f = FUNNEL[state.industry]
-  setValue(state.avgValue + direction * f.avgStep)
+  setValue(state.avgValue + direction * VALUE_STEP)
 }
 function onValueInput(v) {
   const num = parseInt(String(v).replace(/\D/g,'')) || 0
-  if(!state.industry) return
-  const f = FUNNEL[state.industry]
-  state.avgValue = clamp(num, f.avgMin, f.avgMax)
+  state.avgValue = clamp(num, VALUE_MIN, VALUE_MAX)
 }
 function onValueBlur() { setValue(state.avgValue) }
 function setValue(v) {
-  if(!state.industry) return
-  const f = FUNNEL[state.industry]
-  state.avgValue = clamp(v, f.avgMin, f.avgMax)
+  state.avgValue = clamp(v, VALUE_MIN, VALUE_MAX)
   const el = document.getElementById('value-display'); if(el) el.value = fmtCAD(state.avgValue)
 }
-
-function clamp(v, min, max) { return Math.max(min, Math.min(max, v)) }
 
 // ─────────────────────────────
 // PROGRESS
@@ -708,7 +806,10 @@ function renderOptions(containerId, options, current, stateKey, btnId) {
     d.innerHTML=`<span class="option__icon">${opt.icon}</span><div><div class="option__title">${opt.label}</div>${opt.sub?`<div class="option__sub">${opt.sub}</div>`:''}</div>`
     d.onclick=()=>{
       state[stateKey]=opt.value
-      if(stateKey==='industry') state.avgValue=FUNNEL[opt.value].avgDefault
+      if(stateKey==='industry') {
+        state.avgValue = FUNNEL[opt.value].avgDefault
+        state.volume = 0 // reset, sera initialisé au défaut de la nouvelle industrie quand on entre dans 'leads'
+      }
       renderOptions(containerId,options,opt.value,stateKey,btnId)
       if(btnId) document.getElementById(btnId)?.classList.remove('btn--disabled')
       // Auto-advance — laisse le temps de voir la sélection
@@ -720,97 +821,78 @@ function renderOptions(containerId, options, current, stateKey, btnId) {
 }
 
 // ─────────────────────────────
-// LEADS CALLOUT
+// LEADS CALLOUT — basé sur état actuel vs gate
 // ─────────────────────────────
 function renderLeadsCallout() {
   const el=document.getElementById('leads-callout'); if(!el) return
-  const v=state.socialLeads
-  if(v===0) el.innerHTML=`<div class="callout">😬 <strong style="color:#fff">Tu n'es pas seul</strong> — la majorité des professionnels ne closent aucun client via cette méthode. C'est ce qu'on règle.</div>`
-  else if(v<3) el.innerHTML=`<div class="callout">📈 <strong style="color:#fff">C'est un début</strong> — avec un système structuré, nos clients atteignent 3 à 6+ clients/mois.</div>`
-  else el.innerHTML=''
+  if(state.industry==='hypothecaire') {
+    if(state.volume===0) el.innerHTML=`<div class="callout">📈 Un volume sous 8M$/an n'est pas assez pour rentabiliser un système Meta — on te dirige vers un guide gratuit.</div>`
+    else el.innerHTML=''
+  } else {
+    if(state.volume===0) el.innerHTML=`<div class="callout">😬 <strong style="color:#fff">Tu n'es pas seul</strong> — la majorité ne close rien via cette méthode aujourd'hui. C'est ce qu'on règle.</div>`
+    else if(state.volume<2) el.innerHTML=`<div class="callout">📈 Sous 2 clients/mois, on te dirige vers un guide gratuit pour démarrer.</div>`
+    else el.innerHTML=''
+  }
 }
 
 // ─────────────────────────────
-// CALC
-// Multiplicateur de leads selon le profil :
-//   base 0.25 → max ~0.90 dépendant des réponses
-// Résultat cible : ~100k–400k$/an
+// QUALIFICATION (gates)
 // ─────────────────────────────
-function getLeadMult() {
-  let m = 0.25 // base — part de zéro, système non structuré
-  if (state.ai === 'integre')    m += 0.20 // IA intégrée = système mature
-  else if (state.ai === 'basique') m += 0.05
-  if (state.source === 'pubs')   m += 0.25 // déjà en pub = mindset digital
-  else if (state.source === 'social') m += 0.15
-  if (state.socialLeads >= 3)    m += 0.20 // traction existante (clients/mois)
-  return Math.min(m, 1.0)
-}
-
-function calc() {
-  if(!state.industry) return null
-  if(LEVEL_FUNNELS[state.industry]) return calcLevel(state.industry)
-  const f = FUNNEL[state.industry]
-  const mult = getLeadMult()
-  const totalLeads = Math.round(f.totalLeads * mult)
-  const qualLeads  = Math.round(totalLeads * f.qualRate)
-  let cr = state.industry === 'autre' ? state.closingRate/100 : f.closingRate
-  if (state.ai === 'integre')          cr = Math.min(cr + 0.05, 0.65)
-  else if (state.ai === 'basique')     cr = Math.min(cr + 0.02, 0.65)
-  const clients = Math.round(qualLeads * cr)
-  const monthly  = clients * state.avgValue
-  const annual   = monthly * 12
-  return { totalLeads, qualLeads, cr, clients, monthly, annual, mult }
+function isQualified() {
+  if (state.industry === 'hypothecaire' && state.volume < 8000000) return false
+  if (state.industry !== 'hypothecaire' && state.volume < 2)       return false
+  if (state.avgValue < 1500)                                       return false
+  return true
 }
 
 // ─────────────────────────────
-// CALC PAR NIVEAU (0-3) — pour industries calibrées
-// Le revenu = closings × ticket moyen entré par l'utilisateur
+// CALC PAR NIVEAU — toutes industries
 // ─────────────────────────────
 const LEVEL_FUNNELS = {
   immobilier: [
-    // qualRate = % de leads qui deviennent des évaluations · closingRate = 30% standard
-    { label:'Pas d\'IA, peu de clients via cette méthode',    leadsMin:8,  leadsMax:15, qualRate:0.25, closingRate:0.30 },
-    { label:'IA basique ou source sociale active',           leadsMin:12, leadsMax:22, qualRate:0.25, closingRate:0.30 },
-    { label:'IA intégrée OU pubs actives',                   leadsMin:20, leadsMax:32, qualRate:0.25, closingRate:0.30 },
-    { label:'IA intégrée + pubs actives',                    leadsMin:30, leadsMax:45, qualRate:0.25, closingRate:0.30 },
+    { label:'Pas d\'IA, peu de clients via cette méthode',     leadsMin:8,  leadsMax:15, qualRate:0.25, closingRate:0.30 },
+    { label:'IA basique ou source sociale active',            leadsMin:12, leadsMax:22, qualRate:0.25, closingRate:0.30 },
+    { label:'IA intégrée OU pubs actives',                    leadsMin:20, leadsMax:32, qualRate:0.25, closingRate:0.30 },
+    { label:'IA intégrée + pubs actives',                     leadsMin:30, leadsMax:45, qualRate:0.25, closingRate:0.30 },
   ],
   hypothecaire: [
-    { label:'Pas d\'IA, peu de clients via cette méthode',   leadsMin:20,  leadsMax:35,  qualRate:0.50,  closingsMin:3,  closingsMax:5  },
-    { label:'IA basique ou source sociale active',          leadsMin:35,  leadsMax:55,  qualRate:0.55,  closingsMin:5,  closingsMax:8  },
-    { label:'IA intégrée OU pubs actives',                  leadsMin:55,  leadsMax:85,  qualRate:0.60,  closingsMin:8,  closingsMax:13 },
+    { label:'Pas d\'IA, peu de clients via cette méthode',    leadsMin:20,  leadsMax:35,  qualRate:0.50,  closingsMin:3,  closingsMax:5  },
+    { label:'IA basique ou source sociale active',           leadsMin:35,  leadsMax:55,  qualRate:0.55,  closingsMin:5,  closingsMax:8  },
+    { label:'IA intégrée OU pubs actives',                   leadsMin:55,  leadsMax:85,  qualRate:0.60,  closingsMin:8,  closingsMax:13 },
     { label:'IA intégrée + pubs actives + clients réguliers', leadsMin:85, leadsMax:130, qualRate:0.625, closingsMin:13, closingsMax:20 },
+  ],
+  autre: [
+    { label:'Pas d\'IA, peu de clients',                      leadsMin:10, leadsMax:20, qualRate:0.40, closingRate:0.35 },
+    { label:'IA basique ou source sociale active',           leadsMin:15, leadsMax:30, qualRate:0.40, closingRate:0.35 },
+    { label:'IA intégrée OU pubs actives',                   leadsMin:25, leadsMax:45, qualRate:0.45, closingRate:0.35 },
+    { label:'IA intégrée + pubs actives',                    leadsMin:40, leadsMax:65, qualRate:0.50, closingRate:0.35 },
   ],
 }
 function getLevel() {
-  // Niveau basé sur IA + source (proxy de maturité du système)
   if (state.ai === 'integre' && state.source === 'pubs') return 3
   if (state.ai === 'integre' || state.source === 'pubs') return 2
   if (state.ai === 'basique' || state.source === 'social') return 1
   return 0
 }
-function calcLevel(industry) {
+function calc() {
+  if(!state.industry || !LEVEL_FUNNELS[state.industry]) return null
   const level = getLevel()
-  const L = LEVEL_FUNNELS[industry][level]
+  const L = LEVEL_FUNNELS[state.industry][level]
   const aiBoost = state.ai === 'integre' ? 1 : (state.ai === 'basique' ? 0.3 : 0)
   const qualMin = Math.round(L.leadsMin * L.qualRate)
   const qualMax = Math.round(L.leadsMax * L.qualRate)
   let closingsMin, closingsMax
   if (L.closingRate != null) {
-    // Mode taux de closing dynamique (immobilier)
     closingsMin = Math.max(1, Math.round(qualMin * L.closingRate))
     closingsMax = Math.round(qualMax * L.closingRate) + Math.floor(aiBoost)
   } else {
-    // Mode closings explicites (hypothécaire — L3 inclut "+ CRM")
     closingsMin = L.closingsMin
     closingsMax = L.closingsMax + Math.round(aiBoost * 2)
   }
   return {
-    isRange: true,
-    level,
-    levelLabel: L.label,
+    level, levelLabel: L.label,
     leadsMin: L.leadsMin, leadsMax: L.leadsMax,
-    qualRate: L.qualRate,
-    qualMin, qualMax,
+    qualRate: L.qualRate, qualMin, qualMax,
     closingsMin, closingsMax,
     revenueMin: closingsMin * state.avgValue,
     revenueMax: closingsMax * state.avgValue,
@@ -820,238 +902,117 @@ function calcLevel(industry) {
 }
 
 // ─────────────────────────────
-// VISIBILITY SCORE
-// ─────────────────────────────
-function getVisibilityScore() {
-  let s=0
-  if(state.source==='social'||state.source==='pubs') s++
-  if(state.socialLeads>=3) s++
-  if(state.ai==='basique'||state.ai==='integre') s++
-  if(state.ai==='integre') s++ // intégration profonde = bonus
-  return s
-}
-
-// ─────────────────────────────
-// RECOMMENDATION ENGINE
+// RECOMMENDATION ENGINE (utilisé pour le plan envoyé par email)
 // ─────────────────────────────
 function buildRecommendation() {
-  const probs = []
-  const recs  = []
-
-  // ── IA / SYSTÈME ──
-  if (state.ai === 'aucun') {
-    probs.push("L'IA n'est pas dans ton business — tu fais à la main ce que des concurrents automatisent déjà. Tu perds du temps et des leads.")
-    recs.push({ order:1, icon:'🤖', title:'Système CRM + IA (GoHighLevel)', tag:'PRIORITÉ', tagColor:'#FF5F00', iconBg:'rgba(255,95,0,0.2)',
-      desc:"Pipeline, relances et agents IA dans un seul système. On configure des agents qui qualifient et nurturent tes leads 24/7." })
-  } else if (state.ai === 'basique') {
-    probs.push("Tu utilises l'IA en surface — comme un Google amélioré. Le vrai gain vient quand elle est branchée à ton CRM et tes leads.")
-    recs.push({ order:1, icon:'🤖', title:'CRM + agents IA (GoHighLevel)', tag:'PRIORITÉ', tagColor:'#FF5F00', iconBg:'rgba(255,95,0,0.2)',
-      desc:"On passe d'une utilisation basique de ChatGPT à un système d'IA intégré : qualification auto, nurturing par SMS/email, prises de RDV." })
-  } else {
-    probs.push("Tu as une IA intégrée — c'est la bonne base. L'étape suivante est d'y alimenter du trafic qualifié en continu.")
+  const recs = []
+  if (state.ai === 'aucun' || state.ai === 'basique') {
+    recs.push({ order:1, title:'Système CRM + agents IA (GoHighLevel)' })
   }
-
-  // ── CONTENU (toujours recommandé sauf si déjà en pubs) ──
   if (state.source !== 'pubs') {
-    probs.push("Sans système de contenu vidéo régulier, impossible de bâtir ta crédibilité et d'attirer des leads qui te connaissent déjà avant d'appeler.")
-    recs.push({ order:2, icon:'🎬', title:'Système de contenu mensuel', tag:'FONDATION', tagColor:'#34C759', iconBg:'rgba(52,199,89,0.2)',
-      desc:"10–20 vidéos/mois, 1 tournage de 3h. On script, on tourne, on monte. Tu te présentes — on s'occupe du reste." })
+    recs.push({ order:2, title:'Système de contenu vidéo mensuel' })
   }
-
-  // ── ADS ──
-  if (state.socialLeads < 3 || (state.source !== 'pubs' && state.source !== 'social')) {
-    probs.push("Tu n'as pas de système publicitaire actif — pendant ce temps, tes concurrents capturent les leads que tu aurais pu avoir.")
-    recs.push({ order:3, icon:'📢', title:'Campagnes Meta Ads', tag:'ACCÉLÉRATEUR', tagColor:'#5AC8FA', iconBg:'rgba(90,200,250,0.15)',
-      desc:"2–3 campagnes ciblées → 120 000 vues/mois → leads qualifiés à 12–26$/lead. Le carburant de tout le système." })
-  }
-
-  // ── SOURCE DEPENDENCY ──
-  if (state.source === 'references' || state.source === 'reseau') {
-    probs.push("Tu dépends à 100% des références et du réseau. Si ça ralentit, ton pipeline aussi — zéro contrôle sur ta croissance.")
-  }
-
-  // ── CHALLENGE-SPECIFIC ──
-  if (state.challenge === 'start') {
-    probs.push("Ne pas savoir par où commencer, c'est souvent vouloir tout faire en même temps. On a une séquence testée qui fonctionne.")
-  }
-  if (state.challenge === 'ads_dont_work') {
-    probs.push("Quand les efforts marketing ne convertissent pas, c'est presque toujours un problème de contenu, de ciblage ou de landing page — pas de budget.")
-    recs.push({ order:2.5, icon:'🎯', title:'Audit de ton marketing actuel', tag:'DIAGNOSTIC', tagColor:'#FF9500', iconBg:'rgba(255,149,0,0.15)',
-      desc:"On analyse tes créatifs, ton ciblage et ta page de destination pour identifier exactement ce qui bloque la conversion." })
+  if (state.source !== 'pubs') {
+    recs.push({ order:3, title:'Campagnes Meta Ads ciblées' })
   }
   if (state.challenge === 'system') {
-    probs.push("Un système manuel = des leads qui passent entre les craques, et toi qui plafonnes parce que tu fais tout toi-même.")
-    recs.push({ order:1.5, icon:'⚡', title:'Automation IA + relances intelligentes', tag:'AUTOMATISATION', tagColor:'#AF52DE', iconBg:'rgba(175,82,222,0.15)',
-      desc:"Agents IA qui qualifient tes leads, séquences de relance automatiques, prises de RDV. Tu te concentres sur le closing." })
+    recs.push({ order:1.5, title:'Automation + relances intelligentes' })
   }
-  if (state.challenge === 'visibility') {
-    probs.push("Si personne ne te connaît dans ta région, tu dépends des clients qui te trouvent par hasard — zéro contrôle.")
+  if (state.challenge === 'ads_dont_work') {
+    recs.push({ order:2.5, title:'Audit de tes campagnes actuelles' })
   }
-
   recs.sort((a,b)=>a.order-b.order)
-  return { probs, recs }
+  return { recs }
 }
 
 // ─────────────────────────────
-// RENDER: DIAGNOSTIC
+// RENDER: EMAIL CAPTURE
 // ─────────────────────────────
-function renderDiagnostic() {
-  const score = getVisibilityScore()
-  const scoreColors = ['#FF3B30','#FF9500','#FF9500','#34C759']
-  const criteria = [
-    { label:'Source de clients', ok: state.source==='social'||state.source==='pubs',
-      detail: (state.source==='social'||state.source==='pubs')?'Canaux digitaux actifs':'Dépendance aux références / réseau' },
-    { label:'Clients/mois via cette méthode', ok: state.socialLeads>=3,
-      detail: state.socialLeads>=3?`${state.socialLeads} clients/mois — bonne traction`:`Seulement ${state.socialLeads} client${state.socialLeads>1?'s':''}/mois` },
-    { label:'Utilisation de l\'IA', ok: state.ai==='basique'||state.ai==='integre',
-      detail: state.ai==='integre'?'IA intégrée dans le système ✓':state.ai==='basique'?'Utilisation basique (style Google)':'Aucune utilisation de l\'IA' },
-    { label:'IA intégrée au business', ok: state.ai==='integre',
-      detail: state.ai==='integre'?'Automatisations + agents actifs ✓':'Pas d\'intégration IA dans le pipeline' },
+function updateEmailBtn() {
+  const btn = document.getElementById('btn-email'); if(!btn) return
+  const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.form.email||'')
+  btn.classList.toggle('btn--disabled', !ok)
+}
+function submitEmail() {
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.form.email||'')) return
+  state.qualified = isQualified()
+  // Meta Pixel
+  if(window.fbq) {
+    const r = calc()
+    fbq('track', 'Lead', {
+      content_name: 'Diagnostic calculateur',
+      content_category: FUNNEL[state.industry]?.label || '',
+      value: r?.annualMax || 0,
+      currency: 'CAD',
+    })
+  }
+  // Webhook GHL
+  const url=document.querySelector('meta[name="webhook-url"]')?.content
+  if(url) {
+    const r = calc()
+    const { recs } = buildRecommendation()
+    const SOURCE_LABELS = { references:'Références clients', reseau:'Réseau personnel', social:'Réseaux sociaux', pubs:'Publicités payantes', prospection:'Prospection directe' }
+    fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        email:           state.form.email,
+        industrie:       FUNNEL[state.industry]?.label,
+        source_clients:  SOURCE_LABELS[state.source] || state.source,
+        volume_actuel:   state.volume,
+        volume_unite:    state.industry === 'hypothecaire' ? 'CAD/an' : 'clients/mois',
+        localisation:    LOCATION_LABELS[state.location] || state.location,
+        utilisation_ia:  AI_LABELS[state.ai] || state.ai,
+        defi_principal:  CHALLENGE_LABELS[state.challenge] || state.challenge,
+        valeur_client:   state.avgValue,
+        qualifie:        state.qualified ? 'OUI' : 'NON',
+        niveau:          r ? ((r.level+1)+'/4') : '',
+        leads_mois:      r ? `${r.leadsMin}-${r.leadsMax}` : '',
+        closings_mois:   r ? `${r.closingsMin}-${r.closingsMax}` : '',
+        revenu_mensuel:  r ? `${r.revenueMin}-${r.revenueMax}` : '',
+        revenu_annuel:   r ? `${r.annualMin}-${r.annualMax}` : '',
+        solutions_recommandees: recs.map(r=>r.title).join(', '),
+      })
+    }).catch(()=>{})
+  }
+  // Animation calc → puis routing vers result ou video
+  state.step = 'calculating'
+  render()
+  setTimeout(()=>{
+    state.step = state.qualified ? 'result' : 'video'
+    render()
+  }, 2000)
+}
+
+// ─────────────────────────────
+// RENDER: RESULT (qualifié)
+// ─────────────────────────────
+function renderResult() {
+  const r = calc(); if(!r) return
+  const range    = (a, b) => a === b ? `${a}` : `${a} à ${b}`
+  const rangeCAD = (a, b) => a === b ? fmtCAD(a) : `${fmtCAD(a)} à ${fmtCAD(b)}`
+  const qualLabel = state.industry === 'immobilier' ? 'Évaluations/mois' : 'Leads qualifiés'
+  const rows = [
+    {icon:'📥', label:'Leads/mois projetés', val:range(r.leadsMin, r.leadsMax),       sub:`Niveau ${r.level+1}/4`},
+    {icon:'✅', label:qualLabel,             val:range(r.qualMin, r.qualMax),         sub:Math.round(r.qualRate*100)+'% du volume'},
+    {icon:'🤝', label:'Closings/mois',       val:range(r.closingsMin, r.closingsMax), sub:'clients signés'},
+    {icon:'💰', label:'Extra revenu/mois',   val:rangeCAD(r.revenueMin, r.revenueMax), sub:'', bold:true},
   ]
+  const heroBig = rangeCAD(r.revenueMin, r.revenueMax)
+  const closingsLabel = r.closingsMin === r.closingsMax
+    ? `<strong style="color:#fff">${r.closingsMin}</strong> closing${r.closingsMin>1?'s':''}/mois en plus`
+    : `<strong style="color:#fff">${r.closingsMin} à ${r.closingsMax}</strong> closings/mois en plus`
 
-  const cHTML = criteria.map(c=>`
-    <div class="criteria-item">
-      <div class="criteria-dot ${c.ok?'criteria-dot--ok':'criteria-dot--no'}">${c.ok?'✓':'✗'}</div>
-      <div><div style="font-size:13px;font-weight:700;color:#fff">${c.label}</div><div style="font-size:12px;color:var(--w60)">${c.detail}</div></div>
-    </div>`).join('')
-
-  const srcMsg = {
-    references:"100% références = zéro contrôle sur ta croissance. Si les références s'arrêtent, ton pipeline aussi.",
-    reseau:'Ton réseau a des limites naturelles. Sans système inbound, tu plafonnes rapidement.',
-    social:'Tu es actif sur les réseaux — mais sans système structuré, les résultats restent imprévisibles.',
-    pubs:'Tu investis déjà en pubs — bonne base. Voici comment maximiser chaque dollar dépensé.',
-    prospection:"La prospection est épuisante et peu scalable. Un système inbound change tout.",
-  }
-
-  document.getElementById('rp-diagnostic').innerHTML=`
-    <div class="col--sm">
-      <h2 class="bebas h2" style="font-size:34px">${['Tu es pratiquement invisible en ligne','Ta visibilité est sérieusement limitée',"Tu as du potentiel — mais tu laisses de l'argent sur la table",'Tu as une base solide — voici comment accélérer'][score]}</h2>
-      ${state.source?`<div class="callout">${srcMsg[state.source]}</div>`:''}
+  document.getElementById('result-body').innerHTML=`
+    <div style="text-align:center">
+      <h2 class="bebas h2" style="font-size:34px">Voici ton potentiel</h2>
+      <p class="small" style="margin-top:6px">On t'envoie ton plan personnalisé par courriel. En attendant, voici ton potentiel.</p>
     </div>
-    <div class="glass" style="display:flex;flex-direction:column;gap:14px">
-      <div class="row between">
-        <span style="font-size:14px;font-weight:700;color:#fff">Score de visibilité</span>
-        <span class="bebas" style="font-size:26px;color:${scoreColors[Math.min(score,3)]}">${score}/4</span>
-      </div>
-      <div class="divider"></div>
-      ${cHTML}
-    </div>
-    <button class="btn btn--primary" style="margin:0 auto;max-width:340px" onclick="setResultsPage('systeme')">Voir mon plan personnalisé →</button>
-  `
-}
-
-// ─────────────────────────────
-// RENDER: MON SYSTÈME
-// ─────────────────────────────
-const AI_LABELS  = { aucun:'Aucune utilisation', basique:'Basique — comme un Google amélioré', integre:'Intégrée dans mon système' }
-const LOCATION_LABELS = { montreal:'Montréal', rive_nord:'Rive Nord', laurentides:'Laurentides', rive_sud:'Rive Sud', estrie:'Estrie / Magog', quebec:'Québec', autre_region:'Autre région' }
-const CHALLENGE_LABELS = { visibility:'Manque de visibilité dans ma région', ads_dont_work:"Mes efforts ne convertissent pas", system:'Système non optimisé (manuel, sans IA)', start:'Je ne sais pas par où commencer' }
-
-function renderSysteme() {
-  const { recs } = buildRecommendation()
-  // Show max 3 top recommendations — keep it short
-  const topRecs = recs.slice(0, 3)
-  const recHTML = topRecs.map(r=>`
-    <div class="rec-card">
-      <div class="rec-icon" style="background:${r.iconBg}">${r.icon}</div>
-      <div style="flex:1">
-        <div class="rec-tag" style="background:${r.tagColor}22;color:${r.tagColor}">${r.tag}</div>
-        <div class="rec-title">${r.title}</div>
-        <div class="rec-desc">${r.desc}</div>
-      </div>
-    </div>`).join('')
-
-  document.getElementById('rp-systeme').innerHTML=`
-    <div class="col--sm">
-      <h2 class="bebas h2" style="font-size:34px">Ton plan personnalisé</h2>
-      <p class="small">Voici ce qu'on implante — dans cet ordre.</p>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:10px">
-      ${recHTML}
-    </div>
-    <button class="btn btn--primary" style="margin:0 auto;max-width:340px" onclick="setResultsPage('potentiel')">Voir mon potentiel en chiffres →</button>
-  `
-}
-
-// ─────────────────────────────
-// RENDER: POTENTIEL
-// ─────────────────────────────
-let animFrame = null
-function animateNumbers(tC, tR, ms) {
-  if(animFrame) cancelAnimationFrame(animFrame)
-  const start=performance.now()
-  function tick(now){
-    const p=Math.min((now-start)/ms,1), ease=1-Math.pow(1-p,3)
-    const c=document.getElementById('anim-clients'), r=document.getElementById('anim-revenue')
-    if(c) c.textContent=fmtN(Math.round(tC*ease))
-    if(r) r.textContent=fmtCAD(Math.round(tR*ease))
-    if(p<1) animFrame=requestAnimationFrame(tick)
-  }
-  animFrame=requestAnimationFrame(tick)
-}
-
-function renderPotentiel() {
-  const r=calc(); if(!r) return
-  let rows, heroLabel, heroBig, heroSub, annualVal
-  if (r.isRange) {
-    const range = (a, b) => a === b ? `${a}` : `${a} à ${b}`
-    const rangeCAD = (a, b) => a === b ? fmtCAD(a) : `${fmtCAD(a)} à ${fmtCAD(b)}`
-    const qualLabel = state.industry === 'immobilier' ? 'Évaluations/mois' : 'Leads qualifiés'
-    rows=[
-      {icon:'📥', label:'Leads/mois projetés', val:range(r.leadsMin, r.leadsMax),       sub:`Niveau ${r.level+1}/4 — ${r.levelLabel}`},
-      {icon:'✅', label:qualLabel,             val:range(r.qualMin, r.qualMax),         sub:Math.round(r.qualRate*100)+'% du volume'},
-      {icon:'🤝', label:'Closings/mois',       val:range(r.closingsMin, r.closingsMax), sub:'clients signés'},
-      {icon:'💰', label:'Extra revenu/mois',   val:rangeCAD(r.revenueMin, r.revenueMax), sub:'', bold:true},
-    ]
-    heroLabel = 'Ton revenu extra mensuel'
-    heroBig   = rangeCAD(r.revenueMin, r.revenueMax)
-    heroSub   = r.closingsMin === r.closingsMax
-      ? `soit <strong style="color:#fff">${r.closingsMin}</strong> closing${r.closingsMin>1?'s':''}/mois en plus`
-      : `soit <strong style="color:#fff">${r.closingsMin} à ${r.closingsMax}</strong> closings/mois en plus`
-    annualVal = rangeCAD(r.annualMin, r.annualMax)
-  } else {
-    const multPct = Math.round(r.mult * 100)
-    rows=[
-      {icon:'📥', label:'Leads/mois projetés', val:fmtN(r.totalLeads),  sub:'selon ton profil actuel ('+multPct+'% du potentiel)'},
-      {icon:'✅', label:'Leads qualifiés',     val:fmtN(r.qualLeads),   sub:Math.round(r.qualLeads/Math.max(r.totalLeads,1)*100)+'% du volume'},
-      {icon:'🤝', label:'Clients signés',      val:fmtN(r.clients),     sub:Math.round(r.cr*100)+'% de closing'},
-      {icon:'💰', label:'Revenus/mois',        val:fmtCAD(r.monthly),   sub:'', bold:true},
-    ]
-    heroLabel = 'Ton potentiel mensuel'
-    heroBig   = fmtCAD(0)
-    heroSub   = `soit <strong style="color:#fff" id="anim-clients">0</strong> clients/mois`
-    annualVal = fmtCAD(r.annual)
-  }
-
-  const formHTML = state.submitted ? `
-    <div class="glass glass--dark col center" style="gap:10px;padding:28px 20px;align-items:center">
-      <div style="font-size:52px">🎉</div>
-      <h3 class="bebas h3">On te revient sous 24h!</h3>
-      <p class="body" style="text-align:center;font-size:14px">Notre équipe analyse ton profil et te revient avec un plan d'action concret.</p>
-    </div>
-  ` : `
-    <div class="col--sm">
-      <div style="text-align:center">
-        <h3 class="bebas h3" style="margin-bottom:6px">Vérifier avec un professionnel</h3>
-        <p class="small">Ces chiffres sont des estimations — on valide avec toi ce qui s'applique à ta situation réelle · Réponse sous 24h</p>
-      </div>
-      <input class="field" type="text"  placeholder="Ton prénom *"            id="f-nom"  oninput="state.form.nom=this.value;updateSubmitBtn()" />
-      <input class="field" type="tel"   placeholder="Téléphone"               id="f-tel"  oninput="state.form.telephone=this.value" />
-      <input class="field" type="email" placeholder="Adresse email *"         id="f-email" oninput="state.form.email=this.value;updateSubmitBtn()" />
-      <input class="field" type="text"  placeholder="Entreprise (optionnel)"  id="f-co"   oninput="state.form.entreprise=this.value" />
-      <button class="btn btn--primary btn--disabled" id="btn-submit" onclick="handleSubmit()" style="margin:0 auto;max-width:340px">Valider avec un expert →</button>
-      <p class="tiny">Aucun spam · Tes informations restent confidentielles</p>
-    </div>
-  `
-
-  document.getElementById('rp-potentiel').innerHTML=`
     <div class="glass glass--dark col center" style="gap:6px;padding:24px 20px">
-      <div class="label">${heroLabel}</div>
-      <div class="bebas" style="font-size:${r.isRange?42:60}px;line-height:1.05;color:#fff" id="anim-revenue">${heroBig}</div>
-      <div style="font-size:15px;font-weight:600;color:var(--w60)">${heroSub}</div>
+      <div class="label">Ton revenu extra mensuel</div>
+      <div class="bebas" style="font-size:42px;line-height:1.05;color:#fff">${heroBig}</div>
+      <div style="font-size:15px;font-weight:600;color:var(--w60)">soit ${closingsLabel}</div>
     </div>
-    <div class="glass" style="display:flex;flex-direction:column;gap:0">
-      <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:10px">📊 Ton funnel projeté</div>
+    <div class="glass funnel-grid" style="display:flex;flex-direction:column;gap:0">
+      <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:10px;grid-column:1/-1">📊 Ton funnel projeté</div>
       ${rows.map(row=>`
         <div class="funnel-row">
           <div style="display:flex;align-items:center;gap:10px"><span style="font-size:18px">${row.icon}</span><span style="font-size:14px;font-weight:${row.bold?700:400};color:#fff">${row.label}</span></div>
@@ -1059,107 +1020,36 @@ function renderPotentiel() {
         </div>`).join('')}
     </div>
     <div class="glass glass--border row between" style="padding:14px 18px">
-      <div class="label">${r.isRange?'Extra revenu annuel':'Potentiel annuel'}</div>
-      <div class="bebas" style="font-size:${r.isRange?22:34}px;color:#fff">${annualVal}</div>
+      <div class="label">Extra revenu annuel</div>
+      <div class="bebas" style="font-size:22px;color:#fff">${rangeCAD(r.annualMin, r.annualMax)}</div>
     </div>
-    ${formHTML}
+    <a href="https://sunafilmsmedia.com" target="_blank" rel="noopener" class="btn btn--primary" style="margin:0 auto;max-width:340px">Réserve ton appel stratégique →</a>
+    <p class="tiny">Ces chiffres sont des estimations basées sur tes réponses</p>
   `
-  if (!r.isRange) requestAnimationFrame(()=>animateNumbers(r.clients, r.monthly, 900))
 }
 
 // ─────────────────────────────
-// FORM
+// LABELS (utilisés dans webhook GHL)
 // ─────────────────────────────
-function updateSubmitBtn() {
-  const btn=document.getElementById('btn-submit'); if(!btn) return
-  btn.classList.toggle('btn--disabled', !(state.form.nom.trim()&&state.form.email.trim()))
-}
-function handleSubmit() {
-  if(!state.form.nom.trim()||!state.form.email.trim()) return
-  state.submitted=true
-  // Meta Pixel — track Lead conversion
-  if(window.fbq) {
-    const r = calc()
-    fbq('track', 'Lead', {
-      content_name: 'Diagnostic calculateur',
-      content_category: FUNNEL[state.industry]?.label || '',
-      value: (r?.isRange ? r.annualMax : r?.annual) || 0,
-      currency: 'CAD',
-    })
-  }
-  const url=document.querySelector('meta[name="webhook-url"]')?.content
-  if(url) {
-    const r=calc()
-    const { probs, recs } = buildRecommendation()
-    const SOURCE_LABELS = { references:'Références clients', reseau:'Réseau personnel', social:'Réseaux sociaux', pubs:'Publicités payantes', prospection:'Prospection directe' }
-    fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        // Contact
-        prenom:           state.form.nom,
-        telephone:        state.form.telephone,
-        email:            state.form.email,
-        entreprise:       state.form.entreprise,
-        // Réponses quiz
-        industrie:        FUNNEL[state.industry]?.label,
-        source_clients:   SOURCE_LABELS[state.source] || state.source,
-        clients_actuels:  state.socialLeads,
-        localisation:     LOCATION_LABELS[state.location] || state.location,
-        utilisation_ia:   AI_LABELS[state.ai] || state.ai,
-        defi_principal:   CHALLENGE_LABELS[state.challenge] || state.challenge,
-        valeur_client:    state.avgValue,
-        // Résultats
-        score_visibilite: getVisibilityScore() + '/4',
-        solutions_recommandees: recs.map(r=>r.title).join(', '),
-        ...(r?.isRange ? {
-          niveau: (r.level + 1) + '/4',
-          niveau_label: r.levelLabel,
-          leads_mois: `${r.leadsMin}-${r.leadsMax}`,
-          closings_mois: `${r.closingsMin}-${r.closingsMax}`,
-          extra_revenu_mensuel: `${r.revenueMin}-${r.revenueMax}`,
-          extra_revenu_annuel:  `${r.annualMin}-${r.annualMax}`,
-          potentiel_mensuel: r.revenueMax, // pour compat GHL
-          potentiel_annuel:  r.annualMax,
-          clients_par_mois:  r.closingsMax,
-        } : {
-          potentiel_mensuel: r?.monthly,
-          potentiel_annuel:  r?.annual,
-          clients_par_mois:  r?.clients,
-        }),
-      })
-    }).catch(()=>{})
-  }
-  renderPotentiel()
-}
-
-// ─────────────────────────────
-// RESULTS PAGE NAV
-// ─────────────────────────────
-function setResultsPage(page) {
-  state.resultsPage=page
-  const pages=['diagnostic','systeme','potentiel']
-  pages.forEach(p=>{
-    const el=document.getElementById('rp-'+p)
-    if(el) el.className='result-page'+(p===page?' visible':'')
-  })
-  if(page==='systeme')   renderSysteme()
-  if(page==='potentiel') renderPotentiel()
-  window.scrollTo({top:0,behavior:'smooth'})
-}
+const AI_LABELS  = { aucun:'Aucune utilisation', basique:'Basique — comme un Google amélioré', integre:'Intégrée dans mon business' }
+const LOCATION_LABELS = { montreal:'Montréal', rive_nord:'Rive Nord', laurentides:'Laurentides', rive_sud:'Rive Sud', estrie:'Estrie / Magog', quebec:'Québec', autre_region:'Autre région' }
+const CHALLENGE_LABELS = { visibility:'Manque de visibilité dans ma région', ads_dont_work:"Mes efforts ne convertissent pas", system:'Système non optimisé (manuel, sans IA)', start:'Je ne sais pas par où commencer' }
 
 // ─────────────────────────────
 // MAIN RENDER
 // ─────────────────────────────
 function render() {
   const step=state.step
-  ;['intro','industry','source','leads','location','closing','value','ai','challenge','results'].forEach(s=>{
+  ;['intro','industry','source','leads','location','value','ai','challenge','email','calculating','result','video'].forEach(s=>{
     const el=document.getElementById('screen-'+s)
     if(el) el.className='screen'+(s===step?' visible':'')
   })
 
   const brand=document.getElementById('brand')
-  brand.style.display = step==='intro' ? 'none' : 'flex'
+  if(brand) brand.style.display = step==='intro' ? 'none' : 'flex'
 
-  if(step!=='intro'&&step!=='results') renderProgress('pb-'+step,'prog-'+step,step)
+  const isQ = ['industry','source','leads','location','value','ai','challenge'].includes(step)
+  if(isQ) renderProgress('pb-'+step,'prog-'+step,step)
 
   if(step==='industry') {
     renderOptions('opts-industry',[
@@ -1182,12 +1072,16 @@ function render() {
   }
 
   if(step==='leads') {
-    setLeads(state.socialLeads)
-    const sub=document.getElementById('leads-subtitle')
-    if(sub) {
-      const methodLabel = {references:'des références clients',reseau:'de ton réseau personnel',social:'des réseaux sociaux',pubs:'des publicités payantes',prospection:'de la prospection directe'}[state.source]||'cette méthode'
-      sub.textContent = `Combien de clients tu signes en moyenne par mois grâce à ${methodLabel}?`
-    }
+    const c = getVolumeConfig()
+    if (state.volume === 0 || state.volume == null) state.volume = c.default
+    document.getElementById('volume-title').textContent = c.title
+    document.getElementById('volume-subtitle').textContent = c.subtitle
+    document.getElementById('volume-unit').textContent = c.unit
+    const hint=document.getElementById('volume-range-hint')
+    if(hint) hint.textContent = c.isCurrency
+      ? `de ${fmtCAD(c.min)} à ${fmtCAD(c.max)}+ · Pas de ${fmtCAD(c.step)}`
+      : `de ${c.min} à ${c.max}+ · Tape ou utilise les boutons`
+    setVolume(state.volume)
   }
 
   if(step==='location') {
@@ -1203,15 +1097,10 @@ function render() {
     if(state.location) document.getElementById('btn-location')?.classList.remove('btn--disabled')
   }
 
-  if(step==='closing') {
-    setClosing(state.closingRate)
-  }
-
   if(step==='value'&&state.industry) {
     setValue(state.avgValue)
-    const f=FUNNEL[state.industry]
     const hint=document.getElementById('value-range-hint')
-    if(hint) hint.textContent = `de ${fmtCAD(f.avgMin)} à ${fmtCAD(f.avgMax)} · Pas de ${fmtCAD(f.avgStep)}`
+    if(hint) hint.textContent = `de ${fmtCAD(VALUE_MIN)} à ${fmtCAD(VALUE_MAX)} · Pas de ${fmtCAD(VALUE_STEP)}`
   }
 
   if(step==='ai') {
@@ -1233,7 +1122,8 @@ function render() {
     if(state.challenge) document.getElementById('btn-challenge')?.classList.remove('btn--disabled')
   }
 
-  if(step==='results') { renderDiagnostic(); setResultsPage('diagnostic') }
+  if(step==='email') updateEmailBtn()
+  if(step==='result') renderResult()
 
   window.scrollTo({top:0,behavior:'smooth'})
 }
