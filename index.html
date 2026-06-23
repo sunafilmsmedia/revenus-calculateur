@@ -35,630 +35,585 @@
           y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
       })(window, document, "clarity", "script", "xbqh7lqnmz");
   </script>
-  <!-- End Microsoft Clarity -->
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Pacifico&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Kaushan+Script&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --orange: #FF5F00;
-      --white: #fff;
-      --w08: rgba(255,255,255,0.08);
-      --w15: rgba(255,255,255,0.15);
-      --w25: rgba(255,255,255,0.25);
-      --w40: rgba(255,255,255,0.40);
+      --bg: #0B0B0C;
+      --orange: #FF6A00;
+      --orange-light: #FF7E1F;
+      --white: #FFFFFF;
       --w60: rgba(255,255,255,0.60);
-      --w80: rgba(255,255,255,0.80);
-      --blk15: rgba(0,0,0,0.15);
-      --blk25: rgba(0,0,0,0.25);
-      --green: #34C759;
-      --red: #FF3B30;
-      --blue: #5AC8FA;
-      --purple: #AF52DE;
-      --yellow: #FF9500;
+      --w45: rgba(255,255,255,0.45);
+      --w10: rgba(255,255,255,0.10);
+      --w06: rgba(255,255,255,0.06);
+      --w03: rgba(255,255,255,0.03);
     }
 
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'DM Sans', sans-serif;
-      background: #080808;
+      font-family: 'Hanken Grotesk', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--white);
       min-height: 100vh;
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      padding: 24px 16px 60px;
+      position: relative;
+      overflow-x: hidden;
+      line-height: 1.5;
     }
 
-    .calc {
-      width: 100%;
-      max-width: 480px;
-      background: var(--orange);
-      border-radius: 28px;
-      padding: 0 0 32px;
-      position: relative;
-      overflow: hidden;
-      color: var(--white);
-      box-shadow: 0 32px 80px rgba(255,95,0,0.30), 0 8px 24px rgba(0,0,0,0.6);
-    }
-    .calc::after {
+    /* Orange halo at top */
+    body::before {
       content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at top right, rgba(255,255,255,0.06) 0%, transparent 55%);
+      position: fixed;
+      top: -300px; left: 50%;
+      transform: translateX(-50%);
+      width: 1000px; height: 700px;
+      background: radial-gradient(circle, rgba(255,106,0,0.16) 0%, transparent 55%);
+      filter: blur(60px);
       pointer-events: none;
       z-index: 0;
     }
 
-    .calc-inner { position: relative; z-index: 1; padding: 0 26px; }
-
-    /* ── HERO LOCKUP ── */
-    .hero-lockup {
+    .app {
       position: relative;
-      width: 100%;
-      height: 250px;
-      overflow: visible;
-    }
-    .hero-folder {
-      position: absolute;
-      bottom: -8px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 310px;
       z-index: 1;
-      filter: drop-shadow(0 12px 32px rgba(0,0,0,0.35));
+      max-width: 720px;
+      width: 94%;
+      margin: 0 auto;
+      padding: 24px 0 80px;
     }
-    .hero-potentiel {
-      position: absolute;
-      bottom: 24px;
-      left: 0; right: 0;
-      text-align: center;
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 80px;
-      line-height: 1;
-      color: var(--white);
-      letter-spacing: 0.04em;
-      z-index: 2;
-      text-shadow: 0 4px 24px rgba(0,0,0,0.3);
+
+    /* ── TOP BAR (landing) ── */
+    .topbar {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      margin-bottom: 40px;
     }
-    .hero-decouvre {
-      position: absolute;
-      bottom: 96px;
-      left: 0; right: 0;
-      text-align: center;
-      font-family: 'Pacifico', cursive;
-      font-size: 26px;
-      color: rgba(255,255,255,0.9);
-      z-index: 3;
-      text-shadow: 0 2px 12px rgba(0,0,0,0.25);
-    }
-    .hero-badge {
-      position: absolute;
-      bottom: 10px; right: 18px;
-      z-index: 5;
-      background: var(--white);
+    .wordmark {
       color: var(--orange);
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 14px;
-      letter-spacing: 0.1em;
-      padding: 5px 14px;
+      font-weight: 700;
+      font-size: 18px;
+      text-decoration: none;
+      letter-spacing: -0.01em;
+    }
+    .badge-free {
+      background: var(--orange);
+      color: var(--white);
+      font-weight: 800;
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      padding: 8px 16px;
       border-radius: 99px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
     }
 
-    .brand {
-      padding: 22px 26px 0;
-      font-size: 11px;
+    /* ── HEADER LOGO (questions / loading) ── */
+    .qlogo {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 36px;
+      text-decoration: none;
+    }
+    .qlogo-tile {
+      width: 36px; height: 36px;
+      background: var(--orange);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Anton', sans-serif;
+      font-size: 22px;
+      color: var(--white);
+    }
+    .qlogo-text {
       font-weight: 700;
+      font-size: 13px;
       letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--w60);
-      position: relative;
-      z-index: 1;
+      color: var(--white);
     }
 
     /* ── TYPOGRAPHY ── */
-    .bebas { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.03em; line-height: 1; }
-    .h2 { font-size: 38px; }
-    .h3 { font-size: 28px; }
-    .big-num { font-size: 90px; line-height: 1; }
-    .big-num-md { font-size: 60px; line-height: 1; }
-    .body { font-size: 15px; line-height: 1.6; color: var(--w80); }
-    .small { font-size: 13px; color: var(--w60); line-height: 1.5; }
-    .tiny { font-size: 11px; color: var(--w40); text-align: center; }
-    .label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--w60); }
+    .anton { font-family: 'Anton', sans-serif; text-transform: uppercase; letter-spacing: 0.01em; line-height: 1; }
+    .script { font-family: 'Kaushan Script', cursive; display: inline-block; transform: rotate(-3deg); }
+    .uppercase { text-transform: uppercase; letter-spacing: 0.14em; }
 
-    /* ── LAYOUT ── */
-    .col { display: flex; flex-direction: column; gap: 18px; }
-    .col--sm { gap: 10px; }
-    .row { display: flex; align-items: center; }
-    .between { justify-content: space-between; }
-    .center { text-align: center; align-items: center; }
-
-    /* ── PROGRESS ── */
-    .progress-bar { display: flex; gap: 4px; }
-    .progress-bar__seg { flex: 1; height: 3px; border-radius: 2px; background: var(--w25); transition: background 0.3s; }
-    .progress-bar__seg.active { background: var(--white); }
+    /* ── LANDING HERO ── */
+    .landing-hero { text-align: center; padding: 16px 0 8px; }
+    .landing-script {
+      font-family: 'Kaushan Script', cursive;
+      font-size: 32px;
+      color: var(--white);
+      transform: rotate(-3deg);
+      margin-bottom: 14px;
+      display: inline-block;
+    }
+    .landing-la {
+      font-family: 'Anton', sans-serif;
+      font-size: 96px;
+      color: var(--white);
+      line-height: 0.92;
+      letter-spacing: 0.02em;
+      margin-bottom: 6px;
+    }
+    .landing-table-wrap {
+      display: inline-block;
+      background: var(--orange);
+      padding: 6px 26px 10px;
+      border-radius: 10px;
+      box-shadow: 0 0 60px rgba(255,106,0,0.35);
+    }
+    .landing-table {
+      font-family: 'Anton', sans-serif;
+      font-size: 96px;
+      color: var(--white);
+      line-height: 0.92;
+      letter-spacing: 0.02em;
+    }
 
     /* ── STATS STRIP ── */
-    .stats-strip { display: flex; gap: 0; background: var(--blk15); border-radius: 14px; overflow: hidden; border: 1px solid var(--w08); }
-    .stat-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 14px 8px; border-right: 1px solid var(--w08); }
-    .stat-item:last-child { border-right: none; }
-    .stat-val { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--white); letter-spacing: 0.03em; }
-    .stat-lbl { font-size: 10px; color: var(--w40); text-align: center; }
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      background: var(--w03);
+      border: 1px solid var(--w10);
+      border-radius: 20px;
+      margin: 36px 0 28px;
+      overflow: hidden;
+    }
+    .stat {
+      padding: 22px 12px;
+      text-align: center;
+      border-right: 1px solid var(--w10);
+    }
+    .stat:last-child { border-right: none; }
+    .stat-icon { font-size: 22px; color: var(--orange); margin-bottom: 8px; }
+    .stat-val { font-family: 'Anton', sans-serif; font-size: 34px; color: var(--white); line-height: 1; letter-spacing: 0.02em; }
+    .stat-lbl { font-size: 11px; color: var(--w60); margin-top: 6px; letter-spacing: 0.12em; text-transform: uppercase; }
+
+    .landing-desc {
+      color: var(--w60);
+      font-size: 16px;
+      line-height: 1.65;
+      text-align: center;
+      margin-bottom: 26px;
+      padding: 0 8px;
+    }
+    .landing-desc strong { color: var(--orange); font-weight: 700; }
 
     /* ── BUTTONS ── */
     .btn {
-      display: flex; align-items: center; justify-content: center;
-      width: 100%; padding: 17px 24px;
-      border: none; border-radius: 14px;
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 20px; letter-spacing: 0.06em;
-      cursor: pointer;
-      transition: opacity 0.2s, transform 0.12s, box-shadow 0.2s;
-    }
-    .btn:hover { opacity: 0.92; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,0,0,0.25); }
-    .btn:active { transform: scale(0.98) translateY(0); }
-    .btn--primary { background: var(--white); color: var(--orange); box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
-    .btn--disabled { opacity: 0.38; cursor: default; pointer-events: none; box-shadow: none; }
-    .btn-ghost { background: none; border: none; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--w60); cursor: pointer; padding: 4px 0; transition: color 0.2s; }
-    .btn-ghost:hover { color: var(--white); }
-
-    /* ── OPTIONS ── */
-    .option {
-      display: flex; align-items: center; gap: 12px;
-      padding: 14px 16px; border-radius: 14px;
-      border: 2px solid var(--w25);
-      background: var(--blk15);
-      color: var(--white); cursor: pointer;
-      transition: all 0.18s ease;
-    }
-    .option:hover { border-color: var(--w60); background: var(--blk25); transform: translateX(3px); }
-    .option.active { border-color: var(--white); background: var(--white); color: var(--orange); transform: translateX(3px); box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
-    .option__icon { font-size: 22px; flex-shrink: 0; }
-    .option__title { font-size: 14px; font-weight: 700; }
-    .option__sub { font-size: 11px; opacity: 0.6; margin-top: 2px; }
-
-    /* ── STEPPER ── */
-    .stepper-row { display: flex; align-items: center; justify-content: center; gap: 18px; }
-    .step-btn {
-      width: 52px; height: 52px;
-      border-radius: 50%;
-      border: 2px solid var(--w25);
-      background: var(--blk25);
+      display: block;
+      width: 100%;
+      background: linear-gradient(180deg, var(--orange-light), var(--orange));
       color: var(--white);
-      font-size: 28px; font-weight: 500; line-height: 1;
+      border: none;
+      border-radius: 14px;
+      padding: 20px 24px;
+      font-family: 'Hanken Grotesk', sans-serif;
+      font-weight: 800;
+      font-size: 14px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
       cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: all 0.15s ease;
-      flex-shrink: 0;
+      text-decoration: none;
+      text-align: center;
+      box-shadow: 0 8px 28px rgba(255,106,0,0.35), 0 0 50px rgba(255,106,0,0.18);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
       -webkit-tap-highlight-color: transparent;
     }
-    .step-btn:hover { background: var(--white); color: var(--orange); border-color: var(--white); }
-    .step-btn:active { transform: scale(0.92); }
-    .step-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-    .step-input {
-      font-family: 'Bebas Neue', sans-serif;
-      color: var(--white);
-      background: transparent;
-      border: none; outline: none;
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 14px 38px rgba(255,106,0,0.5); }
+    .btn:active { transform: translateY(0); }
+    .btn--disabled {
+      background: var(--w06);
+      color: var(--w45);
+      box-shadow: none;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .tiny-note {
       text-align: center;
-      letter-spacing: 0.03em;
-      line-height: 1;
-      width: 100%;
-      max-width: 220px;
-      padding: 0;
-      caret-color: var(--white);
-    }
-    .step-input::placeholder { color: var(--w40); }
-    .step-input:focus { color: var(--white); }
-    .step-input--num { font-size: 86px; }
-    .step-input--md  { font-size: 56px; }
-    .step-range-hint { font-size: 11px; color: var(--w40); margin-top: 6px; text-align: center; }
-
-    /* ── GLASS ── */
-    .glass { background: var(--blk15); border-radius: 14px; padding: 16px; border: 1px solid var(--w08); }
-    .glass--dark { background: var(--blk25); }
-    .glass--border { border: 2px solid var(--w25); background: transparent; }
-    .divider { height: 1px; background: var(--w08); }
-
-    /* ── RAINBOW ANIMATION (calcul IA) ── */
-    @keyframes rainbow-shift {
-      0%   { background-position: 0% 50%; }
-      100% { background-position: 200% 50%; }
-    }
-    @keyframes rainbow-pulse {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50%      { transform: scale(1.08); opacity: 0.85; }
-    }
-    @keyframes rainbow-fill {
-      0%   { width: 0%; }
-      100% { width: 100%; }
-    }
-    .rainbow-text {
-      background: linear-gradient(90deg, #ff5f00, #ffd60a, #34c759, #5ac8fa, #af52de, #ff3b30, #ff5f00);
-      background-size: 200% 100%;
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      animation: rainbow-shift 2s linear infinite;
-    }
-    .rainbow-pulse {
-      width: 72px; height: 72px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #ff5f00, #ffd60a, #34c759, #5ac8fa, #af52de, #ff3b30, #ff5f00);
-      background-size: 300% 300%;
-      animation: rainbow-shift 2s linear infinite, rainbow-pulse 1.2s ease-in-out infinite;
-      box-shadow: 0 0 40px rgba(255,255,255,0.35);
-    }
-    .rainbow-bar {
-      width: 100%; max-width: 260px; height: 6px;
-      border-radius: 99px;
-      background: rgba(0,0,0,0.25);
-      overflow: hidden;
-    }
-    .rainbow-bar__fill {
-      height: 100%;
-      background: linear-gradient(90deg, #ff5f00, #ffd60a, #34c759, #5ac8fa, #af52de, #ff3b30);
-      background-size: 200% 100%;
-      animation: rainbow-fill 2s ease-out forwards, rainbow-shift 1.5s linear infinite;
+      color: var(--w45);
+      font-size: 12px;
+      margin-top: 16px;
+      line-height: 1.5;
     }
 
-    /* ── VIDEO EMBED PLACEHOLDER ── */
-    .video-embed {
-      width: 100%;
-      aspect-ratio: 16/9;
-      background: var(--blk25);
-      border-radius: 14px;
-      border: 1px solid var(--w08);
-      overflow: hidden;
-      position: relative;
-    }
-    .video-placeholder {
-      width: 100%; height: 100%;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
+    /* ── QUESTION SCREEN ── */
+    .q-counter {
       color: var(--w60);
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      display: block;
+    }
+    .progress {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+      margin-bottom: 36px;
+    }
+    .progress-seg {
+      height: 4px;
+      border-radius: 2px;
+      background: var(--w10);
+      transition: all 0.3s ease;
+    }
+    .progress-seg.done { background: var(--orange); }
+    .progress-seg.current { background: var(--orange); box-shadow: 0 0 14px rgba(255,106,0,0.7); }
+
+    .q-title {
+      font-family: 'Anton', sans-serif;
+      font-size: 42px;
+      line-height: 1.08;
+      letter-spacing: 0.01em;
+      color: var(--white);
+      text-transform: uppercase;
+      margin-bottom: 28px;
     }
 
-    /* ── CRITERIA ── */
-    .criteria-item { display: flex; align-items: flex-start; gap: 10px; }
-    .criteria-dot { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; color: var(--white); margin-top: 1px; }
-    .criteria-dot--ok { background: var(--green); }
-    .criteria-dot--no { background: var(--red); }
-
-    /* ── FUNNEL ROW ── */
-    .funnel-row { display: flex; justify-content: space-between; align-items: center; padding: 11px 0; }
-    .funnel-row:not(:last-child) { border-bottom: 1px solid var(--w08); }
-
-    /* ── RECOMMENDATION CARDS ── */
-    .rec-card {
-      display: flex; align-items: flex-start; gap: 14px;
-      background: var(--blk25);
+    /* ── OPTIONS ── */
+    .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
+    .opt {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 18px;
+      background: var(--w03);
+      border: 1px solid var(--w10);
       border-radius: 16px;
-      padding: 16px;
-      border: 1px solid var(--w08);
+      cursor: pointer;
+      transition: all 0.18s ease;
+      -webkit-tap-highlight-color: transparent;
     }
-    .rec-icon {
+    .opt:hover { background: var(--w06); border-color: rgba(255,255,255,0.18); transform: translateX(2px); }
+    .opt.selected {
+      background: rgba(255,106,0,0.10);
+      border-color: var(--orange);
+      box-shadow: 0 0 28px rgba(255,106,0,0.18);
+    }
+    .opt-icon {
       width: 44px; height: 44px;
+      background: rgba(255,106,0,0.14);
       border-radius: 12px;
       display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
       font-size: 22px;
+    }
+    .opt-body { flex: 1; min-width: 0; }
+    .opt-title { font-size: 15px; font-weight: 700; color: var(--white); line-height: 1.3; }
+    .opt-sub { font-size: 13px; color: var(--w60); margin-top: 3px; line-height: 1.4; }
+    .opt-check {
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      border: 2px solid var(--w10);
+      background: transparent;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--white);
+      font-size: 13px;
+      font-weight: 700;
+      transition: all 0.15s;
       flex-shrink: 0;
     }
-    .rec-tag {
-      display: inline-flex;
-      padding: 2px 8px;
-      border-radius: 99px;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
+    .opt.selected .opt-check { background: var(--orange); border-color: var(--orange); }
+    .opt-check::before { content: '✓'; opacity: 0; transition: opacity 0.15s; }
+    .opt.selected .opt-check::before { opacity: 1; }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      color: var(--w60);
+      font-size: 14px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      margin: 16px auto 0;
+      padding: 8px;
+      text-decoration: none;
+      font-family: inherit;
+    }
+    .back-link:hover { color: var(--white); }
+
+    /* ── LOADING ── */
+    .loading-screen {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 22px; padding: 80px 0;
+      text-align: center;
+    }
+    .spinner {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      border: 4px solid var(--w10);
+      border-top-color: var(--orange);
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-title {
+      font-family: 'Anton', sans-serif;
+      font-size: 36px;
       text-transform: uppercase;
-      margin-bottom: 4px;
+      letter-spacing: 0.02em;
     }
-    .rec-title { font-size: 15px; font-weight: 700; color: var(--white); line-height: 1.2; margin-bottom: 4px; }
-    .rec-desc { font-size: 12px; color: var(--w60); line-height: 1.5; }
+    .loading-sub { color: var(--w60); font-size: 14px; }
 
-    /* ── PROBLEM LIST ── */
-    .prob-item { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--w80); line-height: 1.5; }
-    .prob-item::before { content: '→'; color: var(--orange); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+    /* ── RESULT ── */
+    .result-screen { text-align: center; padding: 16px 0; }
+    .result-lbl {
+      font-size: 13px;
+      letter-spacing: 0.20em;
+      color: var(--w60);
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+    .result-script {
+      font-family: 'Kaushan Script', cursive;
+      font-size: 30px;
+      color: var(--white);
+      transform: rotate(-3deg);
+      display: inline-block;
+      margin-bottom: 14px;
+    }
+    .result-box {
+      background: var(--orange);
+      border-radius: 14px;
+      padding: 32px 28px 24px;
+      box-shadow: 0 0 80px rgba(255,106,0,0.4);
+      margin: 8px 0 28px;
+    }
+    .result-amount {
+      font-family: 'Anton', sans-serif;
+      font-size: 88px;
+      color: var(--white);
+      line-height: 0.95;
+      letter-spacing: 0.02em;
+    }
+    .result-suffix {
+      font-size: 13px;
+      letter-spacing: 0.20em;
+      color: rgba(255,255,255,0.92);
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-top: 12px;
+    }
+    .result-desc {
+      color: var(--w60);
+      font-size: 16px;
+      line-height: 1.65;
+      margin: 0 0 24px;
+      padding: 0 8px;
+    }
+    .result-restart {
+      text-align: center;
+      color: var(--w60);
+      font-size: 14px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      margin-top: 20px;
+      padding: 8px;
+      font-family: inherit;
+    }
+    .result-restart:hover { color: var(--white); }
 
-    /* ── CALLOUT ── */
-    .callout { background: rgba(0,0,0,0.22); border-radius: 14px; padding: 14px 16px; font-size: 14px; font-weight: 500; color: var(--w80); line-height: 1.6; border: 1px solid var(--w08); }
+    /* ── FORM (sur résultat) ── */
+    .form-group {
+      background: var(--w03);
+      border: 1px solid var(--w10);
+      border-radius: 18px;
+      padding: 24px;
+      margin: 24px 0 16px;
+      text-align: left;
+    }
+    .form-title {
+      font-family: 'Anton', sans-serif;
+      font-size: 24px;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      margin-bottom: 6px;
+      text-align: center;
+    }
+    .form-sub { color: var(--w60); font-size: 14px; margin-bottom: 18px; line-height: 1.5; text-align: center; }
+    .field {
+      width: 100%;
+      padding: 16px 18px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--w10);
+      border-radius: 12px;
+      color: var(--white);
+      font-family: inherit;
+      font-size: 15px;
+      margin-bottom: 12px;
+      outline: none;
+      transition: border-color 0.18s;
+    }
+    .field:focus { border-color: var(--orange); }
+    .field::placeholder { color: var(--w45); }
 
-    /* ── FORM ── */
-    .field { width: 100%; padding: 14px 16px; background: var(--blk25); border: 2px solid var(--w25); border-radius: 12px; color: var(--white); font-size: 15px; font-family: 'DM Sans', sans-serif; outline: none; transition: border-color 0.2s; }
-    .field::placeholder { color: var(--w40); }
-    .field:focus { border-color: rgba(255,255,255,0.65); }
-
-    /* ── SCREENS + TRANSITIONS IA ── */
-    .screen { display: none; position: relative; }
+    /* ── SCREENS + ANIMATIONS ── */
+    .screen { display: none; }
     .screen.visible {
-      display: flex; flex-direction: column; gap: 18px;
-      animation: ai-glitch-in 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+      display: block;
+      animation: slide-in 0.45s cubic-bezier(0.22, 1, 0.36, 1);
     }
-    .screen.visible::before {
-      content: '';
-      position: absolute; left: -26px; right: -26px;
-      height: 3px;
-      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.85) 50%, transparent 100%);
-      box-shadow: 0 0 12px rgba(255,255,255,0.5);
-      animation: ai-scanline 0.55s ease-out forwards;
-      pointer-events: none; z-index: 10;
+    .screen.visible.back { animation: slide-in-back 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
+    @keyframes slide-in {
+      0%   { opacity: 0; transform: translateX(28px); filter: blur(4px); }
+      100% { opacity: 1; transform: translateX(0); filter: blur(0); }
     }
-    @keyframes ai-glitch-in {
-      0%   { opacity: 0; transform: translateY(12px); filter: blur(6px); }
-      30%  { opacity: 0.5; filter: blur(3px) brightness(1.15); }
-      50%  { opacity: 1; filter: blur(2px); transform: translateY(2px); }
-      75%  { filter: blur(0.5px) brightness(1.05); }
+    @keyframes slide-in-back {
+      0%   { opacity: 0; transform: translateX(-28px); filter: blur(4px); }
+      100% { opacity: 1; transform: translateX(0); filter: blur(0); }
+    }
+
+    /* Options cascade animation */
+    .opt {
+      opacity: 0;
+      animation: opt-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    .opt:nth-child(1) { animation-delay: 0.10s; }
+    .opt:nth-child(2) { animation-delay: 0.18s; }
+    .opt:nth-child(3) { animation-delay: 0.26s; }
+    .opt:nth-child(4) { animation-delay: 0.34s; }
+    @keyframes opt-in {
+      0%   { opacity: 0; transform: translateY(10px); filter: blur(3px); }
       100% { opacity: 1; transform: translateY(0); filter: blur(0); }
     }
-    @keyframes ai-scanline {
-      0%   { top: 0; opacity: 1; }
-      80%  { opacity: 0.6; }
-      100% { top: 100%; opacity: 0; }
+
+    /* Result counter pulse on appear */
+    .result-box {
+      opacity: 0;
+      animation: result-pop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s forwards;
+    }
+    @keyframes result-pop {
+      0%   { opacity: 0; transform: scale(0.85); }
+      100% { opacity: 1; transform: scale(1); }
     }
 
-    /* ── LOGO (top-left, sur les écrans de questions) ── */
-    .logo-bar {
-      position: relative; z-index: 5;
-      display: flex; align-items: center; gap: 8px;
-      padding: 18px 26px 12px;
-    }
-    .logo-bar a { display: flex; align-items: center; gap: 8px; text-decoration: none; }
-    .logo-mark {
-      width: 26px; height: 26px;
-      background: var(--white);
-      border-radius: 7px;
-      display: flex; align-items: center; justify-content: center;
-      color: var(--orange);
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 18px;
-      letter-spacing: -0.02em;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    }
-    .logo-text {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 14px;
-      letter-spacing: 0.14em;
-      color: var(--white);
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      .app { padding: 18px 0 60px; }
+      .topbar { margin-bottom: 28px; }
+      .landing-la, .landing-table { font-size: 68px; }
+      .landing-table-wrap { padding: 4px 18px 6px; }
+      .landing-script { font-size: 26px; margin-bottom: 10px; }
+      .stat { padding: 16px 6px; }
+      .stat-val { font-size: 26px; }
+      .stat-icon { font-size: 18px; }
+      .stat-lbl { font-size: 10px; }
+      .q-title { font-size: 32px; }
+      .opt { padding: 14px 14px; gap: 12px; }
+      .opt-icon { width: 40px; height: 40px; font-size: 20px; }
+      .opt-title { font-size: 14px; }
+      .opt-sub { font-size: 12px; }
+      .result-amount { font-size: 64px; }
+      .loading-title { font-size: 28px; }
+      .btn { padding: 18px 20px; font-size: 13px; }
     }
 
-    @media (max-width: 520px) {
-      body { padding: 0 0 48px; }
-      .calc { border-radius: 0; min-height: 100dvh; }
-      .calc-inner { padding: 0 18px; }
-      .brand { padding: 18px 18px 0; }
-      .hero-lockup { height: 220px; }
-      .hero-potentiel { font-size: 68px; }
-      .hero-decouvre { font-size: 22px; bottom: 82px; }
-      .h2 { font-size: 32px; }
-      .big-num { font-size: 76px; }
-      .tabs { font-size: 13px; }
-    }
-
-    /* ── DESKTOP — carte plus large, funnel en grille ── */
+    /* ── DESKTOP (large screens) ── */
     @media (min-width: 768px) {
-      body { padding: 40px 24px 80px; }
-      .calc { max-width: 680px; padding-bottom: 40px; }
-      .calc-inner { padding: 0 40px; }
-      .hero-lockup { height: 280px; }
-      .hero-potentiel { font-size: 96px; }
-      .hero-decouvre { font-size: 30px; bottom: 110px; }
-      .h2 { font-size: 42px; }
-      .funnel-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 16px; }
-      .funnel-grid .funnel-row {
-        border-bottom: none !important;
-        background: var(--blk25);
-        border-radius: 12px;
-        padding: 14px 16px;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-      }
-      .funnel-grid .funnel-row > div:last-child { text-align: left; }
-      .stepper-row { gap: 24px; }
-      .step-btn { width: 56px; height: 56px; font-size: 32px; }
+      .app { padding: 40px 0 80px; }
+      .landing-la, .landing-table { font-size: 120px; }
+      .q-title { font-size: 50px; }
     }
   </style>
 </head>
 <body>
-<div class="calc" id="calc">
 
-  <div class="logo-bar" id="brand" style="display:none">
-    <a href="https://sunafilmsmedia.com" target="_blank" rel="noopener">
-      <span class="logo-mark">S</span>
-      <span class="logo-text">SUNA FILMS MEDIA</span>
-    </a>
+<div class="app">
+
+  <!-- ════ TOP BAR (landing) ════ -->
+  <div class="topbar" id="topbar">
+    <a href="https://sunafilmsmedia.com" target="_blank" rel="noopener" class="wordmark">Suna Films Media</a>
+    <span class="badge-free">GRATUIT</span>
   </div>
 
-  <!-- ════ INTRO ════ -->
-  <div class="screen" id="screen-intro">
-    <div class="hero-lockup">
-      <div class="hero-folder">
-        <svg viewBox="0 0 320 210" xmlns="http://www.w3.org/2000/svg" width="100%">
-          <rect x="52" y="80" width="130" height="158" rx="6" fill="#fff" opacity="0.18" transform="rotate(-8 117 159)"/>
-          <rect x="135" y="78" width="130" height="158" rx="6" fill="#fff" opacity="0.13" transform="rotate(6 200 157)"/>
-          <rect x="90" y="72" width="140" height="160" rx="6" fill="rgba(255,255,255,0.95)"/>
-          <rect x="106" y="102" width="108" height="5" rx="2.5" fill="#FF5F00" opacity="0.25"/>
-          <rect x="106" y="116" width="88" height="4" rx="2" fill="#FF5F00" opacity="0.15"/>
-          <rect x="106" y="128" width="96" height="4" rx="2" fill="#FF5F00" opacity="0.15"/>
-          <rect x="106" y="140" width="72" height="4" rx="2" fill="#FF5F00" opacity="0.10"/>
-          <text x="160" y="192" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="36" fill="#FF5F00" opacity="0.16">$$$</text>
-          <path d="M24 88 L24 196 Q24 206 34 206 L286 206 Q296 206 296 196 L296 88 Z" fill="#9E3200"/>
-          <path d="M24 88 L24 74 Q24 64 34 64 L118 64 Q132 64 137 74 L148 88 Z" fill="#9E3200"/>
-          <path d="M24 108 L24 196 Q24 206 34 206 L286 206 Q296 206 296 196 L296 108 Z" fill="#CC4400"/>
-          <path d="M24 108 L296 108 L296 120 Q160 132 24 120 Z" fill="rgba(255,255,255,0.06)"/>
-          <ellipse cx="160" cy="108" rx="14" ry="9" fill="#B33C00"/>
-          <ellipse cx="160" cy="108" rx="9" ry="5.5" fill="#CC4400"/>
-          <ellipse cx="160" cy="108" rx="5" ry="3" fill="#9E3200"/>
-        </svg>
-      </div>
-      <div class="hero-potentiel">LA TABLE</div>
-      <div class="hero-decouvre">Combien tu laisses sur</div>
-      <div class="hero-badge">GRATUIT</div>
+  <!-- ════ HEADER LOGO (questions / loading) ════ -->
+  <a href="https://sunafilmsmedia.com" target="_blank" rel="noopener" class="qlogo" id="qlogo">
+    <span class="qlogo-tile">S</span>
+    <span class="qlogo-text">SUNA FILMS MEDIA</span>
+  </a>
+
+  <!-- ════ LANDING ════ -->
+  <div class="screen visible" id="screen-intro">
+    <div class="landing-hero">
+      <div class="landing-script">Combien tu laisses sur</div>
+      <div class="landing-la">LA</div>
+      <div class="landing-table-wrap"><span class="landing-table">TABLE</span></div>
     </div>
 
-    <div class="calc-inner col">
-      <div class="stats-strip">
-        <div class="stat-item"><span style="font-size:18px">⏱</span><span class="stat-val">3 MIN</span><span class="stat-lbl">pour le faire</span></div>
-        <div class="stat-item"><span style="font-size:18px">❓</span><span class="stat-val">7</span><span class="stat-lbl">questions</span></div>
-        <div class="stat-item"><span style="font-size:18px">🎯</span><span class="stat-val">100%</span><span class="stat-lbl">personnalisé</span></div>
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-icon">⏱</div>
+        <div class="stat-val" id="stat-1">0</div>
+        <div class="stat-lbl">MIN POUR LE FAIRE</div>
       </div>
-      <p class="body" style="font-size:14px">Découvre ce qui te manque pour rajouter <strong style="color:#fff">10–20K$/mois</strong> à ton business — et exactement quel système te manque pour scaler en continu.</p>
-      <button class="btn btn--primary" onclick="goNext()">Voir combien je laisse sur la table →</button>
-      <p class="tiny">Basé sur les résultats réels de nos clients courtiers au Québec</p>
+      <div class="stat">
+        <div class="stat-icon">❓</div>
+        <div class="stat-val" id="stat-2">0</div>
+        <div class="stat-lbl">QUESTIONS</div>
+      </div>
+      <div class="stat">
+        <div class="stat-icon">🎯</div>
+        <div class="stat-val" id="stat-3">0%</div>
+        <div class="stat-lbl">PERSONNALISÉ</div>
+      </div>
     </div>
+
+    <p class="landing-desc">Découvre ce qui te manque pour rajouter <strong>10–20K$/mois</strong> à ton business — et exactement quel système installer pour scaler en continu.</p>
+
+    <button class="btn" onclick="startQuiz()">Voir combien je laisse sur la table →</button>
+    <p class="tiny-note">Basé sur les résultats réels de nos clients courtiers au Québec</p>
   </div>
 
-  <!-- ════ INDUSTRY ════ -->
-  <div class="screen" id="screen-industry">
-    <div class="calc-inner col">
-      <div class="col--sm">
-        <div class="row between"><span class="small" id="prog-industry"></span></div>
-        <div id="pb-industry" class="progress-bar"></div>
-      </div>
-      <h2 class="bebas h2">Dans quelle industrie travailles-tu?</h2>
-      <div class="col--sm" id="opts-industry"></div>
-      <button class="btn btn--primary btn--disabled" id="btn-industry" onclick="goNext()">Continuer →</button>
-    </div>
+  <!-- ════ QUESTION (gabarit dynamique) ════ -->
+  <div class="screen" id="screen-question">
+    <span class="q-counter" id="q-counter">QUESTION 1 / 7</span>
+    <div class="progress" id="progress"></div>
+    <h2 class="q-title" id="q-title"></h2>
+    <div class="options" id="options"></div>
+    <button class="btn btn--disabled" id="btn-continue" onclick="goNext()">CONTINUER →</button>
+    <button class="back-link" onclick="goBack()">← Retour</button>
   </div>
 
-  <!-- ════ SOURCE ════ -->
-  <div class="screen" id="screen-source">
-    <div class="calc-inner col">
-      <div class="col--sm">
-        <div class="row between"><span class="small" id="prog-source"></span><button class="btn-ghost" onclick="goBack()">← Retour</button></div>
-        <div id="pb-source" class="progress-bar"></div>
-      </div>
-      <div><h2 class="bebas h2">D'où vient la majorité de tes clients?</h2><p class="small" style="margin-top:6px">Choisis ta source principale</p></div>
-      <div class="col--sm" id="opts-source"></div>
-      <button class="btn btn--primary btn--disabled" id="btn-source" onclick="goNext()">Continuer →</button>
+  <!-- ════ LOADING ════ -->
+  <div class="screen" id="screen-loading">
+    <div class="loading-screen">
+      <div class="spinner"></div>
+      <h2 class="loading-title">On calcule tes chiffres</h2>
+      <p class="loading-sub">Analyse de tes 7 réponses…</p>
     </div>
   </div>
 
-  <!-- ════ LEADS ════ -->
-  <div class="screen" id="screen-leads">
-    <div class="calc-inner col">
-      <div class="col--sm">
-        <div class="row between"><span class="small" id="prog-leads"></span><button class="btn-ghost" onclick="goBack()">← Retour</button></div>
-        <div id="pb-leads" class="progress-bar"></div>
-      </div>
-      <div><h2 class="bebas h2" id="volume-title">Volume</h2><p class="small" style="margin-top:6px" id="volume-subtitle"></p></div>
-      <div class="glass col center" style="gap:10px;padding:24px">
-        <div class="stepper-row">
-          <button type="button" class="step-btn" onclick="stepVolume(-1)">−</button>
-          <input class="step-input step-input--md" id="volume-display" type="text" inputmode="numeric" value="0" oninput="onVolumeInput(this.value)" onblur="onVolumeBlur()" style="width:auto;min-width:200px" />
-          <button type="button" class="step-btn" onclick="stepVolume(1)">+</button>
-        </div>
-        <div class="small" id="volume-unit">clients/mois</div>
-        <div class="step-range-hint" id="volume-range-hint"></div>
-      </div>
-      <div id="leads-callout"></div>
-      <button class="btn btn--primary" onclick="goNext()">Continuer →</button>
-    </div>
-  </div>
-
-  <!-- ════ LOCATION ════ -->
-  <div class="screen" id="screen-location">
-    <div class="calc-inner col">
-      <div class="col--sm">
-        <div class="row between"><span class="small" id="prog-location"></span><button class="btn-ghost" onclick="goBack()">← Retour</button></div>
-        <div id="pb-location" class="progress-bar"></div>
-      </div>
-      <div><h2 class="bebas h2">Où es-tu situé?</h2><p class="small" style="margin-top:6px">On adapte nos recommandations selon ta région</p></div>
-      <div class="col--sm" id="opts-location"></div>
-      <button class="btn btn--primary btn--disabled" id="btn-location" onclick="goNext()">Continuer →</button>
-    </div>
-  </div>
-
-
-  <!-- ════ VALUE ════ -->
-  <div class="screen" id="screen-value">
-    <div class="calc-inner col">
-      <div class="col--sm">
-        <div class="row between"><span class="small" id="prog-value"></span><button class="btn-ghost" onclick="goBack()">← Retour</button></div>
-        <div id="pb-value" class="progress-bar"></div>
-      </div>
-      <div><h2 class="bebas h2">Quelle est ta valeur moyenne par client?</h2><p class="small" style="margin-top:6px">Commission ou revenu moyen par dossier / mandat</p></div>
-      <div class="glass col center" style="gap:10px;padding:24px">
-        <div class="stepper-row">
-          <button type="button" class="step-btn" onclick="stepValue(-1)">−</button>
-          <input class="step-input step-input--md" id="value-display" type="text" inputmode="numeric" value="3 000 $" oninput="onValueInput(this.value)" onblur="onValueBlur()" style="width:auto;min-width:180px" />
-          <button type="button" class="step-btn" onclick="stepValue(1)">+</button>
-        </div>
-        <div class="small">par client</div>
-        <div class="step-range-hint" id="value-range-hint"></div>
-      </div>
-      <button class="btn btn--primary" onclick="goNext()">Continuer →</button>
-    </div>
-  </div>
-
-  <!-- ════ AI ════ -->
-  <div class="screen" id="screen-ai">
-    <div class="calc-inner col">
-      <div class="col--sm">
-        <div class="row between"><span class="small" id="prog-ai"></span><button class="btn-ghost" onclick="goBack()">← Retour</button></div>
-        <div id="pb-ai" class="progress-bar"></div>
-      </div>
-      <div>
-        <h2 class="bebas h2">Comment utilises-tu l'IA dans ton business?</h2>
-        <p class="small" style="margin-top:6px">Sois honnête — ça indique le niveau d'optimisation de ton système</p>
-      </div>
-      <div class="col--sm" id="opts-ai"></div>
-      <button class="btn btn--primary btn--disabled" id="btn-ai" onclick="goNext()">Continuer →</button>
-    </div>
-  </div>
-
-  <!-- ════ CHALLENGE ════ -->
-  <div class="screen" id="screen-challenge">
-    <div class="calc-inner col">
-      <div class="col--sm">
-        <div class="row between"><span class="small" id="prog-challenge"></span><button class="btn-ghost" onclick="goBack()">← Retour</button></div>
-        <div id="pb-challenge" class="progress-bar"></div>
-      </div>
-      <div>
-        <h2 class="bebas h2">Quel est ton plus grand défi en ce moment?</h2>
-        <p class="small" style="margin-top:6px">Sois honnête — ça va personnaliser ton plan</p>
-      </div>
-      <div class="col--sm" id="opts-challenge"></div>
-      <button class="btn btn--primary btn--disabled" id="btn-challenge" onclick="goNext()">Voir mes résultats →</button>
-    </div>
-  </div>
-
-  <!-- ════ CALCULATING (animation 2s) ════ -->
-  <div class="screen" id="screen-calculating">
-    <div class="calc-inner col center" style="gap:24px;padding-top:60px;padding-bottom:60px;align-items:center">
-      <div class="rainbow-pulse"></div>
-      <h2 class="bebas h2 rainbow-text" style="text-align:center;font-size:34px">L'IA calcule ton potentiel...</h2>
-      <div class="rainbow-bar"><div class="rainbow-bar__fill"></div></div>
-    </div>
-  </div>
-
-  <!-- ════ RESULT (qualifié) ════ -->
+  <!-- ════ RESULT ════ -->
   <div class="screen" id="screen-result">
-    <div class="calc-inner col" id="result-body"></div>
-  </div>
+    <div class="result-screen">
+      <div class="result-lbl">TON ESTIMATION</div>
+      <div class="result-script">Tu laisses environ</div>
+      <div class="result-box">
+        <div class="result-amount" id="result-amount">0$</div>
+        <div class="result-suffix">PAR MOIS SUR LA TABLE</div>
+      </div>
+      <p class="result-desc">En 30 minutes, on te montre exactement quel système installer pour aller chercher cet argent.</p>
 
-  <!-- ════ VIDEO (non qualifié) ════ -->
-  <div class="screen" id="screen-video">
-    <div class="calc-inner col">
-      <div style="text-align:center;padding-top:8px">
-        <div style="font-size:48px;margin-bottom:8px">📺</div>
-        <h2 class="bebas h2">T'es pas encore qualifié</h2>
-        <p class="small" style="margin-top:10px;line-height:1.6">Voici un guide pour comprendre le système et commencer à le tester de ton bord. Quand t'auras le volume requis, reviens nous voir.</p>
+      <div class="form-group" id="form-block">
+        <div class="form-title">Réserve ton appel gratuit</div>
+        <div class="form-sub">Ton plan personnalisé pour aller chercher cet argent va être envoyé à ces coordonnées :</div>
+        <input class="field" type="text"  id="f-nom"   placeholder="Ton nom complet" autocomplete="name"  oninput="state.form.nom=this.value;updateFormBtn()" />
+        <input class="field" type="email" id="f-email" placeholder="Ton courriel"     autocomplete="email" oninput="state.form.email=this.value;updateFormBtn()" />
+        <input class="field" type="tel"   id="f-tel"   placeholder="Ton téléphone"    autocomplete="tel"   oninput="state.form.telephone=this.value;updateFormBtn()" />
+        <button class="btn btn--disabled" id="btn-submit" onclick="submitForm()">RÉSERVER MON APPEL GRATUIT →</button>
       </div>
-      <div class="video-embed">
-        <div class="video-placeholder">
-          <div style="font-size:42px;opacity:0.6">▶</div>
-          <p class="small" style="margin-top:8px;text-align:center;opacity:0.7">Vidéo guide (à venir)</p>
-        </div>
-      </div>
-      <a href="https://sunafilmsmedia.com" target="_blank" rel="noopener" class="btn btn--primary" style="margin:0 auto;max-width:340px">Retour au site →</a>
+
+      <button class="result-restart" onclick="restart()">↺ Recommencer le quiz</button>
     </div>
   </div>
 
@@ -666,503 +621,360 @@
 
 <script>
 // ─────────────────────────────
+// QUESTIONS
+// ─────────────────────────────
+const QUESTIONS = [
+  {
+    key: 'industry',
+    title: 'Dans quelle industrie travailles-tu ?',
+    options: [
+      { value: 'hypothecaire', icon: '🏠', label: 'Courtier hypothécaire', sub: 'Prêts, renouvellements, refinancement' },
+      { value: 'immobilier',   icon: '🏢', label: 'Courtier immobilier',   sub: 'Achat, vente, investissement' },
+      { value: 'autre',        icon: '⚡', label: 'Autre industrie',        sub: 'Autre domaine professionnel' },
+    ]
+  },
+  {
+    key: 'years',
+    title: 'Depuis combien de temps es-tu en affaires ?',
+    options: [
+      { value: 'less1', icon: '🌱', label: "Moins d'un an",  sub: 'Je démarre' },
+      { value: '1-3',   icon: '📈', label: '1 à 3 ans',      sub: 'Je bâtis ma base' },
+      { value: '3-5',   icon: '🚀', label: '3 à 5 ans',      sub: "J'ai du momentum" },
+      { value: '5+',    icon: '🏆', label: '5 ans et plus',  sub: 'Je suis établi' },
+    ]
+  },
+  {
+    key: 'clients',
+    title: 'Combien de clients fermes-tu par mois ?',
+    options: [
+      { value: 'low',  icon: '📉', label: '0 à 2 clients',      sub: 'Le volume est irrégulier' },
+      { value: 'mid',  icon: '📊', label: '3 à 5 clients',      sub: 'Ça roule, mais sans constance' },
+      { value: 'high', icon: '📈', label: '6 à 10 clients',     sub: "J'ai une bonne cadence" },
+      { value: 'top',  icon: '🔥', label: 'Plus de 10 clients', sub: 'Je suis en pleine croissance' },
+    ]
+  },
+  {
+    key: 'acquisition',
+    title: 'Comment génères-tu tes clients présentement ?',
+    options: [
+      { value: 'ref',     icon: '🤝', label: 'Références & bouche-à-oreille' },
+      { value: 'pubs',    icon: '📢', label: 'Publicité payante',          sub: 'Meta, Google, etc.' },
+      { value: 'organic', icon: '📱', label: 'Contenu organique',          sub: 'Réseaux sociaux' },
+      { value: 'aucune',  icon: '🎲', label: 'Aucune méthode constante',   sub: 'Ça dépend des mois' },
+    ]
+  },
+  {
+    key: 'system',
+    title: 'As-tu un système de suivi en place ?',
+    options: [
+      { value: 'oui',     icon: '⚙', label: 'Oui, automatisé',           sub: 'CRM + relances en place' },
+      { value: 'partiel', icon: '📝', label: 'Partiellement / manuel',    sub: "Je relance quand j'y pense" },
+      { value: 'non',     icon: '❌', label: 'Non, rien de structuré',    sub: 'Je perds des leads' },
+    ]
+  },
+  {
+    key: 'challenge',
+    title: 'Quel est ton plus gros défi présentement ?',
+    options: [
+      { value: 'leads',           icon: '🎯', label: 'Générer plus de leads qualifiés' },
+      { value: 'convert',         icon: '💸', label: 'Convertir mes leads en clients' },
+      { value: 'time',            icon: '⏰', label: 'Manque de temps & de système' },
+      { value: 'differentiation', icon: '✨', label: 'Me démarquer de la compétition' },
+    ]
+  },
+  {
+    key: 'goal',
+    title: 'Quel est ton objectif de revenus mensuels ?',
+    options: [
+      { value: '10-20k',  icon: '💵', label: '10K à 20K $/mois' },
+      { value: '20-50k',  icon: '💰', label: '20K à 50K $/mois' },
+      { value: '50-100k', icon: '💎', label: '50K à 100K $/mois' },
+      { value: '100k+',   icon: '👑', label: '100K $ et plus /mois' },
+    ]
+  },
+]
+
+const LABELS = {
+  industry:    { hypothecaire:'Courtier hypothécaire', immobilier:'Courtier immobilier', autre:'Autre industrie' },
+  years:       { less1:"Moins d'un an", '1-3':'1 à 3 ans', '3-5':'3 à 5 ans', '5+':'5 ans et plus' },
+  clients:     { low:'0 à 2 clients', mid:'3 à 5 clients', high:'6 à 10 clients', top:'Plus de 10 clients' },
+  acquisition: { ref:'Références & bouche-à-oreille', pubs:'Publicité payante', organic:'Contenu organique', aucune:'Aucune méthode constante' },
+  system:      { oui:'Oui, automatisé', partiel:'Partiellement / manuel', non:'Non, rien de structuré' },
+  challenge:   { leads:'Générer plus de leads qualifiés', convert:'Convertir mes leads en clients', time:'Manque de temps & de système', differentiation:'Me démarquer de la compétition' },
+  goal:        { '10-20k':'10K à 20K $/mois', '20-50k':'20K à 50K $/mois', '50-100k':'50K à 100K $/mois', '100k+':'100K $ et plus /mois' },
+}
+
+// ─────────────────────────────
 // STATE
 // ─────────────────────────────
 const state = {
-  step: 'intro',
-  industry: null, source: null, location: null,
-  volume: 0,            // Q3 — mensuel (immo/autre) ou annuel $ (hypo)
-  avgValue: 3000,       // Q5
-  ai: null, challenge: null,
-  qualified: null,
-  form: { nom: '', telephone: '', email: '' },
+  view: 'intro',  // intro | question | loading | result
+  qIndex: 0,
+  answers: {},
+  form: { nom: '', email: '', telephone: '' },
   submitted: false,
+  amount: 0,
 }
-
-// ─────────────────────────────
-// FUNNEL DATA
-// Q5 (valeur moyenne) : unifié 500-50000$ pour toutes industries, step 500
-// ─────────────────────────────
-const FUNNEL = {
-  hypothecaire: { label:'Courtier hypothécaire', avgDefault:3000  },
-  immobilier:   { label:'Courtier immobilier',   avgDefault:15000 },
-  autre:        { label:'Autre industrie',        avgDefault:3000  },
-}
-const VALUE_MIN  = 500
-const VALUE_MAX  = 50000
-const VALUE_STEP = 500
-
-// Q3 — Volume input config selon industrie
-function getVolumeConfig() {
-  if (state.industry === 'hypothecaire') {
-    return { min: 2000000, max: 30000000, step: 1000000, isCurrency: true, default: 5000000,
-             title: "C'est quoi ton volume annuel en prêts?",
-             subtitle: "Volume total des prêts générés sur 12 mois",
-             unit: 'volume annuel' }
-  }
-  if (state.industry === 'immobilier') {
-    return { min: 0, max: 10, step: 1, isCurrency: false, default: 0,
-             title: 'Combien de transactions tu closes en moyenne par mois?',
-             subtitle: 'Estimation moyenne — par mois',
-             unit: 'transactions/mois' }
-  }
-  return { min: 0, max: 10, step: 1, isCurrency: false, default: 0,
-           title: 'Combien de clients tu signes en moyenne par mois?',
-           subtitle: 'Estimation moyenne — par mois',
-           unit: 'clients/mois' }
-}
-
-const STEPS = ['intro','industry','source','leads','location','value','ai','challenge','calculating','result','video']
-function getSteps() { return STEPS }
-function getQSteps() {
-  // Étapes "questions" pour le compteur de progression (exclut les écrans finaux)
-  return ['industry','source','leads','location','value','ai','challenge']
-}
-
-// ─────────────────────────────
-// FORMAT
-// ─────────────────────────────
-function fmtCAD(n) { return new Intl.NumberFormat('fr-CA',{style:'currency',currency:'CAD',maximumFractionDigits:0}).format(n) }
-function fmtN(n)   { return new Intl.NumberFormat('fr-CA').format(Math.round(n)) }
-
-// ─────────────────────────────
-// NAV
-// ─────────────────────────────
-function goNext() {
-  if(autoAdvanceTimer) { clearTimeout(autoAdvanceTimer); autoAdvanceTimer = null }
-  const steps = getSteps(), idx = steps.indexOf(state.step)
-  if (idx < steps.length - 1) { state.step = steps[idx+1]; render() }
-}
-function goBack() {
-  if(autoAdvanceTimer) { clearTimeout(autoAdvanceTimer); autoAdvanceTimer = null }
-  const steps = getSteps(), idx = steps.indexOf(state.step)
-  if (idx > 0) { state.step = steps[idx-1]; render() }
-}
-
-function clamp(v, min, max) { return Math.max(min, Math.min(max, v)) }
-
-// ─────────────────────────────
-// STEPPER — VOLUME (Q3, adaptatif selon industrie)
-// ─────────────────────────────
-function stepVolume(direction) {
-  const c = getVolumeConfig()
-  setVolume(state.volume + direction * c.step)
-}
-function onVolumeInput(v) {
-  const c = getVolumeConfig()
-  const num = parseInt(String(v).replace(/\D/g,'')) || 0
-  state.volume = clamp(num, c.min, c.max)
-}
-function onVolumeBlur() { setVolume(state.volume) }
-function setVolume(v) {
-  const c = getVolumeConfig()
-  state.volume = clamp(v, c.min, c.max)
-  const el = document.getElementById('volume-display')
-  if(el) el.value = c.isCurrency ? fmtCAD(state.volume) : String(state.volume)
-  renderLeadsCallout()
-}
-
-// ─────────────────────────────
-// STEPPER — VALEUR MOYENNE (Q5)
-// 500$ à 50 000$, step 500$ pour toutes industries
-// ─────────────────────────────
-function stepValue(direction) {
-  setValue(state.avgValue + direction * VALUE_STEP)
-}
-function onValueInput(v) {
-  const num = parseInt(String(v).replace(/\D/g,'')) || 0
-  state.avgValue = clamp(num, VALUE_MIN, VALUE_MAX)
-}
-function onValueBlur() { setValue(state.avgValue) }
-function setValue(v) {
-  state.avgValue = clamp(v, VALUE_MIN, VALUE_MAX)
-  const el = document.getElementById('value-display'); if(el) el.value = fmtCAD(state.avgValue)
-}
-
-// ─────────────────────────────
-// PROGRESS
-// ─────────────────────────────
-function renderProgress(pbId, progId, step) {
-  const qs = getQSteps(), idx = qs.indexOf(step)+1, total = qs.length
-  const pb = document.getElementById(pbId); if(!pb) return
-  pb.innerHTML=''
-  for(let i=0;i<total;i++){const s=document.createElement('div');s.className='progress-bar__seg'+(i<idx?' active':'');pb.appendChild(s)}
-  const prog = document.getElementById(progId); if(prog) prog.textContent='Question '+idx+' / '+total
-}
-
-// ─────────────────────────────
-// OPTIONS
-// ─────────────────────────────
 let autoAdvanceTimer = null
-function renderOptions(containerId, options, current, stateKey, btnId) {
-  const c=document.getElementById(containerId); c.innerHTML=''
-  options.forEach(opt=>{
-    const d=document.createElement('div')
-    d.className='option'+(current===opt.value?' active':'')
-    d.innerHTML=`<span class="option__icon">${opt.icon}</span><div><div class="option__title">${opt.label}</div>${opt.sub?`<div class="option__sub">${opt.sub}</div>`:''}</div>`
-    d.onclick=()=>{
-      state[stateKey]=opt.value
-      if(stateKey==='industry') {
-        state.avgValue = FUNNEL[opt.value].avgDefault
-        state.volume = 0 // reset, sera initialisé au défaut de la nouvelle industrie quand on entre dans 'leads'
-      }
-      renderOptions(containerId,options,opt.value,stateKey,btnId)
-      if(btnId) document.getElementById(btnId)?.classList.remove('btn--disabled')
-      // Auto-advance — laisse le temps de voir la sélection
-      if(autoAdvanceTimer) clearTimeout(autoAdvanceTimer)
-      autoAdvanceTimer = setTimeout(()=>{ if(state[stateKey]===opt.value) goNext() }, 650)
+
+// ─────────────────────────────
+// SCREEN MGMT
+// ─────────────────────────────
+function showScreen(name, back) {
+  state.view = name
+  ;['intro','question','loading','result'].forEach(n => {
+    const el = document.getElementById('screen-'+n)
+    if (!el) return
+    el.classList.remove('visible','back')
+    if (n === name) {
+      el.classList.add('visible')
+      if (back) el.classList.add('back')
     }
-    c.appendChild(d)
   })
+  document.getElementById('topbar').style.display = name === 'intro' ? 'flex' : 'none'
+  document.getElementById('qlogo').style.display = (name === 'question' || name === 'loading') ? 'flex' : 'none'
+  window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
 // ─────────────────────────────
-// LEADS CALLOUT — basé sur état actuel vs gate
+// FLOW
 // ─────────────────────────────
-function renderLeadsCallout() {
-  const el=document.getElementById('leads-callout'); if(!el) return
-  if(state.industry==='hypothecaire') {
-    if(state.volume===0) el.innerHTML=`<div class="callout">📈 Un volume sous 8M$/an n'est pas assez pour rentabiliser un système Meta — on te dirige vers un guide gratuit.</div>`
-    else el.innerHTML=''
+function startQuiz() {
+  state.qIndex = 0
+  renderQuestion()
+  showScreen('question')
+}
+
+function goNext() {
+  if (autoAdvanceTimer) { clearTimeout(autoAdvanceTimer); autoAdvanceTimer = null }
+  const q = QUESTIONS[state.qIndex]
+  if (!state.answers[q.key]) return
+  if (state.qIndex < QUESTIONS.length - 1) {
+    state.qIndex++
+    renderQuestion()
+    showScreen('question')
   } else {
-    if(state.volume===0) el.innerHTML=`<div class="callout">😬 <strong style="color:#fff">Tu n'es pas seul</strong> — la majorité ne close rien via cette méthode aujourd'hui. C'est ce qu'on règle.</div>`
-    else if(state.volume<2) el.innerHTML=`<div class="callout">📈 Sous 2 clients/mois, on te dirige vers un guide gratuit pour démarrer.</div>`
-    else el.innerHTML=''
+    // Last question — go to loading then result
+    showScreen('loading')
+    setTimeout(() => {
+      state.amount = calcMoneyOnTable()
+      renderResult()
+      showScreen('result')
+    }, 1600)
   }
 }
 
-// ─────────────────────────────
-// QUALIFICATION (gates)
-// ─────────────────────────────
-function isQualified() {
-  if (state.industry === 'hypothecaire' && state.volume < 8000000) return false
-  if (state.industry !== 'hypothecaire' && state.volume < 2)       return false
-  if (state.avgValue < 1500)                                       return false
-  return true
+function goBack() {
+  if (autoAdvanceTimer) { clearTimeout(autoAdvanceTimer); autoAdvanceTimer = null }
+  if (state.qIndex === 0) {
+    showScreen('intro', true)
+    return
+  }
+  state.qIndex--
+  renderQuestion()
+  showScreen('question', true)
+}
+
+function restart() {
+  state.qIndex = 0
+  state.answers = {}
+  state.submitted = false
+  state.form = { nom: '', email: '', telephone: '' }
+  showScreen('intro')
+  setTimeout(() => {
+    animateCounter('stat-1', 3, 1200)
+    animateCounter('stat-2', 7, 1200)
+    animateCounter('stat-3', 100, 1400, '%')
+  }, 100)
 }
 
 // ─────────────────────────────
-// CALC PAR NIVEAU — toutes industries
+// RENDER QUESTION
 // ─────────────────────────────
-const LEVEL_FUNNELS = {
-  immobilier: [
-    { label:'Pas d\'IA, peu de clients via cette méthode',     leadsMin:8,  leadsMax:15, qualRate:0.25, closingRate:0.30 },
-    { label:'IA basique ou source sociale active',            leadsMin:12, leadsMax:22, qualRate:0.25, closingRate:0.30 },
-    { label:'IA intégrée OU pubs actives',                    leadsMin:20, leadsMax:32, qualRate:0.25, closingRate:0.30 },
-    { label:'IA intégrée + pubs actives',                     leadsMin:30, leadsMax:45, qualRate:0.25, closingRate:0.30 },
-  ],
-  hypothecaire: [
-    { label:'Pas d\'IA, peu de clients via cette méthode',    leadsMin:20,  leadsMax:35,  qualRate:0.50,  closingsMin:3,  closingsMax:5  },
-    { label:'IA basique ou source sociale active',           leadsMin:35,  leadsMax:55,  qualRate:0.55,  closingsMin:5,  closingsMax:8  },
-    { label:'IA intégrée OU pubs actives',                   leadsMin:55,  leadsMax:85,  qualRate:0.60,  closingsMin:8,  closingsMax:13 },
-    { label:'IA intégrée + pubs actives + clients réguliers', leadsMin:85, leadsMax:130, qualRate:0.625, closingsMin:13, closingsMax:20 },
-  ],
-  autre: [
-    { label:'Pas d\'IA, peu de clients',                      leadsMin:10, leadsMax:20, qualRate:0.40, closingRate:0.35 },
-    { label:'IA basique ou source sociale active',           leadsMin:15, leadsMax:30, qualRate:0.40, closingRate:0.35 },
-    { label:'IA intégrée OU pubs actives',                   leadsMin:25, leadsMax:45, qualRate:0.45, closingRate:0.35 },
-    { label:'IA intégrée + pubs actives',                    leadsMin:40, leadsMax:65, qualRate:0.50, closingRate:0.35 },
-  ],
-}
-function getLevel() {
-  if (state.ai === 'integre' && state.source === 'pubs') return 3
-  if (state.ai === 'integre' || state.source === 'pubs') return 2
-  if (state.ai === 'basique' || state.source === 'social') return 1
-  return 0
-}
-function calc() {
-  if(!state.industry || !LEVEL_FUNNELS[state.industry]) return null
-  const level = getLevel()
-  const L = LEVEL_FUNNELS[state.industry][level]
-  const aiBoost = state.ai === 'integre' ? 1 : (state.ai === 'basique' ? 0.3 : 0)
-  const qualMin = Math.round(L.leadsMin * L.qualRate)
-  const qualMax = Math.round(L.leadsMax * L.qualRate)
-  let closingsMin, closingsMax
-  if (L.closingRate != null) {
-    closingsMin = Math.max(1, Math.round(qualMin * L.closingRate))
-    closingsMax = Math.round(qualMax * L.closingRate) + Math.floor(aiBoost)
+function renderQuestion() {
+  const q = QUESTIONS[state.qIndex]
+  document.getElementById('q-counter').textContent = `QUESTION ${state.qIndex+1} / 7`
+
+  // Progress
+  const progEl = document.getElementById('progress')
+  progEl.innerHTML = ''
+  for (let i = 0; i < 7; i++) {
+    const seg = document.createElement('div')
+    seg.className = 'progress-seg' + (i < state.qIndex ? ' done' : i === state.qIndex ? ' current' : '')
+    progEl.appendChild(seg)
+  }
+
+  document.getElementById('q-title').textContent = q.title
+
+  // Options
+  const optsEl = document.getElementById('options')
+  optsEl.innerHTML = ''
+  const current = state.answers[q.key]
+  q.options.forEach(opt => {
+    const div = document.createElement('div')
+    div.className = 'opt' + (current === opt.value ? ' selected' : '')
+    div.innerHTML = `
+      <div class="opt-icon">${opt.icon}</div>
+      <div class="opt-body">
+        <div class="opt-title">${opt.label}</div>
+        ${opt.sub ? `<div class="opt-sub">${opt.sub}</div>` : ''}
+      </div>
+      <div class="opt-check"></div>
+    `
+    div.onclick = () => {
+      state.answers[q.key] = opt.value
+      renderQuestion()
+      if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer)
+      autoAdvanceTimer = setTimeout(() => { if (state.answers[q.key] === opt.value) goNext() }, 600)
+    }
+    optsEl.appendChild(div)
+  })
+
+  // Continue button
+  const btn = document.getElementById('btn-continue')
+  if (current) {
+    btn.classList.remove('btn--disabled')
+    btn.textContent = state.qIndex === QUESTIONS.length - 1 ? 'VOIR MON RÉSULTAT →' : 'CONTINUER →'
   } else {
-    closingsMin = L.closingsMin
-    closingsMax = L.closingsMax + Math.round(aiBoost * 2)
-  }
-  return {
-    level, levelLabel: L.label,
-    leadsMin: L.leadsMin, leadsMax: L.leadsMax,
-    qualRate: L.qualRate, qualMin, qualMax,
-    closingsMin, closingsMax,
-    revenueMin: closingsMin * state.avgValue,
-    revenueMax: closingsMax * state.avgValue,
-    annualMin: closingsMin * state.avgValue * 12,
-    annualMax: closingsMax * state.avgValue * 12,
+    btn.classList.add('btn--disabled')
+    btn.textContent = 'CONTINUER →'
   }
 }
 
 // ─────────────────────────────
-// RECOMMENDATION ENGINE (utilisé pour le plan envoyé par email)
+// CALC — Argent sur la table
+// Formule : potentiel (objectif × multiplicateurs) − revenu actuel estimé
 // ─────────────────────────────
-function buildRecommendation() {
-  const recs = []
-  if (state.ai === 'aucun' || state.ai === 'basique') {
-    recs.push({ order:1, title:'Système CRM + agents IA (GoHighLevel)' })
-  }
-  if (state.source !== 'pubs') {
-    recs.push({ order:2, title:'Système de contenu vidéo mensuel' })
-  }
-  if (state.source !== 'pubs') {
-    recs.push({ order:3, title:'Campagnes Meta Ads ciblées' })
-  }
-  if (state.challenge === 'system') {
-    recs.push({ order:1.5, title:'Automation + relances intelligentes' })
-  }
-  if (state.challenge === 'ads_dont_work') {
-    recs.push({ order:2.5, title:'Audit de tes campagnes actuelles' })
-  }
-  recs.sort((a,b)=>a.order-b.order)
-  return { recs }
+const TICKETS    = { hypothecaire: 2500, immobilier: 12000, autre: 3000 }
+const CLIENT_MID = { low: 1, mid: 4, high: 8, top: 12 }
+const GOAL_MIN   = { '10-20k': 10000, '20-50k': 20000, '50-100k': 50000, '100k+': 100000 }
+
+function calcMoneyOnTable() {
+  const a = state.answers
+  const ticket = TICKETS[a.industry] || 3000
+  const cur    = CLIENT_MID[a.clients] || 1
+  const goal   = GOAL_MIN[a.goal] || 10000
+  const currentRev = cur * ticket
+
+  const systemMult  = ({ oui: 1.0, partiel: 1.15, non: 1.30 })[a.system]      || 1.15
+  const yearsBonus  = ({ less1: 0.85, '1-3': 1.0, '3-5': 1.10, '5+': 1.18 })[a.years] || 1.0
+  const acqMult     = ({ ref: 1.05, pubs: 1.0, organic: 1.10, aucune: 1.20 })[a.acquisition] || 1.0
+  const challMult   = ({ leads: 1.15, convert: 1.08, time: 1.10, differentiation: 1.05 })[a.challenge] || 1.0
+
+  const potential = Math.max(goal, currentRev) * systemMult * yearsBonus * acqMult * challMult
+  const onTable   = Math.max(2500, potential - currentRev)
+
+  return Math.round(onTable / 100) * 100
 }
 
 // ─────────────────────────────
-// CALCULATING (déclenché quand on entre dans cet écran)
+// RENDER RESULT
 // ─────────────────────────────
-let calculatingTimer = null
-function startCalculating() {
-  if(calculatingTimer) clearTimeout(calculatingTimer)
-  state.qualified = isQualified()
-  calculatingTimer = setTimeout(()=>{
-    state.step = state.qualified ? 'result' : 'video'
-    render()
-  }, 2000)
+function renderResult() {
+  // Animate counter
+  const el = document.getElementById('result-amount')
+  const target = state.amount
+  const start = performance.now()
+  const dur = 1100
+  function tick(now) {
+    const p = Math.min((now - start) / dur, 1)
+    const ease = 1 - Math.pow(1 - p, 3)
+    const val = Math.round((target * ease) / 100) * 100
+    el.textContent = fmtCAD(val)
+    if (p < 1) requestAnimationFrame(tick)
+  }
+  requestAnimationFrame(tick)
+  updateFormBtn()
+}
+
+function fmtCAD(n) {
+  return new Intl.NumberFormat('fr-CA').format(n) + '$'
 }
 
 // ─────────────────────────────
-// CONTACT FORM (sur l'écran résultat)
+// FORM
 // ─────────────────────────────
-function updateContactBtn() {
-  const btn = document.getElementById('btn-contact'); if(!btn) return
+function updateFormBtn() {
+  const btn = document.getElementById('btn-submit'); if (!btn) return
   const nomOk   = (state.form.nom||'').trim().length >= 2
   const telOk   = (state.form.telephone||'').replace(/\D/g,'').length >= 10
   const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.form.email||'')
   btn.classList.toggle('btn--disabled', !(nomOk && telOk && emailOk))
 }
-function submitContactForm() {
+
+function submitForm() {
   const nomOk   = (state.form.nom||'').trim().length >= 2
   const telOk   = (state.form.telephone||'').replace(/\D/g,'').length >= 10
   const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.form.email||'')
-  if(!(nomOk && telOk && emailOk)) return
+  if (!(nomOk && telOk && emailOk)) return
   state.submitted = true
+
   // Meta Pixel
-  if(window.fbq) {
-    const r = calc()
+  if (window.fbq) {
     fbq('track', 'Lead', {
-      content_name: 'Diagnostic calculateur',
-      content_category: FUNNEL[state.industry]?.label || '',
-      value: r?.annualMax || 0,
+      content_name: 'Combien tu laisses sur la table',
+      value: state.amount,
       currency: 'CAD',
     })
   }
-  // Webhook GHL — TOUTES les données + contact
-  const url=document.querySelector('meta[name="webhook-url"]')?.content
-  if(url) {
-    const r = calc()
-    const { recs } = buildRecommendation()
-    const SOURCE_LABELS = { references:'Références clients', reseau:'Réseau personnel', social:'Réseaux sociaux', pubs:'Publicités payantes', prospection:'Prospection directe' }
-    fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        prenom:          state.form.nom,
-        email:           state.form.email,
-        telephone:       state.form.telephone,
-        industrie:       FUNNEL[state.industry]?.label,
-        source_clients:  SOURCE_LABELS[state.source] || state.source,
-        volume_actuel:   state.volume,
-        volume_unite:    state.industry === 'hypothecaire' ? 'CAD/an' : 'clients/mois',
-        localisation:    LOCATION_LABELS[state.location] || state.location,
-        utilisation_ia:  AI_LABELS[state.ai] || state.ai,
-        defi_principal:  CHALLENGE_LABELS[state.challenge] || state.challenge,
-        valeur_client:   state.avgValue,
-        qualifie:        state.qualified ? 'OUI' : 'NON',
-        niveau:          r ? ((r.level+1)+'/4') : '',
-        leads_mois:      r ? `${r.leadsMin}-${r.leadsMax}` : '',
-        closings_mois:   r ? `${r.closingsMin}-${r.closingsMax}` : '',
-        revenu_mensuel:  r ? `${r.revenueMin}-${r.revenueMax}` : '',
-        revenu_annuel:   r ? `${r.annualMin}-${r.annualMax}` : '',
-        solutions_recommandees: recs.map(r=>r.title).join(', '),
+
+  // Webhook GHL
+  const url = document.querySelector('meta[name="webhook-url"]')?.content
+  if (url) {
+    fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        prenom:                 state.form.nom,
+        email:                  state.form.email,
+        telephone:              state.form.telephone,
+        industrie:              LABELS.industry[state.answers.industry],
+        annees_affaires:        LABELS.years[state.answers.years],
+        clients_mois:           LABELS.clients[state.answers.clients],
+        acquisition:            LABELS.acquisition[state.answers.acquisition],
+        systeme_suivi:          LABELS.system[state.answers.system],
+        defi_principal:         LABELS.challenge[state.answers.challenge],
+        objectif_revenus:       LABELS.goal[state.answers.goal],
+        montant_table_mensuel:  state.amount,
+        montant_table_annuel:   state.amount * 12,
       })
     }).catch(()=>{})
   }
-  renderResult()
-}
 
-// ─────────────────────────────
-// RENDER: RESULT (qualifié)
-// ─────────────────────────────
-function renderResult() {
-  const r = calc(); if(!r) return
-  const range    = (a, b) => a === b ? `${a}` : `${a} à ${b}`
-  const rangeCAD = (a, b) => a === b ? fmtCAD(a) : `${fmtCAD(a)} à ${fmtCAD(b)}`
-  const qualLabel = state.industry === 'immobilier' ? 'Évaluations/mois' : 'Leads qualifiés'
-  const rows = [
-    {icon:'📥', label:'Leads/mois projetés', val:range(r.leadsMin, r.leadsMax),       sub:`Niveau ${r.level+1}/4`},
-    {icon:'✅', label:qualLabel,             val:range(r.qualMin, r.qualMax),         sub:Math.round(r.qualRate*100)+'% du volume'},
-    {icon:'🤝', label:'Closings/mois',       val:range(r.closingsMin, r.closingsMax), sub:'clients signés'},
-    {icon:'💰', label:'Extra revenu/mois',   val:rangeCAD(r.revenueMin, r.revenueMax), sub:'', bold:true},
-  ]
-  const heroBig = rangeCAD(r.revenueMin, r.revenueMax)
-  const closingsLabel = r.closingsMin === r.closingsMax
-    ? `<strong style="color:#fff">${r.closingsMin}</strong> closing${r.closingsMin>1?'s':''}/mois en plus`
-    : `<strong style="color:#fff">${r.closingsMin} à ${r.closingsMax}</strong> closings/mois en plus`
-
-  const formHTML = state.submitted ? `
-    <div class="glass glass--dark col center" style="gap:10px;padding:28px 20px;align-items:center">
-      <div style="font-size:52px">🎉</div>
-      <h3 class="bebas h3">Ton plan arrive!</h3>
-      <p class="body" style="text-align:center;font-size:14px">On t'envoie ton plan personnalisé par courriel sous 24h. Tu vas aussi recevoir un texto pour planifier ton appel stratégique.</p>
+  // Confirmation
+  document.getElementById('form-block').innerHTML = `
+    <div style="text-align:center;padding:8px 0">
+      <div style="font-size:52px;margin-bottom:10px">🎉</div>
+      <div class="anton" style="font-size:30px;margin-bottom:8px">RÉSERVATION ENVOYÉE</div>
+      <p style="color:var(--w60);font-size:14px;line-height:1.6">On t'envoie ton plan personnalisé par courriel sous 24h. Tu vas aussi recevoir un texto pour planifier ton appel.</p>
     </div>
-    <a href="https://sunafilmsmedia.com" target="_blank" rel="noopener" class="btn btn--primary" style="margin:0 auto;max-width:340px">Retour au site →</a>
-  ` : `
-    <div class="glass" style="display:flex;flex-direction:column;gap:12px;padding:20px">
-      <div style="text-align:center">
-        <h3 class="bebas h3" style="margin-bottom:6px">Ton plan personnalisé arrive</h3>
-        <p class="small">Ton plan personnalisé pour atteindre ces résultats va être envoyé à ces coordonnées :</p>
-      </div>
-      <input class="field" type="text"  placeholder="Ton nom complet"  id="f-nom"   autocomplete="name"        oninput="state.form.nom=this.value;updateContactBtn()" />
-      <input class="field" type="email" placeholder="Ton courriel"      id="f-email" autocomplete="email"       oninput="state.form.email=this.value;updateContactBtn()" />
-      <input class="field" type="tel"   placeholder="Ton téléphone"     id="f-tel"   autocomplete="tel"         oninput="state.form.telephone=this.value;updateContactBtn()" />
-      <button class="btn btn--primary btn--disabled" id="btn-contact" onclick="submitContactForm()" style="margin:6px auto 0;max-width:340px">Recevoir mon plan personnalisé →</button>
-      <p class="tiny">Aucun spam · Tes informations restent confidentielles</p>
-    </div>
-  `
-
-  const funnelHTML = `
-    <div class="glass funnel-grid" style="display:flex;flex-direction:column;gap:0">
-      <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:10px;grid-column:1/-1">📊 Ton funnel projeté</div>
-      ${rows.map(row=>`
-        <div class="funnel-row">
-          <div style="display:flex;align-items:center;gap:10px"><span style="font-size:18px">${row.icon}</span><span style="font-size:14px;font-weight:${row.bold?700:400};color:#fff">${row.label}</span></div>
-          <div style="text-align:right"><div style="font-size:14px;font-weight:700;color:#fff">${row.val}</div>${row.sub?`<div style="font-size:11px;color:var(--w40)">${row.sub}</div>`:''}</div>
-        </div>`).join('')}
-    </div>
-    <div class="glass glass--border row between" style="padding:14px 18px">
-      <div class="label">Sur 12 mois, ça fait</div>
-      <div class="bebas" style="font-size:22px;color:#fff">${rangeCAD(r.annualMin, r.annualMax)}</div>
-    </div>
-  `
-
-  document.getElementById('result-body').innerHTML=`
-    <div style="text-align:center">
-      <h2 class="bebas h2" style="font-size:34px">Voici ton potentiel</h2>
-      <p class="small" style="margin-top:6px">Avec notre système, voici brièvement combien tu pourrais générer en plus :</p>
-    </div>
-    <div class="glass glass--dark col center" style="gap:6px;padding:24px 20px">
-      <div class="label">Revenu extra par mois</div>
-      <div class="bebas" style="font-size:42px;line-height:1.05;color:#fff">${heroBig}</div>
-      <div style="font-size:15px;font-weight:600;color:var(--w60)">soit ${closingsLabel}</div>
-    </div>
-    ${formHTML}
-    ${funnelHTML}
   `
 }
 
 // ─────────────────────────────
-// LABELS (utilisés dans webhook GHL)
+// COUNTER ANIMATION (landing stats)
 // ─────────────────────────────
-const AI_LABELS  = { aucun:'Aucune utilisation', basique:'Basique — comme un Google amélioré', integre:'Intégrée dans mon business' }
-const LOCATION_LABELS = { montreal:'Montréal', rive_nord:'Rive Nord', laurentides:'Laurentides', rive_sud:'Rive Sud', estrie:'Estrie / Magog', quebec:'Québec', autre_region:'Autre région' }
-const CHALLENGE_LABELS = { visibility:'Manque de visibilité dans ma région', ads_dont_work:"Mes efforts ne convertissent pas", system:'Système non optimisé (manuel, sans IA)', start:'Je ne sais pas par où commencer' }
-
-// ─────────────────────────────
-// MAIN RENDER
-// ─────────────────────────────
-function render() {
-  const step=state.step
-  ;['intro','industry','source','leads','location','value','ai','challenge','calculating','result','video'].forEach(s=>{
-    const el=document.getElementById('screen-'+s)
-    if(el) el.className='screen'+(s===step?' visible':'')
-  })
-
-  const brand=document.getElementById('brand')
-  if(brand) brand.style.display = step==='intro' ? 'none' : 'flex'
-
-  const isQ = ['industry','source','leads','location','value','ai','challenge'].includes(step)
-  if(isQ) renderProgress('pb-'+step,'prog-'+step,step)
-
-  if(step==='industry') {
-    renderOptions('opts-industry',[
-      {value:'hypothecaire',icon:'🏠',label:'Courtier hypothécaire',sub:'Prêts, renouvellements, refinancement'},
-      {value:'immobilier',  icon:'🏢',label:'Courtier immobilier',  sub:'Achat, vente, investissement'},
-      {value:'autre',       icon:'⚡',label:'Autre industrie',       sub:'Autre domaine professionnel'},
-    ], state.industry,'industry','btn-industry')
-    if(state.industry) document.getElementById('btn-industry')?.classList.remove('btn--disabled')
+function animateCounter(elId, target, dur, suffix) {
+  const el = document.getElementById(elId); if (!el) return
+  const start = performance.now()
+  function tick(now) {
+    const p = Math.min((now - start) / dur, 1)
+    const ease = 1 - Math.pow(1 - p, 3)
+    el.textContent = Math.round(target * ease) + (suffix || '')
+    if (p < 1) requestAnimationFrame(tick)
   }
-
-  if(step==='source') {
-    renderOptions('opts-source',[
-      {value:'references', icon:'👥',label:'Références de clients'},
-      {value:'reseau',     icon:'🤝',label:'Mon réseau personnel'},
-      {value:'social',     icon:'📱',label:'Réseaux sociaux'},
-      {value:'pubs',       icon:'📢',label:'Publicités payantes'},
-      {value:'prospection',icon:'📞',label:'Prospection directe'},
-    ], state.source,'source','btn-source')
-    if(state.source) document.getElementById('btn-source')?.classList.remove('btn--disabled')
-  }
-
-  if(step==='leads') {
-    const c = getVolumeConfig()
-    if (state.volume === 0 || state.volume == null) state.volume = c.default
-    document.getElementById('volume-title').textContent = c.title
-    document.getElementById('volume-subtitle').textContent = c.subtitle
-    document.getElementById('volume-unit').textContent = c.unit
-    const hint=document.getElementById('volume-range-hint')
-    if(hint) hint.textContent = c.isCurrency
-      ? `de ${fmtCAD(c.min)} à ${fmtCAD(c.max)}+ · Pas de ${fmtCAD(c.step)}`
-      : `de ${c.min} à ${c.max}+ · Tape ou utilise les boutons`
-    setVolume(state.volume)
-  }
-
-  if(step==='location') {
-    renderOptions('opts-location',[
-      {value:'montreal',     icon:'🏙',label:'Montréal',          sub:'Métropole'},
-      {value:'rive_nord',    icon:'🌳',label:'Rive Nord',         sub:'Laval, Terrebonne, Repentigny'},
-      {value:'laurentides',  icon:'⛰',label:'Laurentides',       sub:'Saint-Sauveur, Mont-Tremblant, etc.'},
-      {value:'rive_sud',     icon:'🌉',label:'Rive Sud',          sub:'Brossard, Longueuil, Boucherville'},
-      {value:'estrie',       icon:'🏞',label:'Estrie / Magog',    sub:'Sherbrooke, Magog, Cantons'},
-      {value:'quebec',       icon:'🏰',label:'Québec',            sub:'Ville de Québec et alentours'},
-      {value:'autre_region', icon:'📍',label:'Autre région',      sub:'Ailleurs au Québec'},
-    ], state.location,'location','btn-location')
-    if(state.location) document.getElementById('btn-location')?.classList.remove('btn--disabled')
-  }
-
-  if(step==='value'&&state.industry) {
-    setValue(state.avgValue)
-    const hint=document.getElementById('value-range-hint')
-    if(hint) hint.textContent = `de ${fmtCAD(VALUE_MIN)} à ${fmtCAD(VALUE_MAX)} · Pas de ${fmtCAD(VALUE_STEP)}`
-  }
-
-  if(step==='ai') {
-    renderOptions('opts-ai',[
-      {value:'aucun',    icon:'❌',label:'Pas du tout',         sub:'Je ne l\'utilise jamais'},
-      {value:'basique',  icon:'🔍',label:'Comme tout le monde', sub:'Un peu comme Google amélioré (ChatGPT)'},
-      {value:'integre',  icon:'🤖',label:'Intégrée dans mon business', sub:'Dans mes relances, des parties de mon service, automations'},
-    ], state.ai,'ai','btn-ai')
-    if(state.ai) document.getElementById('btn-ai')?.classList.remove('btn--disabled')
-  }
-
-  if(step==='challenge') {
-    renderOptions('opts-challenge',[
-      {value:'visibility',    icon:'👻',label:'Manque de visibilité',           sub:"Trop peu de gens me connaissent dans ma région"},
-      {value:'ads_dont_work', icon:'🎯',label:"Mes efforts ne convertissent pas", sub:"Pubs ou actions actuelles = peu de clients qualifiés"},
-      {value:'system',        icon:'🤖',label:'Mon système n\'est pas optimisé', sub:'Je gère tout à la main, aucune automation/IA'},
-      {value:'start',         icon:'🧭',label:'Je ne sais pas par où commencer',sub:'Trop d\'options, besoin d\'une feuille de route'},
-    ], state.challenge,'challenge','btn-challenge')
-    if(state.challenge) document.getElementById('btn-challenge')?.classList.remove('btn--disabled')
-  }
-
-  if(step==='calculating') startCalculating()
-  if(step==='result') { renderResult(); updateContactBtn() }
-
-  window.scrollTo({top:0,behavior:'smooth'})
+  requestAnimationFrame(tick)
 }
 
-render()
+// ─────────────────────────────
+// INIT
+// ─────────────────────────────
+setTimeout(() => {
+  animateCounter('stat-1', 3, 1200)
+  animateCounter('stat-2', 7, 1200)
+  animateCounter('stat-3', 100, 1400, '%')
+}, 200)
 </script>
+
 </body>
 </html>
