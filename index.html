@@ -892,13 +892,14 @@ function renderQuestion(direction) {
 
   document.getElementById('q-title').textContent = q.title
 
-  // Options
+  // Options — rebuild seulement quand on change de question (pas sur clic d'option)
   const optsEl = document.getElementById('options')
   optsEl.innerHTML = ''
   const current = state.answers[q.key]
   q.options.forEach(opt => {
     const div = document.createElement('div')
     div.className = 'opt' + (current === opt.value ? ' selected' : '')
+    div.dataset.value = opt.value
     div.innerHTML = `
       <div class="opt-icon">${opt.icon}</div>
       <div class="opt-body">
@@ -907,16 +908,29 @@ function renderQuestion(direction) {
       </div>
       <div class="opt-check"></div>
     `
-    div.onclick = () => {
-      state.answers[q.key] = opt.value
-      renderQuestion()
-      if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer)
-      autoAdvanceTimer = setTimeout(() => { if (state.answers[q.key] === opt.value) goNext() }, 320)
-    }
+    div.onclick = () => selectOption(q.key, opt.value)
     optsEl.appendChild(div)
   })
 
-  // Continue button
+  updateContinueBtn()
+}
+
+// Clic sur une option — toggle de class seulement, ZÉRO rebuild DOM
+function selectOption(key, value) {
+  state.answers[key] = value
+  // Update visual selection in-place
+  document.querySelectorAll('#options .opt').forEach(el => {
+    el.classList.toggle('selected', el.dataset.value === value)
+  })
+  updateContinueBtn()
+  // Auto-advance
+  if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer)
+  autoAdvanceTimer = setTimeout(() => { if (state.answers[key] === value) goNext() }, 300)
+}
+
+function updateContinueBtn() {
+  const q = QUESTIONS[state.qIndex]
+  const current = state.answers[q.key]
   const btn = document.getElementById('btn-continue')
   if (current) {
     btn.classList.remove('btn--disabled')
