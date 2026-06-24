@@ -836,30 +836,10 @@ function goNext() {
 function routeToNotQualified(reason) {
   state.notqualReason = reason
   document.getElementById('notqual-reason').textContent = NOTQUAL_REASONS[reason]
-  sendNotQualifiedWebhook(reason)
+  // PAS de webhook envoyé — on ne capture aucun lead sans nom + courriel + téléphone
   // Brève animation "analyse" avant la page non qualifié
   showScreen('loading')
   setTimeout(() => { showScreen('notqualified') }, 900)
-}
-
-function sendNotQualifiedWebhook(reason) {
-  const url = document.querySelector('meta[name="webhook-url"]')?.content
-  if (!url) return
-  fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      qualifie:         'NON',
-      raison_disqual:   reason === 'years' ? 'Moins d\'un an en affaires' : 'Hypothécaire — volume insuffisant',
-      industrie:        LABELS.industry[state.answers.industry],
-      annees_affaires:  LABELS.years[state.answers.years],
-      clients_mois:     LABELS.clients[state.answers.clients],
-      acquisition:      LABELS.acquisition[state.answers.acquisition],
-      systeme_suivi:    LABELS.system[state.answers.system],
-      defi_principal:   LABELS.challenge[state.answers.challenge],
-      objectif_revenus: LABELS.goal[state.answers.goal],
-    })
-  }).catch(()=>{})
 }
 
 function goBack() {
