@@ -780,20 +780,21 @@ function showScreen(name, back) {
 }
 
 // ─────────────────────────────
-// QUALIFICATION (gates)
+// QUALIFICATION (gates — vérifié à CHAQUE étape)
 // ─────────────────────────────
-function isQualified() {
+function checkDisqualification() {
   const a = state.answers
-  // Gate 1 : Je démarre (moins d'un an) → non qualifié
+  // Gate 1 : Je démarre (moins d'un an) — dès Q2
   if (a.years === 'less1') return { ok: false, reason:'years' }
-  // Gate 2 : Hypothécaire avec faible volume → non qualifié (besoin 6+/mois)
-  if (a.industry === 'hypothecaire' && a.clients !== 'high' && a.clients !== 'top') return { ok: false, reason:'volume' }
-  // Immobilier 0-2 clients = OK (ticket élevé)
+  // Gate 2 : Hypothécaire avec faible volume — dès Q3 (clients déclaré)
+  if (a.industry === 'hypothecaire' && a.clients && a.clients !== 'high' && a.clients !== 'top') {
+    return { ok: false, reason:'volume' }
+  }
   return { ok: true }
 }
 const NOTQUAL_REASONS = {
-  years:  "Notre système amène le meilleur retour quand t'as déjà une base de clients établie. Pendant que tu bâtis ta première année, on t'a préparé une ressource gratuite pour bien démarrer.",
-  volume: "Pour un courtier hypothécaire, notre système devient vraiment rentable à partir de 6+ dossiers/mois. Voici une ressource gratuite pour t'aider à augmenter ton volume d'abord.",
+  years:  "Notre système est conçu pour les courtiers déjà établis. La première année, l'enjeu c'est de bâtir ta base — pas d'investir dans un système publicitaire. Voici notre ressource gratuite pour bien démarrer.",
+  volume: "Pour un courtier hypothécaire, notre système devient vraiment rentable à partir de 6+ dossiers/mois. Avant ça, il faut bâtir ton volume — voici notre ressource gratuite pour t'aider.",
 }
 
 // ─────────────────────────────
@@ -809,28 +810,36 @@ function goNext() {
   if (autoAdvanceTimer) { clearTimeout(autoAdvanceTimer); autoAdvanceTimer = null }
   const q = QUESTIONS[state.qIndex]
   if (!state.answers[q.key]) return
+
+  // Disqualification immédiate si la réponse vient de déclencher un gate
+  const dq = checkDisqualification()
+  if (!dq.ok) {
+    routeToNotQualified(dq.reason)
+    return
+  }
+
   if (state.qIndex < QUESTIONS.length - 1) {
     state.qIndex++
     renderQuestion('forward')
     showScreen('question')
   } else {
-    // Last question — loading, puis route selon qualification
+    // Dernière question — loading puis résultat
     showScreen('loading')
     setTimeout(() => {
-      const q = isQualified()
-      if (q.ok) {
-        state.amount = calcMoneyOnTable()
-        renderResult()
-        showScreen('result')
-      } else {
-        state.notqualReason = q.reason
-        document.getElementById('notqual-reason').textContent = NOTQUAL_REASONS[q.reason]
-        // Webhook GHL pour les non qualifiés aussi (segmentation)
-        sendNotQualifiedWebhook(q.reason)
-        showScreen('notqualified')
-      }
+      state.amount = calcMoneyOnTable()
+      renderResult()
+      showScreen('result')
     }, 1600)
   }
+}
+
+function routeToNotQualified(reason) {
+  state.notqualReason = reason
+  document.getElementById('notqual-reason').textContent = NOTQUAL_REASONS[reason]
+  sendNotQualifiedWebhook(reason)
+  // Brève animation "analyse" avant la page non qualifié
+  showScreen('loading')
+  setTimeout(() => { showScreen('notqualified') }, 900)
 }
 
 function sendNotQualifiedWebhook(reason) {
