@@ -333,6 +333,24 @@
     .opt-check::before { content: '✓'; opacity: 0; transition: opacity 0.15s; }
     .opt.selected .opt-check::before { opacity: 1; }
 
+    /* Input "Autre industrie" — apparaît quand l'option Autre est sélectionnée */
+    .opt-other-input {
+      display: block;
+      width: 100%;
+      margin-top: 12px;
+      padding: 12px 14px;
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,106,0,0.45);
+      border-radius: 10px;
+      color: var(--white);
+      font-family: inherit;
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.18s;
+    }
+    .opt-other-input:focus { border-color: var(--orange); box-shadow: 0 0 0 3px rgba(255,106,0,0.18); }
+    .opt-other-input::placeholder { color: var(--w45); }
+
     .back-link {
       display: block;
       text-align: center;
@@ -1137,27 +1155,72 @@ function renderQuestion(direction) {
     optsEl.appendChild(div)
   })
 
+  // Si on est sur Q1 et "autre" est déjà sélectionné, réafficher l'input
+  if (q.key === 'industry' && state.answers.industry === 'autre') {
+    showIndustryOtherInput()
+  }
+
   updateContinueBtn()
 }
 
 // Clic sur une option — toggle de class seulement, ZÉRO rebuild DOM
 function selectOption(key, value) {
   state.answers[key] = value
-  // Update visual selection in-place
   document.querySelectorAll('#options .opt').forEach(el => {
     el.classList.toggle('selected', el.dataset.value === value)
   })
+
+  // Cas spécial : Q1 "Autre industrie" → input texte, pas d'auto-advance
+  if (key === 'industry' && value === 'autre') {
+    showIndustryOtherInput()
+    updateContinueBtn()
+    if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer)
+    return
+  }
+  // Si on change d'option sur Q1, retire l'input "autre" s'il existait
+  if (key === 'industry') hideIndustryOtherInput()
+
   updateContinueBtn()
-  // Auto-advance
   if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer)
   autoAdvanceTimer = setTimeout(() => { if (state.answers[key] === value) goNext() }, 300)
+}
+
+function showIndustryOtherInput() {
+  const autreOpt = document.querySelector('#options .opt[data-value="autre"]')
+  if (!autreOpt) return
+  let input = autreOpt.querySelector('.opt-other-input')
+  if (!input) {
+    input = document.createElement('input')
+    input.type = 'text'
+    input.className = 'opt-other-input'
+    input.placeholder = 'Précise ton industrie...'
+    input.maxLength = 60
+    input.value = state.answers.industryOther || ''
+    input.oninput = (e) => {
+      state.answers.industryOther = e.target.value
+      updateContinueBtn()
+    }
+    input.onclick = (e) => e.stopPropagation()
+    autreOpt.querySelector('.opt-body').appendChild(input)
+  }
+  setTimeout(() => input.focus(), 50)
+}
+
+function hideIndustryOtherInput() {
+  const input = document.querySelector('#options .opt-other-input')
+  if (input) input.remove()
 }
 
 function updateContinueBtn() {
   const q = QUESTIONS[state.qIndex]
   const current = state.answers[q.key]
   const btn = document.getElementById('btn-continue')
-  if (current) {
+  let valid = !!current
+  // Q1 "Autre" exige aussi l'input texte rempli
+  if (q.key === 'industry' && current === 'autre') {
+    valid = (state.answers.industryOther || '').trim().length >= 2
+  }
+  if (valid) {
     btn.classList.remove('btn--disabled')
     btn.textContent = state.qIndex === QUESTIONS.length - 1 ? 'VOIR MON RÉSULTAT →' : 'CONTINUER →'
   } else {
@@ -1257,7 +1320,9 @@ function submitForm() {
         email:                  state.form.email,
         telephone:              state.form.telephone,
         qualifie:               'OUI',
-        industrie:              LABELS.industry[state.answers.industry],
+        industrie:              state.answers.industry === 'autre'
+                                  ? `Autre — ${state.answers.industryOther || ''}`.trim()
+                                  : LABELS.industry[state.answers.industry],
         annees_affaires:        LABELS.years[state.answers.years],
         clients_mois:           LABELS.clients[state.answers.clients],
         acquisition:            LABELS.acquisition[state.answers.acquisition],
