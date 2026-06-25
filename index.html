@@ -525,24 +525,50 @@
     .result-box {
       background: var(--orange);
       border-radius: 14px;
-      padding: 32px 28px 24px;
+      padding: 26px 20px 22px;
       box-shadow: 0 0 80px rgba(255,106,0,0.4);
       margin: 8px 0 28px;
+      overflow: hidden;
     }
     .result-amount {
       font-family: 'Anton', sans-serif;
-      font-size: 88px;
+      font-size: clamp(46px, 13vw, 76px);
       color: var(--white);
       line-height: 0.95;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.01em;
+      white-space: nowrap;
+      text-align: center;
     }
     .result-suffix {
-      font-size: 13px;
+      font-size: 12px;
       letter-spacing: 0.20em;
       color: rgba(255,255,255,0.92);
       text-transform: uppercase;
       font-weight: 700;
-      margin-top: 12px;
+      margin-top: 8px;
+    }
+    .result-divider {
+      width: 60%;
+      height: 1px;
+      background: rgba(255,255,255,0.28);
+      margin: 14px auto 12px;
+    }
+    .result-annual {
+      font-family: 'Anton', sans-serif;
+      font-size: clamp(22px, 6vw, 32px);
+      color: var(--white);
+      line-height: 1;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      text-align: center;
+    }
+    .result-annual-lbl {
+      font-size: 10px;
+      letter-spacing: 0.20em;
+      color: rgba(255,255,255,0.80);
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-top: 4px;
     }
     .result-desc {
       color: var(--w60);
@@ -812,6 +838,9 @@
       <div class="result-box">
         <div class="result-amount" id="result-amount">0$</div>
         <div class="result-suffix">PAR MOIS SUR LA TABLE</div>
+        <div class="result-divider"></div>
+        <div class="result-annual" id="result-annual">0$</div>
+        <div class="result-annual-lbl">SUR 12 MOIS</div>
       </div>
       <p class="result-desc">En 30 minutes, on te montre exactement quel système installer pour aller chercher cet argent.</p>
 
@@ -1167,16 +1196,19 @@ function calcMoneyOnTable() {
 // RENDER RESULT
 // ─────────────────────────────
 function renderResult() {
-  // Animate counter
-  const el = document.getElementById('result-amount')
-  const target = state.amount
-  const start = performance.now()
-  const dur = 1100
+  const monthEl  = document.getElementById('result-amount')
+  const yearEl   = document.getElementById('result-annual')
+  const target   = state.amount
+  const targetY  = state.amount * 12
+  const start    = performance.now()
+  const dur      = 1100
   function tick(now) {
-    const p = Math.min((now - start) / dur, 1)
+    const p    = Math.min((now - start) / dur, 1)
     const ease = 1 - Math.pow(1 - p, 3)
-    const val = Math.round((target * ease) / 100) * 100
-    el.textContent = fmtCAD(val)
+    const m    = Math.round((target  * ease) / 100) * 100
+    const y    = Math.round((targetY * ease) / 100) * 100
+    monthEl.textContent = fmtCAD(m)
+    yearEl.textContent  = fmtCAD(y)
     if (p < 1) requestAnimationFrame(tick)
   }
   requestAnimationFrame(tick)
