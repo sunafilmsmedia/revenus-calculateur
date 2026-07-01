@@ -974,6 +974,34 @@ const state = {
 let autoAdvanceTimer = null
 
 // ─────────────────────────────
+// TRACKING FACEBOOK — capture fbclid + cookies pour attribution
+// ─────────────────────────────
+function getCookie(name) {
+  const m = document.cookie.match(new RegExp('(?:^|;\\s*)' + name + '=([^;]*)'))
+  return m ? decodeURIComponent(m[1]) : ''
+}
+const FB_TRACKING = (() => {
+  const params = new URLSearchParams(window.location.search)
+  const fbclid = params.get('fbclid') || ''
+  // Persister le fbclid en localStorage (utile si la personne rafraîchit)
+  if (fbclid) { try { localStorage.setItem('sfm_fbclid', fbclid) } catch (e) {} }
+  let storedFbclid = ''
+  try { storedFbclid = localStorage.getItem('sfm_fbclid') || '' } catch (e) {}
+  return {
+    fbclid: fbclid || storedFbclid,
+    fbc: getCookie('_fbc'),   // format Meta CAPI (fb.1.timestamp.fbclid)
+    fbp: getCookie('_fbp'),   // browser ID
+    landing_url: window.location.href,
+    referrer: document.referrer || '',
+    utm_source:   params.get('utm_source')   || '',
+    utm_medium:   params.get('utm_medium')   || '',
+    utm_campaign: params.get('utm_campaign') || '',
+    utm_content:  params.get('utm_content')  || '',
+    utm_term:     params.get('utm_term')     || '',
+  }
+})()
+
+// ─────────────────────────────
 // SCREEN MGMT
 // ─────────────────────────────
 function showScreen(name, back) {
@@ -1331,6 +1359,17 @@ function submitForm() {
         objectif_revenus:       LABELS.goal[state.answers.goal],
         montant_table_mensuel:  state.amount,
         montant_table_annuel:   state.amount * 12,
+        // Attribution Facebook / UTM (pour le suivi des campagnes)
+        fbclid:                 FB_TRACKING.fbclid,
+        fbc:                    FB_TRACKING.fbc,
+        fbp:                    FB_TRACKING.fbp,
+        landing_url:            FB_TRACKING.landing_url,
+        referrer:               FB_TRACKING.referrer,
+        utm_source:             FB_TRACKING.utm_source,
+        utm_medium:             FB_TRACKING.utm_medium,
+        utm_campaign:           FB_TRACKING.utm_campaign,
+        utm_content:            FB_TRACKING.utm_content,
+        utm_term:               FB_TRACKING.utm_term,
       })
     }).catch(()=>{})
   }
