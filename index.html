@@ -605,6 +605,8 @@
       letter-spacing: 0.01em;
       white-space: nowrap;
       text-align: center;
+      filter: blur(11px);
+      text-shadow: 0 0 20px rgba(255,255,255,0.4);
     }
     .result-suffix {
       font-size: 12px;
@@ -628,6 +630,8 @@
       letter-spacing: 0.02em;
       white-space: nowrap;
       text-align: center;
+      filter: blur(7px);
+      text-shadow: 0 0 12px rgba(255,255,255,0.4);
     }
     .result-annual-lbl {
       font-size: 10px;
@@ -643,6 +647,89 @@
       line-height: 1.65;
       margin: 0 0 24px;
       padding: 0 8px;
+    }
+
+    /* Advice cards — diagnostic adapté selon Q4 (acquisition) */
+    .advice-block { margin: 8px 0 20px; text-align: left; }
+    .advice-title {
+      font-family: 'Anton', sans-serif;
+      font-size: clamp(20px, 5.5vw, 26px);
+      text-transform: uppercase;
+      color: var(--white);
+      letter-spacing: 0.02em;
+      margin-bottom: 14px;
+      text-align: center;
+      line-height: 1.1;
+    }
+    .advice-cards { display: flex; flex-direction: column; gap: 10px; }
+    .advice-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 16px 18px;
+      background: var(--w03);
+      border: 1px solid var(--w10);
+      border-radius: 14px;
+    }
+    .advice-icon {
+      width: 42px; height: 42px;
+      background: rgba(255,106,0,0.14);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      font-size: 22px;
+    }
+    .advice-body { flex: 1; min-width: 0; }
+    .advice-card-title { font-size: 15px; font-weight: 700; color: var(--white); margin-bottom: 4px; line-height: 1.25; }
+    .advice-card-desc { font-size: 13px; color: var(--w60); line-height: 1.5; }
+
+    /* Encadré "un pro va t'appeler" */
+    .pro-note {
+      background: rgba(255,106,0,0.06);
+      border: 1px solid rgba(255,106,0,0.30);
+      border-radius: 14px;
+      padding: 16px 18px;
+      margin: 8px 0 18px;
+      text-align: center;
+      font-size: 14px;
+      color: var(--white);
+      line-height: 1.55;
+    }
+    .pro-note strong { color: var(--orange); }
+
+    /* CTA vidéo — bouton contour orange */
+    .video-cta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      padding: 18px 20px;
+      border: 2px solid var(--orange);
+      background: rgba(255,106,0,0.06);
+      color: var(--orange);
+      border-radius: 14px;
+      font-family: 'Hanken Grotesk', sans-serif;
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      margin-bottom: 22px;
+      transition: all 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
+      text-align: center;
+      line-height: 1.3;
+    }
+    .video-cta:hover { background: rgba(255,106,0,0.15); transform: translateY(-1px); }
+    .video-cta-icon {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 26px; height: 26px;
+      background: var(--orange);
+      color: var(--white);
+      border-radius: 50%;
+      font-size: 12px;
+      flex-shrink: 0;
     }
     .result-restart {
       text-align: center;
@@ -907,11 +994,24 @@
         <div class="result-annual" id="result-annual">0$</div>
         <div class="result-annual-lbl">SUR 12 MOIS</div>
       </div>
-      <p class="result-desc">En 30 minutes, on te montre exactement quel système installer pour aller chercher cet argent.</p>
+
+      <div class="advice-block">
+        <div class="advice-title" id="advice-title"></div>
+        <div class="advice-cards" id="advice-cards"></div>
+      </div>
+
+      <div class="pro-note">
+        <strong>Un de nos professionnels</strong> va t'appeler pour vérifier ta situation et confirmer ces chiffres avec toi.
+      </div>
+
+      <a href="https://sunafilmsmedia.com/ai" target="_blank" rel="noopener" class="video-cta">
+        <span class="video-cta-icon">▶</span>
+        <span>Tu veux comprendre l'offre?<br/>Regarde cette vidéo</span>
+      </a>
 
       <div class="form-group" id="form-block">
         <div class="form-title">Où est-ce qu'on t'envoie ton plan?</div>
-        <div class="form-sub">Ton plan personnalisé gratuit pour aller chercher cet argent va être envoyé à ces coordonnées :</div>
+        <div class="form-sub">Ton plan personnalisé gratuit va être envoyé à ces coordonnées :</div>
         <input class="field" type="text"  id="f-nom"   placeholder="Ton nom complet" autocomplete="name"  oninput="state.form.nom=this.value;updateFormBtn()" />
         <input class="field" type="email" id="f-email" placeholder="Ton courriel"     autocomplete="email" oninput="state.form.email=this.value;updateFormBtn()" />
         <input class="field" type="tel"   id="f-tel"   placeholder="Ton téléphone"    autocomplete="tel"   oninput="state.form.telephone=this.value;updateFormBtn()" />
@@ -1371,7 +1471,71 @@ function calcMoneyOnTable() {
 // ─────────────────────────────
 // RENDER RESULT
 // ─────────────────────────────
+// ─────────────────────────────
+// CONSEILS ADAPTÉS SELON Q4 (acquisition)
+// ─────────────────────────────
+const ADVICE_BY_ACQUISITION = {
+  pubs: {
+    title: "Le problème avec des pubs seules",
+    cards: [
+      { icon: '🎬', title: "Pas assez de contenu",
+        desc: "Tes pubs performent mieux avec du contenu qui bâtit ta crédibilité en parallèle. Sans ça, tu payes pour convaincre à froid à chaque fois." },
+      { icon: '🎯', title: "Pas assez d'offres testées",
+        desc: "Une seule offre sur un seul marché = plafond garanti. Il faut tester plusieurs angles et audiences pour maximiser ton ROAS." },
+      { icon: '🤖', title: "Aucun filtre IA",
+        desc: "Tu payes autant pour les curieux que pour les prospects sérieux. Sans IA de qualification, ton coût par lead qualifié explose." },
+    ]
+  },
+  organic: {
+    title: "Le problème avec du contenu seul",
+    cards: [
+      { icon: '📉', title: "Tes mois varient trop",
+        desc: "Sans pub (ou avec de la mauvaise pub), l'algo est imprévisible. Excellent mois, puis rien pendant 2 semaines. Impossible de planifier." },
+      { icon: '🎬', title: "Ton contenu est bon, mais pas assez",
+        desc: "Il te faut plus de volume + plus de variété (formats, angles, hooks) pour rester top of mind auprès de ton audience." },
+      { icon: '🤖', title: "L'IA ne travaille pas pour toi",
+        desc: "Aucun système pour qualifier les leads pendant que tu dors. Chaque nuit tu perds des opportunités." },
+    ]
+  },
+  ref: {
+    title: "Le problème avec 100% de références",
+    cards: [
+      { icon: '🎲', title: "Zéro contrôle sur ton flux",
+        desc: "Les références arrivent quand elles veulent. Tu ne peux pas planifier, pas prévoir, pas grandir. Tu es dépendant." },
+      { icon: '📊', title: "Zéro chiffre, zéro donnée",
+        desc: "La pire erreur d'un business en croissance. Tu ne sais pas ce qui marche, quel client rapporte le plus, ni où optimiser. Tu es aveugle." },
+      { icon: '⚠️', title: "Risque énorme concentré",
+        desc: "Si tes 3-4 sources de références tarissent, ton business meurt du jour au lendemain. Diversification obligatoire." },
+    ]
+  },
+  aucune: {
+    title: "Le problème avec aucun système",
+    cards: [
+      { icon: '🧩', title: "Il te manque… un peu tout",
+        desc: "Pas de contenu qui bâtit ta marque, pas de pubs qui génèrent des leads, pas d'IA qui les qualifie. Tu es en mode réactif — ça ne scale pas." },
+      { icon: '🎰', title: "Chaque mois est une loterie",
+        desc: "Sans système, tes revenus dépendent de la chance. Un client par référence, un autre par un post random. Aucune constance." },
+      { icon: '🚀', title: "Le potentiel est là, le système ne l'est pas",
+        desc: "Ton expérience vaut de l'or. Mais sans structure marketing, tu plafonnes bien en dessous de ta capacité réelle." },
+    ]
+  },
+}
+
 function renderResult() {
+  // Conseils adaptés à Q4
+  const advice = ADVICE_BY_ACQUISITION[state.answers.acquisition] || ADVICE_BY_ACQUISITION.aucune
+  document.getElementById('advice-title').textContent = advice.title
+  document.getElementById('advice-cards').innerHTML = advice.cards.map(c => `
+    <div class="advice-card">
+      <div class="advice-icon">${c.icon}</div>
+      <div class="advice-body">
+        <div class="advice-card-title">${c.title}</div>
+        <div class="advice-card-desc">${c.desc}</div>
+      </div>
+    </div>
+  `).join('')
+
+  // Animation des chiffres (blur reste, effet cinématique)
   const monthEl  = document.getElementById('result-amount')
   const yearEl   = document.getElementById('result-annual')
   const target   = state.amount
