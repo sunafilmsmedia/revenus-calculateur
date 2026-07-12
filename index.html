@@ -38,7 +38,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@900&family=Kaushan+Script&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@700;800;900&family=Kaushan+Script&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -149,29 +149,22 @@
     .script { font-family: 'Kaushan Script', cursive; display: inline-block; transform: rotate(-3deg); }
     .uppercase { text-transform: uppercase; letter-spacing: 0.14em; }
 
-    /* ── LANDING HERO — Barlow Black (900) sur tout le hook ── */
+    /* ── LANDING HERO — Barlow, hook unifié ── */
     .landing-hero { text-align: center; padding: 16px 0 8px; }
-    .landing-script {
+    /* Lignes 1 & 2 : même taille, même poids, minuscule (poids 800, plus mince que 900) */
+    .landing-script, .landing-la {
       font-family: 'Barlow', sans-serif;
-      font-weight: 900;
-      font-size: clamp(20px, 4.5vw, 30px);
+      font-weight: 800;
+      font-size: clamp(26px, 6vw, 40px);
       color: var(--white);
+      line-height: 1.08;
       letter-spacing: -0.01em;
-      margin-bottom: 10px;
-      display: inline-block;
       text-transform: none;
-      line-height: 1.15;
+      display: block;
     }
-    .landing-la {
-      font-family: 'Barlow', sans-serif;
-      font-weight: 900;
-      font-size: clamp(30px, 7.5vw, 52px);
-      color: var(--white);
-      line-height: 1.02;
-      letter-spacing: -0.02em;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-    }
+    .landing-script { margin-bottom: 2px; }
+    .landing-la     { margin-bottom: 10px; }
+    /* Ligne 3 : la punchline, plus grosse et en 900 (Black) dans la boîte orange */
     .landing-table-wrap {
       display: inline-block;
       background: var(--orange);
@@ -183,10 +176,10 @@
     .landing-table {
       font-family: 'Barlow', sans-serif;
       font-weight: 900;
-      font-size: clamp(30px, 7.5vw, 52px);
+      font-size: clamp(30px, 7vw, 48px);
       color: var(--white);
-      line-height: 1.02;
-      letter-spacing: -0.02em;
+      line-height: 1;
+      letter-spacing: -0.01em;
       text-transform: uppercase;
     }
 
@@ -900,7 +893,7 @@
   <div class="screen visible" id="screen-intro">
     <div class="landing-hero">
       <div class="landing-script">Combien de clients tu manques</div>
-      <div class="landing-la">CHAQUE ANNÉE SANS</div>
+      <div class="landing-la">chaque année sans</div>
       <div class="landing-table-wrap"><span class="landing-table">CONTENU + PUBS + AI</span></div>
     </div>
 
