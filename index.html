@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Découvre combien tu pourrais générer — Suna Films Media</title>
-  <meta name="description" content="Contenu, publicités et un AI qui filtre les curieux. 7 questions, 3 minutes, ton chiffre." />
-  <meta property="og:title" content="Découvre combien tu pourrais générer — Contenu, Pubs & AI" />
+  <title>Combien de clients tu manques chaque année — Suna Films Media</title>
+  <meta name="description" content="Chaque année sans Contenu + Pubs + AI, tu manques des clients. Calcule combien en 3 minutes." />
+  <meta property="og:title" content="Combien de clients tu manques chaque année sans Contenu + Pubs + AI?" />
   <meta property="og:description" content="7 questions basées sur ton volume actuel. En 3 minutes, tu vois ton chiffre." />
   <meta name="webhook-url" content="https://services.leadconnectorhq.com/hooks/pp5qkRPyKZNC36rStsc7/webhook-trigger/lgL8QjTcgUvEPnFaRECu" />
 
@@ -183,25 +183,25 @@
       letter-spacing: 0.01em;
     }
 
-    /* ── STATS STRIP ── */
+    /* ── STATS STRIP (compact, sous le CTA) ── */
     .stats {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
       background: var(--w03);
       border: 1px solid var(--w10);
-      border-radius: 20px;
-      margin: 36px 0 28px;
+      border-radius: 14px;
+      margin: 20px 0 12px;
       overflow: hidden;
     }
     .stat {
-      padding: 22px 12px;
+      padding: 12px 6px;
       text-align: center;
       border-right: 1px solid var(--w10);
     }
     .stat:last-child { border-right: none; }
-    .stat-icon { font-size: 22px; color: var(--orange); margin-bottom: 8px; }
-    .stat-val { font-family: 'Anton', sans-serif; font-size: 34px; color: var(--white); line-height: 1; letter-spacing: 0.02em; }
-    .stat-lbl { font-size: 11px; color: var(--w60); margin-top: 6px; letter-spacing: 0.12em; text-transform: uppercase; }
+    .stat-icon { font-size: 14px; color: var(--orange); margin-bottom: 2px; }
+    .stat-val { font-family: 'Anton', sans-serif; font-size: 22px; color: var(--white); line-height: 1; letter-spacing: 0.02em; }
+    .stat-lbl { font-size: 9px; color: var(--w60); margin-top: 3px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; }
 
     .landing-desc {
       color: var(--w60);
@@ -881,10 +881,14 @@
   <!-- ════ LANDING ════ -->
   <div class="screen visible" id="screen-intro">
     <div class="landing-hero">
-      <div class="landing-script">Découvre combien tu pourrais générer</div>
-      <div class="landing-la">AVEC DU CONTENU, DES PUBS</div>
-      <div class="landing-table-wrap"><span class="landing-table">ET UN AI QUI FILTRE LES CURIEUX</span></div>
+      <div class="landing-script">Combien de clients tu manques</div>
+      <div class="landing-la">CHAQUE ANNÉE SANS</div>
+      <div class="landing-table-wrap"><span class="landing-table">CONTENU + PUBS + AI</span></div>
     </div>
+
+    <p class="landing-desc"><strong>7 questions</strong> basées sur ton volume actuel. En <strong>3 minutes</strong>, tu vois ton chiffre.</p>
+
+    <button class="btn" onclick="startQuiz()">Calculer mon chiffre →</button>
 
     <div class="stats">
       <div class="stat">
@@ -904,9 +908,6 @@
       </div>
     </div>
 
-    <p class="landing-desc"><strong>7 questions</strong> basées sur ton volume actuel. En <strong>3 minutes</strong>, tu vois ton chiffre.</p>
-
-    <button class="btn" onclick="startQuiz()">Calculer mon chiffre →</button>
     <p class="tiny-note">Basé sur les résultats réels de nos clients courtiers au Québec</p>
   </div>
 
