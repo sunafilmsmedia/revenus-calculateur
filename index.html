@@ -234,6 +234,15 @@
       margin-left: auto;
       margin-right: auto;
     }
+    /* Mention "Propulsée par l'IA" — petite ligne rainbow sous le bouton */
+    .ai-powered {
+      text-align: center;
+      font-size: clamp(11px, 2.6vw, 13px);
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin: 12px 0 0;
+    }
 
     /* ── BUTTONS ── */
     .btn {
@@ -924,6 +933,7 @@
     <p class="landing-desc">Sans <span class="mech">contenu + pubs Meta + IA de qualification</span>, tu laisses de l'argent sur la table. Le calcul prend 3 minutes.</p>
 
     <button class="btn landing-btn" onclick="startQuiz()">CALCULER MON CHIFFRE →</button>
+    <div class="ai-powered rainbow-text">Propulsée par l'intelligence artificielle</div>
 
     <div class="stats-inline">
       <span class="stat-item"><span class="stat-dot"></span> 3 minutes</span>
