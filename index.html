@@ -149,102 +149,84 @@
     .script { font-family: 'Kaushan Script', cursive; display: inline-block; transform: rotate(-3deg); }
     .uppercase { text-transform: uppercase; letter-spacing: 0.14em; }
 
-    /* ── LANDING HERO — Barlow, hook unifié et raffiné ── */
+    /* ── LANDING HERO — une seule phrase, propre et centrée ── */
     .landing-hero {
       text-align: center;
       padding: 12px 6px 8px;
     }
-    /* Lignes 1 & 2 : même taille, même poids, minuscule, un peu plus fin (700) */
-    .landing-script, .landing-la {
+    .hero-headline {
       font-family: 'Barlow', sans-serif;
       font-weight: 700;
-      font-size: clamp(22px, 5.6vw, 36px);
+      font-size: clamp(28px, 6.5vw, 48px);
       color: var(--white);
-      line-height: 1.2;
-      letter-spacing: -0.005em;
-      text-transform: none;
-      display: block;
+      line-height: 1.15;
+      letter-spacing: -0.015em;
+      text-align: center;
+      margin: 4px auto 0;
+      max-width: 720px;
     }
-    .landing-script { margin-bottom: 0; }
-    .landing-la {
-      margin-bottom: 14px;
-      color: rgba(255,255,255,0.92);
-      font-style: italic;
-    }
-    /* Mot mis en valeur ("clients") — accent orange, très punchy */
-    .hl {
+    .hero-headline .hl {
       color: var(--orange);
       font-weight: 900;
     }
-    /* Ligne 3 : la punchline dans la boîte orange, avec gradient et double glow */
-    .landing-table-wrap {
-      display: inline-block;
-      background: linear-gradient(135deg, #FF8425 0%, #FF6A00 55%, #E85A00 100%);
-      padding: 8px 22px 12px;
-      border-radius: 12px;
-      box-shadow:
-        0 4px 32px rgba(255,106,0,0.55),
-        0 0 100px rgba(255,106,0,0.28),
-        inset 0 1px 0 rgba(255,255,255,0.20),
-        inset 0 -3px 0 rgba(0,0,0,0.12);
-      max-width: 100%;
-    }
-    .landing-table {
-      font-family: 'Barlow', sans-serif;
-      font-weight: 900;
-      font-size: clamp(26px, 6.4vw, 44px);
-      color: var(--white);
-      line-height: 1;
-      letter-spacing: 0.005em;
-      text-transform: uppercase;
-      text-shadow: 0 2px 6px rgba(0,0,0,0.18);
-    }
 
-    /* ── STATS STRIP (ultra-compact, presque une footnote) ── */
-    .stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      background: var(--w03);
-      border: 1px solid var(--w10);
-      border-radius: 8px;
-      margin: 14px 0 8px;
-      max-width: 340px;
-      margin-left: auto;
-      margin-right: auto;
-      overflow: hidden;
-    }
-    .stat {
-      padding: 5px 2px;
-      text-align: center;
-      border-right: 1px solid var(--w10);
+    /* ── STATS INLINE — texte simple avec points orange ── */
+    .stats-inline {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 5px;
+      gap: 14px 20px;
       flex-wrap: wrap;
+      font-size: clamp(14px, 3.4vw, 22px);
+      color: rgba(255,255,255,0.55);
+      margin: 20px auto 10px;
+      font-weight: 500;
+      line-height: 1.4;
     }
-    .stat:last-child { border-right: none; }
-    .stat-icon { font-size: 10px; color: var(--orange); margin: 0; }
-    .stat-val { font-family: 'Anton', sans-serif; font-size: 13px; color: var(--white); line-height: 1; letter-spacing: 0.02em; margin: 0; }
-    .stat-lbl { font-size: 6.5px; color: var(--w60); margin: 0; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; }
-
+    .stats-inline .stat-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .stats-inline .stat-dot {
+      display: inline-block;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--orange);
+      flex-shrink: 0;
+    }
     @media (max-width: 640px) {
-      .stats { max-width: 300px; }
-      .stat { padding: 4px 1px; gap: 3px; }
-      .stat-icon { font-size: 9px; }
-      .stat-val { font-size: 11px; }
-      .stat-lbl { font-size: 5.5px; }
+      .stats-inline { gap: 8px 14px; font-size: 14px; }
+      .stats-inline .stat-dot { width: 6px; height: 6px; }
     }
 
     .landing-desc {
-      color: var(--w60);
-      font-size: 16px;
-      line-height: 1.65;
+      color: rgba(255,255,255,0.72);
+      font-size: clamp(15px, 3.6vw, 18px);
+      line-height: 1.6;
       text-align: center;
-      margin-bottom: 26px;
+      margin: 22px auto 22px;
       padding: 0 8px;
+      max-width: 620px;
+      font-weight: 500;
     }
-    .landing-desc strong { color: var(--orange); font-weight: 700; }
+    /* Surlignage du mécanisme (contenu + pubs Meta + IA de qualification) */
+    .landing-desc .mech {
+      background: var(--orange);
+      color: #fff;
+      padding: 0.08em 0.35em;
+      border-radius: 8px;
+      font-weight: 700;
+      /* petit glow discret pour cohérence, subtil */
+      box-shadow: 0 2px 12px rgba(255,106,0,0.20);
+    }
+
+    /* Bouton CTA — seul élément qui brille */
+    .landing-btn {
+      max-width: 420px;
+      margin-left: auto;
+      margin-right: auto;
+    }
 
     /* ── BUTTONS ── */
     .btn {
@@ -925,31 +907,17 @@
   <!-- ════ LANDING ════ -->
   <div class="screen visible" id="screen-intro">
     <div class="landing-hero">
-      <div class="landing-script">Combien de <span class="hl">clients</span> tu manques</div>
-      <div class="landing-la">chaque année sans</div>
-      <div class="landing-table-wrap"><span class="landing-table">CONTENU + PUBS + AI</span></div>
+      <h1 class="hero-headline">Combien de <span class="hl">clients</span> tu manques chaque année ?</h1>
     </div>
 
-    <p class="landing-desc"><strong>7 questions</strong> basées sur ton volume actuel. En <strong>3 minutes</strong>, tu vois ton chiffre.</p>
+    <p class="landing-desc">Sans <span class="mech">contenu + pubs Meta + IA de qualification</span>, tu laisses de l'argent sur la table. Le calcul prend 3 minutes.</p>
 
-    <button class="btn" onclick="startQuiz()">Calculer mon chiffre →</button>
+    <button class="btn landing-btn" onclick="startQuiz()">CALCULER MON CHIFFRE →</button>
 
-    <div class="stats">
-      <div class="stat">
-        <div class="stat-icon">⏱</div>
-        <div class="stat-val" id="stat-1">0</div>
-        <div class="stat-lbl">MIN POUR LE FAIRE</div>
-      </div>
-      <div class="stat">
-        <div class="stat-icon">❓</div>
-        <div class="stat-val" id="stat-2">0</div>
-        <div class="stat-lbl">QUESTIONS</div>
-      </div>
-      <div class="stat">
-        <div class="stat-icon">🎯</div>
-        <div class="stat-val" id="stat-3">0%</div>
-        <div class="stat-lbl">PERSONNALISÉ</div>
-      </div>
+    <div class="stats-inline">
+      <span class="stat-item"><span class="stat-dot"></span> 3 minutes</span>
+      <span class="stat-item"><span class="stat-dot"></span> 7 questions</span>
+      <span class="stat-item"><span class="stat-dot"></span> 100 % personnalisé</span>
     </div>
 
     <p class="tiny-note">Basé sur les résultats réels de nos clients courtiers au Québec</p>
@@ -1289,11 +1257,6 @@ function restart() {
   state.submitted = false
   state.form = { nom: '', email: '', telephone: '' }
   showScreen('intro')
-  setTimeout(() => {
-    animateCounter('stat-1', 3, 1200)
-    animateCounter('stat-2', 7, 1200)
-    animateCounter('stat-3', 100, 1400, '%')
-  }, 100)
 }
 
 // ─────────────────────────────
@@ -1705,29 +1668,6 @@ function submitForm() {
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
-// ─────────────────────────────
-// COUNTER ANIMATION (landing stats)
-// ─────────────────────────────
-function animateCounter(elId, target, dur, suffix) {
-  const el = document.getElementById(elId); if (!el) return
-  const start = performance.now()
-  function tick(now) {
-    const p = Math.min((now - start) / dur, 1)
-    const ease = 1 - Math.pow(1 - p, 3)
-    el.textContent = Math.round(target * ease) + (suffix || '')
-    if (p < 1) requestAnimationFrame(tick)
-  }
-  requestAnimationFrame(tick)
-}
-
-// ─────────────────────────────
-// INIT
-// ─────────────────────────────
-setTimeout(() => {
-  animateCounter('stat-1', 3, 1200)
-  animateCounter('stat-2', 7, 1200)
-  animateCounter('stat-3', 100, 1400, '%')
-}, 200)
 </script>
 
 </body>
