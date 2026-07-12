@@ -38,7 +38,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:ital,wght@0,700;0,800;0,900;1,700;1,800&family=Kaushan+Script&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:ital,wght@0,700;0,800;0,900;1,700;1,800&family=Instrument+Sans:ital,wght@1,600;1,700&family=Kaushan+Script&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -157,17 +157,24 @@
     .hero-headline {
       font-family: 'Barlow', sans-serif;
       font-weight: 700;
-      font-size: clamp(34px, 8.4vw, 68px);
+      font-size: clamp(38px, 9.5vw, 76px);
       color: var(--white);
-      line-height: 1.08;
-      letter-spacing: -0.02em;
+      line-height: 1.02;
+      letter-spacing: -0.025em;
       text-align: center;
       margin: 4px auto 0;
       max-width: 780px;
     }
+    .hero-headline br { display: block; }
+    /* Le mot "clients" — Instrument Sans italic, plus classe */
     .hero-headline .hl {
       color: var(--orange);
-      font-weight: 900;
+      font-family: 'Instrument Sans', sans-serif;
+      font-weight: 700;
+      font-style: italic;
+      letter-spacing: -0.015em;
+      /* petit ajustement optique pour aligner avec Barlow */
+      padding-left: 0.02em;
     }
 
     /* ── STATS INLINE — texte simple avec points orange ── */
@@ -907,7 +914,11 @@
   <!-- ════ LANDING ════ -->
   <div class="screen visible" id="screen-intro">
     <div class="landing-hero">
-      <h1 class="hero-headline">Combien de <span class="hl">clients</span> tu manques chaque année ?</h1>
+      <h1 class="hero-headline">
+        Combien de <span class="hl">clients</span><br>
+        tu manques<br>
+        chaque année ?
+      </h1>
     </div>
 
     <p class="landing-desc">Sans <span class="mech">contenu + pubs Meta + IA de qualification</span>, tu laisses de l'argent sur la table. Le calcul prend 3 minutes.</p>
