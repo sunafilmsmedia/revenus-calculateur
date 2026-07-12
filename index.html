@@ -334,6 +334,54 @@
     .opt-check::before { content: '✓'; opacity: 0; transition: opacity 0.15s; }
     .opt.selected .opt-check::before { opacity: 1; }
 
+    /* Numeric stepper (Q3 - clients par mois) */
+    .num-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 16px 0 6px;
+    }
+    .num-btn {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      border: 2px solid var(--w10);
+      background: var(--w03);
+      color: var(--white);
+      font-size: 28px; line-height: 1;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.16s ease;
+      flex-shrink: 0;
+      -webkit-tap-highlight-color: transparent;
+      font-family: inherit;
+    }
+    .num-btn:hover { background: var(--orange); border-color: var(--orange); color: #fff; }
+    .num-btn:active { transform: scale(0.92); }
+    .num-input {
+      font-family: 'Anton', sans-serif;
+      color: var(--white);
+      background: transparent;
+      border: none;
+      outline: none;
+      text-align: center;
+      font-size: clamp(64px, 16vw, 100px);
+      line-height: 1;
+      width: min(220px, 60vw);
+      padding: 0;
+      caret-color: var(--orange);
+      letter-spacing: 0.02em;
+    }
+    .num-input::placeholder { color: rgba(255,255,255,0.25); }
+    .num-label {
+      text-align: center;
+      color: var(--w60);
+      font-size: 12px;
+      letter-spacing: 0.20em;
+      font-weight: 700;
+      margin: 4px 0 28px;
+    }
+
     /* Input "Autre industrie" — apparaît quand l'option Autre est sélectionnée */
     .opt-other-input {
       display: block;
@@ -901,12 +949,11 @@ const QUESTIONS = [
   {
     key: 'clients',
     title: 'Combien de clients as-tu par mois ?',
-    options: [
-      { value: 'low',  icon: '📉', label: '0 à 2 clients',      sub: 'Le volume est irrégulier' },
-      { value: 'mid',  icon: '📊', label: '3 à 5 clients',      sub: 'Ça roule, mais sans constance' },
-      { value: 'high', icon: '📈', label: '6 à 10 clients',     sub: "J'ai une bonne cadence" },
-      { value: 'top',  icon: '🔥', label: 'Plus de 10 clients', sub: 'Je suis en pleine croissance' },
-    ]
+    numeric: true,
+    unit: 'CLIENTS / MOIS',
+    placeholder: '0',
+    min: 0,
+    max: 999,
   },
   {
     key: 'acquisition',
@@ -952,7 +999,6 @@ const QUESTIONS = [
 const LABELS = {
   industry:    { hypothecaire:'Courtier hypothécaire', immobilier:'Courtier immobilier', autre:'Autre industrie' },
   years:       { less1:"Moins d'un an", '1-3':'1 à 3 ans', '3-5':'3 à 5 ans', '5+':'5 ans et plus' },
-  clients:     { low:'0 à 2 clients', mid:'3 à 5 clients', high:'6 à 10 clients', top:'Plus de 10 clients' },
   acquisition: { ref:'Références & bouche-à-oreille', pubs:'Publicité payante', organic:'Contenu organique', aucune:'Aucune méthode constante' },
   system:      { oui:'Oui, automatisé', partiel:'Partiellement / manuel', non:'Non, rien de structuré' },
   challenge:   { leads:'Générer plus de leads qualifiés', convert:'Convertir mes leads en clients', time:'Manque de temps & de système', differentiation:'Me démarquer de la compétition' },
@@ -1037,15 +1083,15 @@ function checkDisqualification() {
   const a = state.answers
   // Gate 1 : Je démarre (moins d'un an) — dès Q2
   if (a.years === 'less1') return { ok: false, reason:'years' }
-  // Gate 2 : Hypothécaire avec faible volume — dès Q3 (clients déclaré)
-  if (a.industry === 'hypothecaire' && a.clients && a.clients !== 'high' && a.clients !== 'top') {
+  // Gate 2 : Hypothécaire avec moins de 5 clients/mois — dès Q3
+  if (a.industry === 'hypothecaire' && typeof a.clients === 'number' && a.clients < 5) {
     return { ok: false, reason:'volume' }
   }
   return { ok: true }
 }
 const NOTQUAL_REASONS = {
   years:  "Notre système est conçu pour les courtiers déjà établis. La première année, l'enjeu c'est de bâtir ta base — pas d'investir dans un système publicitaire. Voici notre ressource gratuite pour bien démarrer.",
-  volume: "Pour un courtier hypothécaire, notre système devient vraiment rentable à partir de 6+ dossiers/mois. Avant ça, il faut bâtir ton volume — voici notre ressource gratuite pour t'aider.",
+  volume: "Pour un courtier hypothécaire, notre système devient vraiment rentable à partir de 5+ dossiers/mois. Avant ça, il faut bâtir ton volume — voici notre ressource gratuite pour t'aider.",
 }
 
 // ─────────────────────────────
@@ -1162,31 +1208,68 @@ function renderQuestion(direction) {
 
   document.getElementById('q-title').textContent = q.title
 
-  // Options — rebuild seulement quand on change de question (pas sur clic d'option)
   const optsEl = document.getElementById('options')
   optsEl.innerHTML = ''
   const current = state.answers[q.key]
-  q.options.forEach(opt => {
-    const div = document.createElement('div')
-    div.className = 'opt' + (current === opt.value ? ' selected' : '')
-    div.dataset.value = opt.value
-    div.innerHTML = `
-      <div class="opt-icon">${opt.icon}</div>
-      <div class="opt-body">
-        <div class="opt-title">${opt.label}</div>
-        ${opt.sub ? `<div class="opt-sub">${opt.sub}</div>` : ''}
-      </div>
-      <div class="opt-check"></div>
-    `
-    div.onclick = () => selectOption(q.key, opt.value)
-    optsEl.appendChild(div)
-  })
 
-  // Si on est sur Q1 et "autre" est déjà sélectionné, réafficher l'input
-  if (q.key === 'industry' && state.answers.industry === 'autre') {
-    showIndustryOtherInput()
+  if (q.numeric) {
+    // Q3 numérique : stepper +/- avec input libre
+    const cur = current !== undefined ? current : ''
+    optsEl.innerHTML = `
+      <div class="num-wrap">
+        <button type="button" class="num-btn" onclick="stepNumeric(-1)">−</button>
+        <input type="text" inputmode="numeric" class="num-input" id="q-num-input"
+               placeholder="${q.placeholder||'0'}" value="${cur}" oninput="setNumeric(this.value)" />
+        <button type="button" class="num-btn" onclick="stepNumeric(1)">+</button>
+      </div>
+      <div class="num-label">${q.unit||''}</div>
+    `
+    setTimeout(() => document.getElementById('q-num-input')?.focus(), 120)
+  } else {
+    // Options multi-choix
+    q.options.forEach(opt => {
+      const div = document.createElement('div')
+      div.className = 'opt' + (current === opt.value ? ' selected' : '')
+      div.dataset.value = opt.value
+      div.innerHTML = `
+        <div class="opt-icon">${opt.icon}</div>
+        <div class="opt-body">
+          <div class="opt-title">${opt.label}</div>
+          ${opt.sub ? `<div class="opt-sub">${opt.sub}</div>` : ''}
+        </div>
+        <div class="opt-check"></div>
+      `
+      div.onclick = () => selectOption(q.key, opt.value)
+      optsEl.appendChild(div)
+    })
+    // Si on est sur Q1 et "autre" est déjà sélectionné, réafficher l'input
+    if (q.key === 'industry' && state.answers.industry === 'autre') {
+      showIndustryOtherInput()
+    }
   }
 
+  updateContinueBtn()
+}
+
+// Stepper numérique (Q3 clients)
+function stepNumeric(delta) {
+  const q = QUESTIONS[state.qIndex]; if (!q.numeric) return
+  const cur = typeof state.answers[q.key] === 'number' ? state.answers[q.key] : 0
+  const next = Math.max(q.min ?? 0, Math.min(q.max ?? 999, cur + delta))
+  state.answers[q.key] = next
+  const inp = document.getElementById('q-num-input')
+  if (inp) inp.value = next
+  updateContinueBtn()
+}
+function setNumeric(v) {
+  const q = QUESTIONS[state.qIndex]; if (!q.numeric) return
+  const cleaned = String(v).replace(/\D/g,'')
+  if (cleaned === '') {
+    state.answers[q.key] = undefined
+  } else {
+    const num = parseInt(cleaned) || 0
+    state.answers[q.key] = Math.max(q.min ?? 0, Math.min(q.max ?? 999, num))
+  }
   updateContinueBtn()
 }
 
@@ -1242,10 +1325,14 @@ function updateContinueBtn() {
   const q = QUESTIONS[state.qIndex]
   const current = state.answers[q.key]
   const btn = document.getElementById('btn-continue')
-  let valid = !!current
-  // Q1 "Autre" exige aussi l'input texte rempli
-  if (q.key === 'industry' && current === 'autre') {
+  let valid
+  if (q.numeric) {
+    // 0 est valide (débutant); undefined/null ne l'est pas
+    valid = typeof current === 'number'
+  } else if (q.key === 'industry' && current === 'autre') {
     valid = (state.answers.industryOther || '').trim().length >= 2
+  } else {
+    valid = !!current
   }
   if (valid) {
     btn.classList.remove('btn--disabled')
@@ -1260,14 +1347,13 @@ function updateContinueBtn() {
 // CALC — Argent sur la table
 // Formule : potentiel (objectif × multiplicateurs) − revenu actuel estimé
 // ─────────────────────────────
-const TICKETS    = { hypothecaire: 2500, immobilier: 12000, autre: 3000 }
-const CLIENT_MID = { low: 1, mid: 4, high: 8, top: 12 }
-const GOAL_MIN   = { '10-20k': 10000, '20-50k': 20000, '50-100k': 50000, '100k+': 100000 }
+const TICKETS  = { hypothecaire: 2500, immobilier: 12000, autre: 3000 }
+const GOAL_MIN = { '10-20k': 10000, '20-50k': 20000, '50-100k': 50000, '100k+': 100000 }
 
 function calcMoneyOnTable() {
   const a = state.answers
   const ticket = TICKETS[a.industry] || 3000
-  const cur    = CLIENT_MID[a.clients] || 1
+  const cur    = typeof a.clients === 'number' ? a.clients : 0
   const goal   = GOAL_MIN[a.goal] || 10000
   const currentRev = cur * ticket
 
@@ -1351,7 +1437,7 @@ function submitForm() {
                                   ? `Autre — ${state.answers.industryOther || ''}`.trim()
                                   : LABELS.industry[state.answers.industry],
         annees_affaires:        LABELS.years[state.answers.years],
-        clients_mois:           LABELS.clients[state.answers.clients],
+        clients_mois:           state.answers.clients,
         acquisition:            LABELS.acquisition[state.answers.acquisition],
         systeme_suivi:          LABELS.system[state.answers.system],
         defi_principal:         LABELS.challenge[state.answers.challenge],
