@@ -597,6 +597,17 @@
       margin: 8px 0 28px;
       overflow: hidden;
     }
+    .result-box--revealed .result-amount,
+    .result-box--revealed .result-annual {
+      filter: blur(0);
+      text-shadow: none;
+    }
+    /* Anime en fondu chaque section quand le contenu du result est refait */
+    .result-anim-in { animation: reveal-fade 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
+    @keyframes reveal-fade {
+      0%   { opacity: 0; transform: translateY(8px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
     .result-amount {
       font-family: 'Anton', sans-serif;
       font-size: clamp(46px, 13vw, 76px);
@@ -985,39 +996,8 @@
 
   <!-- ════ RESULT ════ -->
   <div class="screen" id="screen-result">
-    <div class="result-screen">
-      <div class="result-lbl">TON ESTIMATION</div>
-      <div class="result-script">Tu laisses environ</div>
-      <div class="result-box">
-        <div class="result-amount" id="result-amount">0$</div>
-        <div class="result-suffix">PAR MOIS SUR LA TABLE</div>
-        <div class="result-divider"></div>
-        <div class="result-annual" id="result-annual">0$</div>
-        <div class="result-annual-lbl">SUR 12 MOIS</div>
-      </div>
-
-      <div class="advice-block">
-        <div class="advice-title" id="advice-title"></div>
-        <div class="advice-cards" id="advice-cards"></div>
-      </div>
-
-      <div class="pro-note">
-        <strong>Un de nos professionnels</strong> va t'appeler pour vérifier ta situation et confirmer ces chiffres avec toi.
-      </div>
-
-      <a href="https://sunafilmsmedia.com/ai" target="_blank" rel="noopener" class="video-cta">
-        <span class="video-cta-icon">▶</span>
-        <span>Tu veux comprendre l'offre?<br/>Regarde cette vidéo</span>
-      </a>
-
-      <div class="form-group" id="form-block">
-        <div class="form-title">Où est-ce qu'on t'envoie ton plan?</div>
-        <div class="form-sub">Ton plan personnalisé gratuit va être envoyé à ces coordonnées :</div>
-        <input class="field" type="text"  id="f-nom"   placeholder="Ton nom complet" autocomplete="name"  oninput="state.form.nom=this.value;updateFormBtn()" />
-        <input class="field" type="email" id="f-email" placeholder="Ton courriel"     autocomplete="email" oninput="state.form.email=this.value;updateFormBtn()" />
-        <input class="field" type="tel"   id="f-tel"   placeholder="Ton téléphone"    autocomplete="tel"   oninput="state.form.telephone=this.value;updateFormBtn()" />
-        <button class="btn btn--disabled" id="btn-submit" onclick="submitForm()">RECEVOIR MON PLAN GRATUIT →</button>
-      </div>
+    <div class="result-screen" id="result-screen-content">
+      <!-- rempli dynamiquement par renderResult() -->
     </div>
   </div>
 
@@ -1523,37 +1503,100 @@ const ADVICE_BY_ACQUISITION = {
 }
 
 function renderResult() {
-  // Conseils adaptés à Q4
-  const advice = ADVICE_BY_ACQUISITION[state.answers.acquisition] || ADVICE_BY_ACQUISITION.aucune
-  document.getElementById('advice-title').textContent = advice.title
-  document.getElementById('advice-cards').innerHTML = advice.cards.map(c => `
-    <div class="advice-card">
-      <div class="advice-icon">${c.icon}</div>
-      <div class="advice-body">
-        <div class="advice-card-title">${c.title}</div>
-        <div class="advice-card-desc">${c.desc}</div>
-      </div>
-    </div>
-  `).join('')
+  const container = document.getElementById('result-screen-content')
 
-  // Animation des chiffres (blur reste, effet cinématique)
-  const monthEl  = document.getElementById('result-amount')
-  const yearEl   = document.getElementById('result-annual')
-  const target   = state.amount
-  const targetY  = state.amount * 12
-  const start    = performance.now()
-  const dur      = 1100
-  function tick(now) {
-    const p    = Math.min((now - start) / dur, 1)
-    const ease = 1 - Math.pow(1 - p, 3)
-    const m    = Math.round((target  * ease) / 100) * 100
-    const y    = Math.round((targetY * ease) / 100) * 100
-    monthEl.textContent = fmtCAD(m)
-    yearEl.textContent  = fmtCAD(y)
-    if (p < 1) requestAnimationFrame(tick)
+  if (!state.submitted) {
+    // ── ÉTAPE 1 : Chiffre flou + formulaire ──
+    container.innerHTML = `
+      <div class="result-lbl">TON ESTIMATION</div>
+      <div class="result-script">Tu laisses environ</div>
+      <div class="result-box">
+        <div class="result-amount" id="result-amount">0$</div>
+        <div class="result-suffix">PAR MOIS SUR LA TABLE</div>
+        <div class="result-divider"></div>
+        <div class="result-annual" id="result-annual">0$</div>
+        <div class="result-annual-lbl">SUR 12 MOIS</div>
+      </div>
+
+      <div class="form-group" id="form-block">
+        <div class="form-title">Obtiens ton plan personnalisé</div>
+        <div class="form-sub">Entre tes coordonnées — on te dévoile ton chiffre exact et on t'envoie un plan sur mesure.</div>
+        <input class="field" type="text"  id="f-nom"   placeholder="Ton nom complet" autocomplete="name"  oninput="state.form.nom=this.value;updateFormBtn()" />
+        <input class="field" type="email" id="f-email" placeholder="Ton courriel"     autocomplete="email" oninput="state.form.email=this.value;updateFormBtn()" />
+        <input class="field" type="tel"   id="f-tel"   placeholder="Ton téléphone"    autocomplete="tel"   oninput="state.form.telephone=this.value;updateFormBtn()" />
+        <button class="btn btn--disabled" id="btn-submit" onclick="submitForm()">OBTENIR MON PLAN GRATUIT →</button>
+      </div>
+    `
+  } else {
+    // ── ÉTAPE 2 : Chiffre révélé + conseils + vidéo ──
+    const advice = ADVICE_BY_ACQUISITION[state.answers.acquisition] || ADVICE_BY_ACQUISITION.aucune
+    const adviceHtml = advice.cards.map(c => `
+      <div class="advice-card">
+        <div class="advice-icon">${c.icon}</div>
+        <div class="advice-body">
+          <div class="advice-card-title">${c.title}</div>
+          <div class="advice-card-desc">${c.desc}</div>
+        </div>
+      </div>
+    `).join('')
+
+    container.innerHTML = `
+      <div class="result-lbl">TON POTENTIEL RÉVÉLÉ</div>
+      <div class="result-script">Tu laisses environ</div>
+      <div class="result-box result-box--revealed">
+        <div class="result-amount" id="result-amount">0$</div>
+        <div class="result-suffix">PAR MOIS SUR LA TABLE</div>
+        <div class="result-divider"></div>
+        <div class="result-annual" id="result-annual">0$</div>
+        <div class="result-annual-lbl">SUR 12 MOIS</div>
+      </div>
+
+      <div class="advice-block">
+        <div class="advice-title">${advice.title}</div>
+        <div class="advice-cards">${adviceHtml}</div>
+      </div>
+
+      <div class="pro-note">
+        <strong>Un de nos professionnels</strong> va t'appeler pour vérifier ta situation et confirmer ces chiffres avec toi.
+      </div>
+
+      <a href="https://sunafilmsmedia.com/ai" target="_blank" rel="noopener" class="video-cta">
+        <span class="video-cta-icon">▶</span>
+        <span>Tu veux comprendre l'offre?<br/>Regarde cette vidéo</span>
+      </a>
+
+      <div class="form-group" style="text-align:center">
+        <div style="font-size:44px;margin-bottom:6px">🎉</div>
+        <div class="anton" style="font-size:24px;margin-bottom:6px">PLAN EN ROUTE</div>
+        <p style="color:var(--w60);font-size:14px;line-height:1.55">On te rappelle sous 24h pour confirmer tes chiffres et te présenter ton plan.</p>
+      </div>
+    `
   }
-  requestAnimationFrame(tick)
-  updateFormBtn()
+
+  // Anime le fondu du contenu à chaque re-render
+  container.classList.remove('result-anim-in')
+  void container.offsetWidth
+  container.classList.add('result-anim-in')
+
+  // Animation compteur (mensuel + annuel)
+  const monthEl = document.getElementById('result-amount')
+  const yearEl  = document.getElementById('result-annual')
+  if (monthEl && yearEl) {
+    const start = performance.now()
+    const dur   = 1100
+    function tick(now) {
+      const p    = Math.min((now - start) / dur, 1)
+      const ease = 1 - Math.pow(1 - p, 3)
+      const m    = Math.round((state.amount * ease) / 100) * 100
+      const y    = Math.round((state.amount * 12 * ease) / 100) * 100
+      monthEl.textContent = fmtCAD(m)
+      yearEl.textContent  = fmtCAD(y)
+      if (p < 1) requestAnimationFrame(tick)
+    }
+    requestAnimationFrame(tick)
+  }
+
+  if (!state.submitted) updateFormBtn()
 }
 
 function fmtCAD(n) {
@@ -1624,14 +1667,9 @@ function submitForm() {
     }).catch(()=>{})
   }
 
-  // Confirmation
-  document.getElementById('form-block').innerHTML = `
-    <div style="text-align:center;padding:8px 0">
-      <div style="font-size:52px;margin-bottom:10px">🎉</div>
-      <div class="anton" style="font-size:30px;margin-bottom:8px">RÉSERVATION ENVOYÉE</div>
-      <p style="color:var(--w60);font-size:14px;line-height:1.6">On t'envoie ton plan personnalisé par courriel sous 24h. Tu vas aussi recevoir un texto pour planifier ton appel.</p>
-    </div>
-  `
+  // Re-render en mode "révélé" (chiffre net + conseils + vidéo)
+  renderResult()
+  window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
 // ─────────────────────────────
