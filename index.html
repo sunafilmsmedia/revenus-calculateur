@@ -925,12 +925,12 @@
     <div class="landing-hero">
       <h1 class="hero-headline">
         Combien de <span class="hl">clients</span><br>
-        tu manques<br>
-        chaque année ?
+        tu peux gagner<br>
+        cette année ?
       </h1>
     </div>
 
-    <p class="landing-desc">Sans <span class="mech">contenu + pubs Meta + IA de qualification</span>, tu laisses de l'argent sur la table. Le calcul prend 3 minutes.</p>
+    <p class="landing-desc"><span class="mech">Contenu + pubs + IA de qualification</span> = plus de rendez-vous. Fais le calcul en 3 minutes.</p>
 
     <button class="btn landing-btn" onclick="startQuiz()">CALCULER MON CHIFFRE →</button>
     <div class="ai-powered rainbow-text">Analyse intelligente propulsée par l'IA</div>
@@ -1026,50 +1026,6 @@
 </div>
 
 <script>
-// ─────────────────────────────
-// A/B TEST — headline négatif vs positif (50/50 split)
-// URL override : ?ab=A ou ?ab=B pour forcer une variante en test
-// ─────────────────────────────
-const AB_VARIANTS = {
-  A: {
-    // NÉGATIF — friction / perte
-    headline: `Combien de <span class="hl">clients</span><br>tu échappes<br>chaque année ?`,
-    subtitle: `Sans <span class="mech">contenu + pubs Meta + IA de qualification</span>, tu laisses de l'argent sur la table. Le calcul prend 3 minutes.`,
-  },
-  B: {
-    // POSITIF — opportunité / gain
-    headline: `Combien de <span class="hl">clients</span><br>tu peux gagner<br>cette année ?`,
-    subtitle: `<span class="mech">Contenu + pubs + IA de qualification</span> = plus de rendez-vous. Fais le calcul en 3 minutes.`,
-  },
-}
-const AB_VARIANT = (() => {
-  const urlParams = new URLSearchParams(window.location.search)
-  const forced = urlParams.get('ab')
-  if (forced === 'A' || forced === 'B') {
-    try { localStorage.setItem('sfm_ab', forced) } catch (e) {}
-    return forced
-  }
-  try {
-    const stored = localStorage.getItem('sfm_ab')
-    if (stored === 'A' || stored === 'B') return stored
-    const rolled = Math.random() < 0.5 ? 'A' : 'B'
-    localStorage.setItem('sfm_ab', rolled)
-    return rolled
-  } catch (e) {
-    return Math.random() < 0.5 ? 'A' : 'B'
-  }
-})()
-// Applique la variante dès que possible pour éviter le flash
-;(function applyAbVariant() {
-  const v = AB_VARIANTS[AB_VARIANT]
-  const headline = document.querySelector('.hero-headline')
-  const desc     = document.querySelector('.landing-desc')
-  if (headline) headline.innerHTML = v.headline
-  if (desc)     desc.innerHTML     = v.subtitle
-})()
-// Track custom event Meta Pixel pour la variante vue
-if (window.fbq) fbq('trackCustom', 'AbView', { ab_variant: AB_VARIANT })
-
 // ─────────────────────────────
 // QUESTIONS
 // ─────────────────────────────
@@ -1688,7 +1644,6 @@ function submitForm() {
       content_name: 'Combien tu laisses sur la table',
       value: state.amount,
       currency: 'CAD',
-      ab_variant: AB_VARIANT,
     })
   }
 
@@ -1714,7 +1669,6 @@ function submitForm() {
         objectif_revenus:       LABELS.goal[state.answers.goal],
         montant_table_mensuel:  state.amount,
         montant_table_annuel:   state.amount * 12,
-        ab_variant:             AB_VARIANT,
         // Attribution Facebook / UTM (pour le suivi des campagnes)
         fbclid:                 FB_TRACKING.fbclid,
         fbc:                    FB_TRACKING.fbc,
