@@ -345,38 +345,76 @@
       color: var(--white);
       margin-bottom: 12px;
     }
-    .chain-row {
-      display: flex; align-items: baseline; justify-content: space-between; gap: 14px;
-      padding: 10px 0;
+    .chain-step {
+      padding: 12px 0;
+      border-top: 1px solid var(--w06);
+      color: rgba(255,255,255,0.82);
+      font-size: 15px;
+      line-height: 1.45;
+    }
+    .chain-step:first-of-type { border-top: none; }
+    .chain-step strong { color: var(--white); font-weight: 800; }
+    .chain-note {
+      display: block;
+      color: var(--w45);
+      font-size: 12.5px;
+      font-weight: 500;
+      margin-top: 3px;
+    }
+
+    /* ── BLOC "RAPPELLE PLUS VITE" ── */
+    .speed-block {
+      margin: 20px 0;
+      padding: 18px 16px 14px;
+      border: 1px solid rgba(255,106,0,0.28);
+      border-radius: 14px;
+      background: rgba(255,106,0,0.06);
+      text-align: left;
+    }
+    .speed-title {
+      font-family: 'Anton', sans-serif;
+      font-size: 19px;
+      letter-spacing: 0.01em;
+      color: var(--white);
+      margin-bottom: 6px;
+    }
+    .speed-intro {
+      color: rgba(255,255,255,0.72);
+      font-size: 13.5px;
+      line-height: 1.55;
+      margin-bottom: 14px;
+    }
+    .speed-row {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: 11px 0;
       border-top: 1px solid var(--w06);
     }
-    .chain-row:first-of-type { border-top: none; }
-    .chain-lbl {
-      color: rgba(255,255,255,0.82);
-      font-size: 14px; font-weight: 600; line-height: 1.35;
+    .speed-when {
+      color: var(--white);
+      font-size: 14px; font-weight: 700; line-height: 1.3;
     }
-    .chain-note {
+    .speed-tag {
       display: block;
       color: var(--w45);
       font-size: 12px; font-weight: 500;
       margin-top: 2px;
     }
-    .chain-val {
-      flex: 0 0 auto;
+    .speed-amt {
+      flex: 0 0 auto; text-align: right;
       font-family: 'Hanken Grotesk', sans-serif;
-      font-weight: 800;
-      font-size: 15px;
-      color: var(--white);
+      font-weight: 800; font-size: 16px;
+      color: var(--orange);
       white-space: nowrap;
     }
-    .chain-row--total { border-top: 1px solid var(--w10); margin-top: 4px; }
-    .chain-row--total .chain-val { color: var(--orange); font-size: 17px; }
-    .chain-row--net .chain-val { color: var(--orange); }
-    .chain-foot {
-      color: var(--w45);
-      font-size: 12px; line-height: 1.5;
-      margin-top: 10px;
+    .speed-per { font-size: 12px; font-weight: 600; color: var(--w45); }
+    .speed-gain {
+      display: block;
+      font-size: 12px; font-weight: 700;
+      color: #4ADE80;
+      margin-top: 2px;
     }
+    .speed-row--now { border-top: none; opacity: 0.72; }
+    .speed-row--now .speed-amt { color: rgba(255,255,255,0.85); }
 
     /* ── BLOC "TON DÉFI" en tête du résultat ── */
     .focus-block {
@@ -1694,7 +1732,17 @@ const BUDGET_TIERS = [
 function budgetTier(v) { return BUDGET_TIERS.find(t => v <= t.max) || BUDGET_TIERS[BUDGET_TIERS.length-1] }
 
 // Part des leads réellement travaillés selon la vitesse de rappel
-const SPEED_RATE      = { min10: 1.00, hour: 0.70, day: 0.45, whenever: 0.25 }
+const SPEED_RATE      = { min10: 0.90, hour: 0.70, day: 0.50, whenever: 0.30 }
+// Formulation employée dans la phrase « 39 leads, rappelés dans la journée → … »
+const SPEED_PHRASE    = {
+  min10:    "rappelés en moins de 10 minutes",
+  hour:     "rappelés dans l'heure",
+  day:      "rappelés dans la journée",
+  whenever: "rappelés quand tu as le temps",
+}
+// Ordre du plus lent au plus rapide — sert au bloc « rappelle plus vite »
+const SPEED_ORDER     = ['whenever', 'day', 'hour', 'min10']
+const SPEED_SHORT     = { min10: '⚡ Moins de 10 min', hour: "⏱ Dans l'heure", day: '📅 Dans la journée', whenever: "🤷 Quand j'ai le temps" }
 const TAUX_EVAL       = 0.20   // leads travaillés → rendez-vous / évaluation
 const TAUX_CLOSE      = 0.30   // rendez-vous → transaction signée
 const FRAIS_GESTION   = 3000   // $/mois — gestion du système
@@ -1709,7 +1757,7 @@ function calcProjection() {
   const budgetMois = budgetJour * JOURS_MOIS
 
   const leads        = budgetMois / cpl
-  const speedRate    = SPEED_RATE[a.speed] ?? 0.45
+  const speedRate    = SPEED_RATE[a.speed] ?? 0.50
   const travailles   = leads * speedRate
   const evals        = travailles * TAUX_EVAL
   const transactions = evals * TAUX_CLOSE
@@ -1724,9 +1772,20 @@ function calcProjection() {
   const revenuTotal = revenuActuel + revenuProjete
   const net        = Math.round((revenuProjete - (budgetMois + FRAIS_GESTION)) / 100) * 100
 
+  // Ce que donnerait chaque vitesse de rappel, à budget identique.
+  const parVitesse = SPEED_ORDER.map(k => {
+    const trav = leads * SPEED_RATE[k]
+    return {
+      key: k,
+      travailles: trav,
+      revenu: trav * TAUX_EVAL * TAUX_CLOSE * ticket,
+      actuel: k === a.speed,
+    }
+  })
+
   return {
     ind, cpl, ticket, budgetJour, budgetMois, speedRate,
-    leads, travailles, evals, transactions,
+    leads, travailles, evals, transactions, parVitesse,
     revenuProjete, clientsActuels, revenuActuel, revenuTotal, surLaTable, net,
   }
 }
@@ -1740,19 +1799,13 @@ const CHALLENGE_FOCUS = {
   leads:           { icon:'🎯', title:"Ton défi : avoir plus de leads qui valent la peine",
                      desc:"Le volume, ça s'achète. La qualité, ça se filtre — avant que le lead t'arrive. C'est exactement ce que fait l'IA de qualification dans le système ci-dessous." },
   convert:         { icon:'💸', title:"Ton défi : convertir ceux que tu as déjà",
-                     desc:"Souvent c'est pas toi, c'est le délai et le suivi. Regarde la ligne « leads réellement travaillés » plus bas — c'est là que ça se joue." },
+                     desc:"Souvent c'est pas toi, c'est le délai et le suivi. Regarde plus bas combien de tes leads sont vraiment travaillés — c'est là que ça se joue." },
   time:            { icon:'⏰', title:"Ton défi : arrêter de tout faire à la main",
                      desc:"Un CRM avec relances automatiques, c'est environ 5 h/semaine récupérées chez nos clients — et zéro lead oublié." },
   differentiation: { icon:'✨', title:"Ton défi : te démarquer des autres courtiers",
                      desc:"L'expertise, tout le monde l'affiche. Ce qui différencie, c'est la personne — c'est pour ça que le contenu vient avant la pub." },
 }
 
-const SPEED_NOTE = {
-  min10:    "Tu rappelles en moins de 10 minutes : on considère que tu travailles 100 % de tes leads.",
-  hour:     "Rappel dans l'heure : environ 70 % de tes leads sont réellement travaillés.",
-  day:      "Rappel dans la journée : environ 45 % de tes leads sont réellement travaillés.",
-  whenever: "Rappel quand tu as le temps : environ 25 % de tes leads sont réellement travaillés.",
-}
 
 const ADVICE_BY_ACQUISITION = {
   pubs: {
@@ -1854,21 +1907,38 @@ function renderResult() {
       </div>
     ` : ''
 
-    // La chaîne complète, ligne par ligne, avec SES chiffres dedans.
-    const chainRows = [
-      ['Budget publicitaire',  `${fmtCAD(P.budgetMois)}/mois`, `${P.budgetJour} $/jour × 30 jours`],
-      ['Leads générés',        `${Math.round(P.leads)}`,        `÷ ${r1(P.cpl)} $ de coût par lead`],
-      ['Leads réellement travaillés', `${Math.round(P.travailles)}`, `× ${Math.round(P.speedRate*100)} % — ${LABELS.speed[state.answers.speed] || '—'}`],
-      ['Rendez-vous obtenus',  `${r1(P.evals)}`,                `× ${Math.round(TAUX_EVAL*100)} % des leads travaillés`],
-      ['Transactions signées', `${r1(P.transactions)}`,         `× ${Math.round(TAUX_CLOSE*100)} % des rendez-vous`],
-      ['Revenu ajouté par le système', `${fmtCAD(Math.round(P.revenuProjete))}/mois`, `× ${fmtCAD(P.ticket)} par client`],
-      ['Ton revenu actuel',    `${fmtCAD(P.revenuActuel)}/mois`, `${P.clientsActuels} client${P.clientsActuels>1?'s':''} × ${fmtCAD(P.ticket)} — le système s'ajoute à ça`],
-    ].map(([lbl, val, note]) => `
-      <div class="chain-row">
-        <div class="chain-lbl">${lbl}<span class="chain-note">${note}</span></div>
-        <div class="chain-val">${val}</div>
+    // « D'où sort ce chiffre » : deux phrases, rien de plus.
+    const nbLeads = Math.round(P.leads)
+    const nbTrav  = Math.round(P.travailles)
+
+    // Ce que rapporterait chaque vitesse de rappel plus rapide que la sienne.
+    const rangActuel = SPEED_ORDER.indexOf(state.answers.speed)
+    const plusVite   = P.parVitesse.filter((v, idx) => idx > rangActuel)
+    const revActuel  = P.parVitesse[rangActuel]?.revenu ?? P.revenuProjete
+
+    const speedHtml = plusVite.length ? `
+      <div class="speed-block">
+        <div class="speed-title">Et si tu rappelais plus vite ?</div>
+        <p class="speed-intro">Même budget, même pub, mêmes leads. Juste le délai avant ton premier appel — c'est le seul levier qui ne te coûte rien.</p>
+        <div class="speed-row speed-row--now">
+          <div class="speed-when">${SPEED_SHORT[state.answers.speed]}<span class="speed-tag">ta vitesse actuelle</span></div>
+          <div class="speed-amt">${fmtCAD(Math.round(revActuel))}<span class="speed-per">/mois</span></div>
+        </div>
+        ${plusVite.map(v => `
+          <div class="speed-row">
+            <div class="speed-when">${SPEED_SHORT[v.key]}<span class="speed-tag">${Math.round(v.travailles)} leads vraiment travaillés</span></div>
+            <div class="speed-amt">${fmtCAD(Math.round(v.revenu))}<span class="speed-per">/mois</span>
+              <span class="speed-gain">+${fmtCAD(Math.round(v.revenu - revActuel))}</span>
+            </div>
+          </div>
+        `).join('')}
       </div>
-    `).join('')
+    ` : `
+      <div class="speed-block">
+        <div class="speed-title">Tu rappelles déjà au bon rythme</div>
+        <p class="speed-intro">Moins de 10 minutes, c'est la meilleure vitesse possible — tu travailles 90 % de tes leads. Il ne te manque que le volume pour les alimenter.</p>
+      </div>
+    `
 
     const adviceHtml = advice.cards.map(c => `
       <div class="advice-card">
@@ -1895,17 +1965,17 @@ function renderResult() {
 
       <div class="chain-block">
         <div class="chain-title">D'où sort ce chiffre</div>
-        ${chainRows}
-        <div class="chain-row chain-row--total">
-          <div class="chain-lbl">Ton revenu avec le système<span class="chain-note">${fmtCAD(P.revenuActuel)} actuels + ${fmtCAD(Math.round(P.revenuProjete))} ajoutés</span></div>
-          <div class="chain-val">${fmtCAD(Math.round(P.revenuTotal))}/mois</div>
+        <div class="chain-step">
+          <strong>${fmtCAD(P.budgetMois)}</strong> de pub → <strong>${nbLeads} leads</strong>
+          <span class="chain-note">${new Intl.NumberFormat('fr-CA',{minimumFractionDigits:2}).format(P.cpl)} $ le lead, moyenne de nos clients</span>
         </div>
-        <div class="chain-row chain-row--net">
-          <div class="chain-lbl">Net dans tes poches<span class="chain-note">revenu ajouté − budget pub − ${fmtCAD(FRAIS_GESTION)} de gestion</span></div>
-          <div class="chain-val">${fmtCAD(P.net)}/mois</div>
+        <div class="chain-step">
+          <strong>${nbLeads} leads</strong>, ${SPEED_PHRASE[state.answers.speed]} → <strong>${nbTrav} vraiment travaillés</strong>
+          <span class="chain-note">les autres sont froids</span>
         </div>
-        <div class="chain-foot">${SPEED_NOTE[state.answers.speed] || ''}</div>
       </div>
+
+      ${speedHtml}
 
       <div class="advice-block">
         <div class="advice-title">${advice.title}</div>
