@@ -266,11 +266,13 @@
       letter-spacing: 0.01em;
     }
     .budget-unit {
+      text-align: center;
       font-family: 'Hanken Grotesk', sans-serif;
-      font-weight: 700;
-      font-size: 16px;
+      font-weight: 800;
+      font-size: 11px;
       color: var(--w45);
-      letter-spacing: 0.04em;
+      letter-spacing: 0.18em;
+      margin-top: 4px;
     }
     .budget-range {
       -webkit-appearance: none; appearance: none;
@@ -354,12 +356,51 @@
     }
     .chain-step:first-of-type { border-top: none; }
     .chain-step strong { color: var(--white); font-weight: 800; }
+    /* Le résultat de la flèche ne doit jamais se couper en deux lignes */
+    .chain-from { display: inline; }
+    .chain-to   { display: inline-block; white-space: nowrap; }
     .chain-note {
       display: block;
       color: var(--w45);
       font-size: 12.5px;
       font-weight: 500;
       margin-top: 3px;
+    }
+
+    /* ── CALENDRIER (bas du résultat) ── */
+    .cal-block { margin: 26px 0 0; }
+    .cal-title {
+      font-family: 'Anton', sans-serif;
+      font-size: 26px;
+      line-height: 1.08;
+      color: var(--white);
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .cal-sub {
+      color: var(--w60);
+      font-size: 14px;
+      line-height: 1.55;
+      text-align: center;
+      margin: 0 auto 16px;
+      max-width: 440px;
+    }
+    .cal-frame {
+      border: 1px solid var(--w10);
+      border-radius: 14px;
+      overflow: hidden;
+      background: #fff;
+    }
+    .cal-frame iframe {
+      display: block;
+      width: 100%;
+      min-height: 720px;
+      border: 0;
+    }
+    @media (max-width: 640px) {
+      .cal-title { font-size: 22px; }
+      .cal-sub { font-size: 13.5px; }
+      .cal-frame iframe { min-height: 820px; }
     }
 
     /* ── BLOC "MONTE TON BUDGET" ── */
@@ -983,40 +1024,6 @@
     }
     .pro-note strong { color: var(--orange); }
 
-    /* CTA vidéo — bouton contour orange */
-    .video-cta {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      width: 100%;
-      padding: 18px 20px;
-      border: 2px solid var(--orange);
-      background: rgba(255,106,0,0.06);
-      color: var(--orange);
-      border-radius: 14px;
-      font-family: 'Hanken Grotesk', sans-serif;
-      font-weight: 800;
-      font-size: 13px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      text-decoration: none;
-      margin-bottom: 22px;
-      transition: all 0.2s ease;
-      -webkit-tap-highlight-color: transparent;
-      text-align: center;
-      line-height: 1.3;
-    }
-    .video-cta:hover { background: rgba(255,106,0,0.15); transform: translateY(-1px); }
-    .video-cta-icon {
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 26px; height: 26px;
-      background: var(--orange);
-      color: var(--white);
-      border-radius: 50%;
-      font-size: 12px;
-      flex-shrink: 0;
-    }
     .result-restart {
       text-align: center;
       color: var(--w60);
@@ -1138,6 +1145,35 @@
       .result-amount { font-size: 64px; }
       .loading-title { font-size: 28px; }
       .btn { padding: 18px 20px; font-size: 13px; }
+
+      /* Blocs du résultat */
+      .chain-block, .upsell-block, .speed-block { padding: 16px 14px 12px; }
+      .chain-title { font-size: 16px; }
+      .chain-step { font-size: 14.5px; }
+      .advice-title { font-size: 22px; line-height: 1.1; }
+      .focus-block { padding: 14px; gap: 10px; }
+      .upsell-lead { font-size: 14.5px; }
+      .upsell-cmp { gap: 8px; }
+      .upsell-arrow { font-size: 17px; }
+      .speed-title { font-size: 18px; }
+      .speed-intro { font-size: 13px; }
+      .speed-when { font-size: 13.5px; }
+      .speed-amt { font-size: 15px; }
+      .budget-val { line-height: 0.95; }
+    }
+
+    /* ── PETITS TÉLÉPHONES ── */
+    @media (max-width: 400px) {
+      .q-title { font-size: 28px; }
+      .advice-title { font-size: 20px; }
+      .chain-step { font-size: 14px; }
+      .upsell-lbl { font-size: 10px; letter-spacing: 0.08em; }
+      .upsell-sub { font-size: 11px; }
+      .speed-row { gap: 8px; }
+      .speed-when { font-size: 13px; }
+      .speed-tag { font-size: 11px; }
+      .speed-amt { font-size: 14px; }
+      .value-line, .budget-bench { font-size: 13px; }
     }
 
     /* ── DESKTOP (large screens) ── */
@@ -1610,7 +1646,8 @@ function renderBudgetSlider(optsEl) {
   }
   const v = state.answers.budget
   optsEl.innerHTML = `
-    <div class="budget-val"><span id="budget-amount">${v}</span> $<span class="budget-unit"> / jour</span></div>
+    <div class="budget-val"><span id="budget-amount">${v}</span> $</div>
+    <div class="budget-unit">PAR JOUR</div>
     <input type="range" class="budget-range" id="budget-range"
            min="${q.min}" max="${q.max}" step="${q.step}" value="${v}"
            oninput="setBudget(this.value)" />
@@ -1806,6 +1843,20 @@ function suggestBudget(jour) {
   return t > jour ? t : null
 }
 const FRAIS_GESTION   = 3000   // $/mois — gestion du système
+
+// Calendrier GHL affiche en bas du resultat
+const CAL_URL = 'https://api.leadconnectorhq.com/widget/booking/SUZpHLDFesSyKJdqzXlI'
+const CAL_ID  = 'SUZpHLDFesSyKJdqzXlI_calendrier'
+// form_embed.js redimensionne l'iframe selon la hauteur reelle du calendrier.
+// On ne le charge qu'une fois, au moment ou le calendrier apparait.
+function loadCalendarScript() {
+  if (document.getElementById('ghl-embed-script')) return
+  const sc = document.createElement('script')
+  sc.id  = 'ghl-embed-script'
+  sc.src = 'https://link.msgsndr.com/js/form_embed.js'
+  sc.async = true
+  document.body.appendChild(sc)
+}
 const JOURS_MOIS      = 30
 
 function calcProjection() {
@@ -2063,11 +2114,13 @@ function renderResult() {
       <div class="chain-block">
         <div class="chain-title">D'où sort ce chiffre</div>
         <div class="chain-step">
-          <strong>${fmtCAD(P.budgetMois)}</strong> de pub → <strong>${nbLeads} leads</strong>
+          <span class="chain-from"><strong>${fmtCAD(P.budgetMois)}</strong> de pub</span>
+          <span class="chain-to">→ <strong>${nbLeads} leads</strong></span>
           <span class="chain-note">${new Intl.NumberFormat('fr-CA',{minimumFractionDigits:2}).format(P.cpl)} $ le lead, moyenne de nos clients</span>
         </div>
         <div class="chain-step">
-          <strong>${nbLeads} leads</strong>, ${SPEED_PHRASE[state.answers.speed]} → <strong>${nbTrav} vraiment travaillés</strong>
+          <span class="chain-from"><strong>${nbLeads} leads</strong>, ${SPEED_PHRASE[state.answers.speed]}</span>
+          <span class="chain-to">→ <strong>${nbTrav} vraiment travaillés</strong></span>
           <span class="chain-note">les autres sont froids</span>
         </div>
       </div>
@@ -2085,15 +2138,18 @@ function renderResult() {
         <strong>Un de nos professionnels</strong> va t'appeler pour vérifier ta situation et confirmer ces chiffres avec toi.
       </div>
 
-      <a href="https://sunafilmsmedia.com/ai" target="_blank" rel="noopener" class="video-cta">
-        <span class="video-cta-icon">▶</span>
-        <span>Tu veux comprendre l'offre?<br/>Regarde cette vidéo</span>
-      </a>
-
       <div class="form-group" style="text-align:center">
         <div style="font-size:44px;margin-bottom:6px">🎉</div>
         <div class="anton" style="font-size:24px;margin-bottom:6px">PLAN EN ROUTE</div>
         <p style="color:var(--w60);font-size:14px;line-height:1.55">On te rappelle sous 24h pour confirmer tes chiffres et te présenter ton plan.</p>
+      </div>
+
+      <div class="cal-block">
+        <div class="cal-title">Ou choisis ton moment</div>
+        <p class="cal-sub">Prends ton appel directement dans le calendrier — c'est plus rapide que d'attendre qu'on te rejoigne.</p>
+        <div class="cal-frame">
+          <iframe src="${CAL_URL}" id="${CAL_ID}" scrolling="no" title="Réserve ton appel"></iframe>
+        </div>
       </div>
     `
   }
@@ -2122,6 +2178,7 @@ function renderResult() {
   }
 
   if (!state.submitted) updateFormBtn()
+  else loadCalendarScript()
 }
 
 function fmtCAD(n) {
