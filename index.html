@@ -362,6 +362,48 @@
       margin-top: 3px;
     }
 
+    /* ── BLOC "MONTE TON BUDGET" ── */
+    .upsell-block {
+      margin: 20px 0;
+      padding: 18px 16px 14px;
+      border: 1px solid var(--w10);
+      border-radius: 14px;
+      background: var(--w03);
+      text-align: left;
+    }
+    .upsell-lead {
+      color: rgba(255,255,255,0.86);
+      font-size: 15px; line-height: 1.5;
+      margin-bottom: 14px;
+    }
+    .upsell-lead strong { color: var(--orange); font-weight: 800; }
+    .upsell-cmp {
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+    }
+    .upsell-col { flex: 1 1 0; text-align: center; }
+    .upsell-lbl {
+      color: var(--w45);
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .upsell-amt {
+      font-family: 'Anton', sans-serif;
+      font-size: clamp(22px, 6.5vw, 30px);
+      line-height: 1.05;
+      color: var(--orange);
+    }
+    .upsell-amt--now { color: rgba(255,255,255,0.55); }
+    .upsell-sub { color: var(--w45); font-size: 12px; margin-top: 3px; }
+    .upsell-arrow { color: var(--w45); font-size: 20px; flex: 0 0 auto; }
+    .upsell-note {
+      color: var(--w45);
+      font-size: 12px; line-height: 1.5;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--w06);
+    }
+
     /* ── BLOC "RAPPELLE PLUS VITE" ── */
     .speed-block {
       margin: 20px 0;
@@ -1743,8 +1785,26 @@ const SPEED_PHRASE    = {
 // Ordre du plus lent au plus rapide — sert au bloc « rappelle plus vite »
 const SPEED_ORDER     = ['whenever', 'day', 'hour', 'min10']
 const SPEED_SHORT     = { min10: '⚡ Moins de 10 min', hour: "⏱ Dans l'heure", day: '📅 Dans la journée', whenever: "🤷 Quand j'ai le temps" }
-const TAUX_EVAL       = 0.20   // leads travaillés → rendez-vous / évaluation
-const TAUX_CLOSE      = 0.30   // rendez-vous → transaction signée
+const TAUX_EVAL       = 0.25   // leads travaillés → rendez-vous / évaluation
+const TAUX_CLOSE      = 0.35   // rendez-vous → transaction signée
+
+// Effet d'échelle : plus le budget est gros, mieux l'algo apprend et moins
+// le lead coûte cher. C'est ce qui fait qu'en montant le budget, le retour
+// grimpe plus vite que le budget lui-même.
+const SCALE_STEPS = [
+  { max: 599,  mult: 0.90 },   // ≤ 15 $/jour — trop peu de volume pour apprendre
+  { max: 899,  mult: 1.00 },   // 20-25 $/jour
+  { max: 1199, mult: 1.10 },   // 30-35 $/jour
+  { max: 2249, mult: 1.22 },   // 40-70 $/jour
+  { max: 1e9,  mult: 1.35 },   // 75-100 $/jour
+]
+function scaleMult(budgetMois) { return SCALE_STEPS.find(t => budgetMois <= t.max).mult }
+
+// Budget a proposer en montee de gamme : environ 1,6x le sien, arrondi a 5 $
+function suggestBudget(jour) {
+  const t = Math.min(100, Math.round(jour * 1.6 / 5) * 5)
+  return t > jour ? t : null
+}
 const FRAIS_GESTION   = 3000   // $/mois — gestion du système
 const JOURS_MOIS      = 30
 
@@ -1756,7 +1816,7 @@ function calcProjection() {
   const budgetJour = typeof a.budget === 'number' ? a.budget : (BUDGET_DEFAULT[ind] ?? 40)
   const budgetMois = budgetJour * JOURS_MOIS
 
-  const leads        = budgetMois / cpl
+  const leads        = (budgetMois / cpl) * scaleMult(budgetMois)
   const speedRate    = SPEED_RATE[a.speed] ?? 0.50
   const travailles   = leads * speedRate
   const evals        = travailles * TAUX_EVAL
@@ -1911,6 +1971,43 @@ function renderResult() {
     const nbLeads = Math.round(P.leads)
     const nbTrav  = Math.round(P.travailles)
 
+    // Ce que donnerait un budget plus eleve, a vitesse de rappel identique.
+    const bJour = suggestBudget(P.budgetJour)
+    let upsell = null
+    if (bJour) {
+      const bMois  = bJour * JOURS_MOIS
+      const bLeads = (bMois / P.cpl) * scaleMult(bMois)
+      const bRev   = bLeads * P.speedRate * TAUX_EVAL * TAUX_CLOSE * P.ticket
+      const ratio  = P.revenuProjete > 0 ? bRev / P.revenuProjete : 0
+      upsell = {
+        jour: bJour, mois: bMois, leads: bLeads, revenu: bRev, ratio,
+        mot: ratio >= 2.4 ? 'plus du double'
+           : ratio >= 1.8 ? 'quasiment le double'
+           : ratio >= 1.45 ? 'une fois et demie plus'
+           : 'nettement plus',
+      }
+    }
+
+    const upsellHtml = upsell ? `
+      <div class="upsell-block">
+        <div class="upsell-lead">Avec <strong>${fmtCAD(upsell.mois)}/mois</strong> au lieu de ${fmtCAD(P.budgetMois)}, tu verrais <strong>${upsell.mot}</strong> de retour.</div>
+        <div class="upsell-cmp">
+          <div class="upsell-col">
+            <div class="upsell-lbl">${P.budgetJour} $/jour</div>
+            <div class="upsell-amt upsell-amt--now">${fmtCAD(Math.round(P.revenuProjete))}</div>
+            <div class="upsell-sub">${Math.round(P.leads)} leads/mois</div>
+          </div>
+          <div class="upsell-arrow">→</div>
+          <div class="upsell-col">
+            <div class="upsell-lbl">${upsell.jour} $/jour</div>
+            <div class="upsell-amt">${fmtCAD(Math.round(upsell.revenu))}</div>
+            <div class="upsell-sub">${Math.round(upsell.leads)} leads/mois</div>
+          </div>
+        </div>
+        <div class="upsell-note">Le budget ne monte pas de façon linéaire : plus tu alimentes l'algorithme, moins ton lead coûte cher. C'est pour ça que le retour grimpe plus vite que la dépense.</div>
+      </div>
+    ` : ''
+
     // Ce que rapporterait chaque vitesse de rappel plus rapide que la sienne.
     const rangActuel = SPEED_ORDER.indexOf(state.answers.speed)
     const plusVite   = P.parVitesse.filter((v, idx) => idx > rangActuel)
@@ -1974,6 +2071,8 @@ function renderResult() {
           <span class="chain-note">les autres sont froids</span>
         </div>
       </div>
+
+      ${upsellHtml}
 
       ${speedHtml}
 
