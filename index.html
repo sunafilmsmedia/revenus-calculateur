@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Combien de clients tu manques chaque année — Suna Films Media</title>
+  <title>Calcule ton potentiel — Suna Films Media</title>
   <meta name="description" content="Chaque année sans Contenu + Pubs + AI, tu manques des clients. Calcule combien en 3 minutes." />
-  <meta property="og:title" content="Combien de clients tu manques chaque année sans Contenu + Pubs + AI?" />
+  <meta property="og:title" content="Calcule ton potentiel — combien de clients tu pourrais générer cette année ?" />
   <meta property="og:description" content="7 questions basées sur ton volume actuel. En 3 minutes, tu vois ton chiffre." />
   <meta name="webhook-url" content="https://services.leadconnectorhq.com/hooks/pp5qkRPyKZNC36rStsc7/webhook-trigger/lgL8QjTcgUvEPnFaRECu" />
 
@@ -175,6 +175,20 @@
       letter-spacing: -0.015em;
       /* petit ajustement optique pour aligner avec Barlow */
       padding-left: 0.02em;
+    }
+
+    /* Sous-titre du hero */
+    .hero-sub {
+      font-family: 'Hanken Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: clamp(17px, 4.4vw, 24px);
+      line-height: 1.3;
+      letter-spacing: -0.01em;
+      color: rgba(255,255,255,0.78);
+      text-align: center;
+      margin: 14px auto 0;
+      max-width: 560px;
+      padding: 0 8px;
     }
 
     /* ── STATS INLINE — texte simple avec points orange ── */
@@ -924,10 +938,10 @@
   <div class="screen visible" id="screen-intro">
     <div class="landing-hero">
       <h1 class="hero-headline">
-        Combien de <span class="hl">clients</span><br>
-        tu peux gagner<br>
-        cette année ?
+        Calcule ton<br>
+        <span class="hl">potentiel</span>
       </h1>
+      <p class="hero-sub">Combien de clients tu pourrais générer cette année ?</p>
     </div>
 
     <p class="landing-desc"><span class="mech">Contenu + pubs + IA de qualification</span> = plus de rendez-vous. Fais le calcul en 3 minutes.</p>
@@ -1118,6 +1132,8 @@ const state = {
   form: { nom: '', email: '', telephone: '' },
   submitted: false,
   amount: 0,
+  disqualified: false,      // remplit le quiz normalement, mais on n'envoie pas le lead
+  notqualReason: '',
 }
 let autoAdvanceTimer = null
 
@@ -1211,11 +1227,13 @@ function goNext() {
   const q = QUESTIONS[state.qIndex]
   if (!state.answers[q.key]) return
 
-  // Disqualification immédiate si la réponse vient de déclencher un gate
+  // Gate : on NE bloque plus le parcours. On marque le lead comme non qualifie
+  // (silencieusement) — il finit le quiz et voit son resultat, mais aucun lead
+  // n'est envoye au CRM ni au pixel lors du submit.
   const dq = checkDisqualification()
   if (!dq.ok) {
-    routeToNotQualified(dq.reason)
-    return
+    state.disqualified = true
+    state.notqualReason = dq.reason
   }
 
   if (state.qIndex < QUESTIONS.length - 1) {
@@ -1235,6 +1253,8 @@ function goNext() {
   }
 }
 
+// NOTE : plus appelee — l'ecran "pas pour toi" est desactive (le visiteur
+// continue le quiz). Conservee pour pouvoir reactiver le blocage au besoin.
 function routeToNotQualified(reason) {
   state.notqualReason = reason
   document.getElementById('notqual-reason').textContent = NOTQUAL_REASONS[reason]
@@ -1276,6 +1296,8 @@ function restart() {
   state.qIndex = 0
   state.answers = {}
   state.submitted = false
+  state.disqualified = false
+  state.notqualReason = ''
   state.form = { nom: '', email: '', telephone: '' }
   showScreen('intro')
 }
@@ -1637,6 +1659,14 @@ function submitForm() {
   const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.form.email||'')
   if (!(nomOk && telOk && emailOk)) return
   state.submitted = true
+
+  // Non qualifie : il voit son resultat complet, mais on n'envoie RIEN
+  // (ni evenement Lead au pixel, ni webhook CRM).
+  if (state.disqualified) {
+    renderResult()
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+    return
+  }
 
   // Meta Pixel
   if (window.fbq) {
