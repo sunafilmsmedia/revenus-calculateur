@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ça va me rapporter combien ? — Suna Films Media</title>
   <meta name="description" content="Chaque année sans Contenu + Pubs + AI, tu manques des clients. Calcule combien en 3 minutes." />
-  <meta property="og:title" content="Ça va me rapporter combien ? Calcule ton potentiel en 3 minutes." />
+  <meta property="og:title" content="Ça va me rapporter combien ? Ce qu'un vrai système d'acquisition de clients pourrait te générer." />
   <meta property="og:description" content="7 questions basées sur ton volume actuel. En 3 minutes, tu vois ton chiffre." />
   <meta name="webhook-url" content="https://services.leadconnectorhq.com/hooks/pp5qkRPyKZNC36rStsc7/webhook-trigger/lgL8QjTcgUvEPnFaRECu" />
 
@@ -220,6 +220,177 @@
       .stats-inline { gap: 8px 14px; font-size: 14px; }
       .stats-inline .stat-dot { width: 6px; height: 6px; }
     }
+
+    /* Petit texte d'aide sous un champ */
+    .q-hint {
+      text-align: center;
+      color: var(--w45);
+      font-size: 13px;
+      line-height: 1.5;
+      margin: 10px auto 0;
+      max-width: 380px;
+    }
+    .q-sub {
+      text-align: center;
+      color: var(--w45);
+      font-size: 13px;
+      margin: -4px 0 12px;
+    }
+
+    /* Ligne de valeur — le commentaire qui apparaît sous la réponse */
+    .value-line {
+      margin: 16px auto 0;
+      max-width: 520px;
+      padding: 13px 16px;
+      border-left: 3px solid var(--orange);
+      border-radius: 0 10px 10px 0;
+      background: var(--w06);
+      color: rgba(255,255,255,0.80);
+      font-size: 14px;
+      line-height: 1.55;
+      text-align: left;
+    }
+    .vl-in { animation: vlIn 0.32s ease both; }
+    @keyframes vlIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    /* ── SLIDER BUDGET ── */
+    .budget-val {
+      text-align: center;
+      font-family: 'Anton', sans-serif;
+      font-size: clamp(46px, 13vw, 68px);
+      line-height: 1;
+      color: var(--orange);
+      letter-spacing: 0.01em;
+    }
+    .budget-unit {
+      font-family: 'Hanken Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--w45);
+      letter-spacing: 0.04em;
+    }
+    .budget-range {
+      -webkit-appearance: none; appearance: none;
+      width: 100%;
+      height: 6px;
+      margin: 22px 0 10px;
+      border-radius: 99px;
+      background: var(--w10);
+      outline: none;
+    }
+    .budget-range::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, var(--orange-light), var(--orange));
+      box-shadow: 0 4px 16px rgba(255,106,0,0.45);
+      cursor: pointer;
+      border: 3px solid #141416;
+    }
+    .budget-range::-moz-range-thumb {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      background: var(--orange);
+      box-shadow: 0 4px 16px rgba(255,106,0,0.45);
+      cursor: pointer;
+      border: 3px solid #141416;
+    }
+    .budget-scale {
+      display: flex; justify-content: space-between;
+      color: var(--w45); font-size: 12px; letter-spacing: 0.05em;
+    }
+    .budget-live {
+      text-align: center;
+      margin: 18px 0 2px;
+      font-size: 15px;
+      color: rgba(255,255,255,0.72);
+    }
+    .budget-live strong { color: var(--white); font-weight: 800; }
+    .budget-tag {
+      display: block;
+      font-family: 'Hanken Grotesk', sans-serif;
+      font-weight: 800;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 5px;
+    }
+    .budget-bench {
+      margin: 12px auto 0;
+      max-width: 520px;
+      color: var(--w45);
+      font-size: 12.5px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    /* ── CHAÎNE DE CALCUL dans le résultat ── */
+    .chain-block {
+      margin: 20px 0;
+      padding: 18px 16px 14px;
+      border: 1px solid var(--w10);
+      border-radius: 14px;
+      background: var(--w03);
+      text-align: left;
+    }
+    .chain-title {
+      font-family: 'Anton', sans-serif;
+      font-size: 17px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--white);
+      margin-bottom: 12px;
+    }
+    .chain-row {
+      display: flex; align-items: baseline; justify-content: space-between; gap: 14px;
+      padding: 10px 0;
+      border-top: 1px solid var(--w06);
+    }
+    .chain-row:first-of-type { border-top: none; }
+    .chain-lbl {
+      color: rgba(255,255,255,0.82);
+      font-size: 14px; font-weight: 600; line-height: 1.35;
+    }
+    .chain-note {
+      display: block;
+      color: var(--w45);
+      font-size: 12px; font-weight: 500;
+      margin-top: 2px;
+    }
+    .chain-val {
+      flex: 0 0 auto;
+      font-family: 'Hanken Grotesk', sans-serif;
+      font-weight: 800;
+      font-size: 15px;
+      color: var(--white);
+      white-space: nowrap;
+    }
+    .chain-row--total { border-top: 1px solid var(--w10); margin-top: 4px; }
+    .chain-row--total .chain-val { color: var(--orange); font-size: 17px; }
+    .chain-row--net .chain-val { color: var(--orange); }
+    .chain-foot {
+      color: var(--w45);
+      font-size: 12px; line-height: 1.5;
+      margin-top: 10px;
+    }
+
+    /* ── BLOC "TON DÉFI" en tête du résultat ── */
+    .focus-block {
+      display: flex; gap: 12px; align-items: flex-start;
+      margin: 18px 0 4px;
+      padding: 16px;
+      border-radius: 14px;
+      background: rgba(255,106,0,0.09);
+      border: 1px solid rgba(255,106,0,0.28);
+      text-align: left;
+    }
+    .focus-icon { font-size: 22px; line-height: 1.2; }
+    .focus-title { font-weight: 800; font-size: 15px; color: var(--white); margin-bottom: 4px; }
+    .focus-desc { color: rgba(255,255,255,0.74); font-size: 13.5px; line-height: 1.55; }
 
     /* Bouton CTA — seul élément qui brille */
     .landing-btn {
@@ -921,7 +1092,7 @@
         Ça va me rapporter<br>
         <span class="hl">combien</span> ?
       </h1>
-      <p class="hero-sub">Combien de clients tu pourrais générer cette année ?</p>
+      <p class="hero-sub">Combien tu pourrais générer avec un vrai système d'acquisition de clients.</p>
     </div>
 
     <button class="btn landing-btn" onclick="startQuiz()">CALCULER MON CHIFFRE →</button>
@@ -1024,80 +1195,88 @@
 const QUESTIONS = [
   {
     key: 'industry',
-    title: 'Dans quelle industrie travailles-tu ?',
+    title: 'Tu es dans quel domaine ?',
     options: [
-      { value: 'hypothecaire', icon: '🏠', label: 'Courtier hypothécaire', sub: 'Prêts, renouvellements, refinancement' },
-      { value: 'immobilier',   icon: '🏢', label: 'Courtier immobilier',   sub: 'Achat, vente, investissement' },
-      { value: 'autre',        icon: '⚡', label: 'Autre industrie',        sub: 'Autre domaine professionnel' },
-    ]
-  },
-  {
-    key: 'years',
-    title: 'Depuis combien de temps es-tu en affaires ?',
-    options: [
-      { value: 'less1', icon: '🌱', label: "Moins d'un an",  sub: 'Je démarre' },
-      { value: '1-3',   icon: '📈', label: '1 à 3 ans',      sub: 'Je bâtis ma base' },
-      { value: '3-5',   icon: '🚀', label: '3 à 5 ans',      sub: "J'ai du momentum" },
-      { value: '5+',    icon: '🏆', label: '5 ans et plus',  sub: 'Je suis établi' },
+      { value: 'hypothecaire', icon: '🏠', label: 'Courtier hypothécaire', sub: 'Prêts, renouvellements, refinancement',
+        line: "On accompagne 4 courtiers hypothécaires au Québec en ce moment. Lead moyen : 19 $." },
+      { value: 'immobilier',   icon: '🏢', label: 'Courtier immobilier',   sub: 'Vente, achat, investissement',
+        line: "On accompagne 5 courtiers immobiliers, un seul par secteur. Lead moyen : 39 $." },
+      { value: 'autre',        icon: '⚡', label: 'Autre',                  sub: 'Autre domaine professionnel',
+        line: "On travaille surtout avec des courtiers, mais la mécanique est la même pour tout service à ticket élevé." },
     ]
   },
   {
     key: 'clients',
-    title: 'Combien de clients as-tu par mois ?',
+    title: 'Tu signes combien de clients par mois, en moyenne ?',
     numeric: true,
     unit: 'CLIENTS / MOIS',
     placeholder: '0',
     min: 0,
-    max: 999,
+    max: 99,
+    hint: "Un chiffre approximatif suffit — c'est ta base de comparaison.",
+    line: (v) =>
+      v <= 2 ? "Tu pars de proche de zéro : chaque client de plus change ton mois."
+    : v <= 5 ? "C'est le volume typique d'un courtier qui roule aux références. Le plafond, c'est le nombre de gens que tu connais."
+    :          "Tu as déjà un flow. La question, c'est de le rendre prévisible plutôt que dépendant de ton réseau.",
   },
   {
     key: 'acquisition',
-    title: 'Comment génères-tu tes clients présentement ?',
+    title: "D'où viennent tes clients en ce moment ?",
+    sub: 'Le principal — un seul choix.',
     options: [
-      { value: 'ref',     icon: '🤝', label: 'Références & bouche-à-oreille' },
-      { value: 'pubs',    icon: '📢', label: 'Publicité payante',          sub: 'Meta, Google, etc.' },
-      { value: 'organic', icon: '📱', label: 'Contenu organique',          sub: 'Réseaux sociaux' },
-      { value: 'aucune',  icon: '🎲', label: 'Aucune méthode constante',   sub: 'Ça dépend des mois' },
+      { value: 'ref',     icon: '🤝', label: 'Références et bouche-à-oreille',
+        line: "Solide, mais impossible à scaler : tu ne contrôles ni le volume ni le timing." },
+      { value: 'pubs',    icon: '📢', label: 'Publicité payante', sub: 'Meta, Google',
+        line: "Bon signe — tu sais déjà que ça se paie. La différence se joue sur ce qui se passe après le clic." },
+      { value: 'organic', icon: '📱', label: 'Contenu organique', sub: 'Réseaux sociaux',
+        line: "Tu bâtis de la confiance, mais sans pub, seulement une fraction de ton audience te voit." },
+      { value: 'achetes', icon: '🛒', label: 'Leads achetés', sub: 'Sites de leads partagés',
+        line: "Tu es en compétition avec 3-4 courtiers sur le même lead, et la personne veut souvent juste un prix." },
+      { value: 'aucune',  icon: '🎲', label: 'Pas de méthode fixe', sub: 'Ça dépend des mois',
+        line: "C'est le scénario le plus fréquent chez ceux qu'on rencontre. Bonne nouvelle : c'est aussi celui où l'écart est le plus grand." },
     ]
   },
   {
-    key: 'system',
-    title: 'As-tu un système de suivi en place ?',
+    key: 'speed',
+    title: 'Quand un lead entre, tu le rappelles en combien de temps ?',
+    // Même ligne de valeur peu importe la réponse — c'est le point à faire passer.
+    lineAll: "Après 10 minutes, tu perds jusqu'à 80 % de tes chances de convertir un lead. C'est le levier le plus sous-estimé qu'on voit chez les courtiers.",
     options: [
-      { value: 'oui',     icon: '⚙', label: 'Oui, automatisé',           sub: 'CRM + relances en place' },
-      { value: 'partiel', icon: '📝', label: 'Partiellement / manuel',    sub: "Je relance quand j'y pense" },
-      { value: 'non',     icon: '❌', label: 'Non, rien de structuré',    sub: 'Je perds des leads' },
+      { value: 'min10',    icon: '⚡', label: 'Moins de 10 minutes', sub: 'Automatisé ou je suis dessus' },
+      { value: 'hour',     icon: '⏱', label: "Dans l'heure" },
+      { value: 'day',      icon: '📅', label: 'Dans la journée' },
+      { value: 'whenever', icon: '🤷', label: "Quand j'ai le temps", sub: 'Ça dépend' },
     ]
   },
   {
     key: 'challenge',
-    title: 'Quel est ton plus gros défi présentement ?',
+    title: 'Si tu pouvais régler une seule chose ce mois-ci, ce serait quoi ?',
     options: [
-      { value: 'leads',           icon: '🎯', label: 'Générer plus de leads qualifiés' },
-      { value: 'convert',         icon: '💸', label: 'Convertir mes leads en clients' },
-      { value: 'time',            icon: '⏰', label: 'Manque de temps & de système' },
-      { value: 'differentiation', icon: '✨', label: 'Me démarquer de la compétition' },
+      { value: 'leads',           icon: '🎯', label: 'Avoir plus de leads qui valent la peine',
+        line: "Le volume, ça s'achète. La qualité, ça se filtre — avant que le lead t'arrive." },
+      { value: 'convert',         icon: '💸', label: "Convertir ceux que j'ai déjà",
+        line: "Souvent c'est pas toi, c'est le délai et le suivi. On regarde ça dans ton résultat." },
+      { value: 'time',            icon: '⏰', label: 'Arrêter de tout faire à la main',
+        line: "Un CRM avec relances automatiques, c'est ~5 h/semaine récupérées chez nos clients." },
+      { value: 'differentiation', icon: '✨', label: 'Me démarquer des autres courtiers',
+        line: "L'expertise, tout le monde l'affiche. Ce qui différencie, c'est la personne." },
     ]
   },
   {
-    key: 'goal',
-    title: 'Quel est ton objectif de revenus mensuels ?',
-    options: [
-      { value: '10-20k',  icon: '💵', label: '10K à 20K $/mois' },
-      { value: '20-50k',  icon: '💰', label: '20K à 50K $/mois' },
-      { value: '50-100k', icon: '💎', label: '50K à 100K $/mois' },
-      { value: '100k+',   icon: '👑', label: '100K $ et plus /mois' },
-    ]
+    key: 'budget',
+    title: 'Combien tu serais prêt à investir en publicité par jour ?',
+    slider: true,
+    min: 10,
+    max: 100,
+    step: 5,
   },
 ]
 
 const LABELS = {
   industry:    { hypothecaire:'Courtier hypothécaire', immobilier:'Courtier immobilier', autre:'Autre industrie' },
-  years:       { less1:"Moins d'un an", '1-3':'1 à 3 ans', '3-5':'3 à 5 ans', '5+':'5 ans et plus' },
-  acquisition: { ref:'Références & bouche-à-oreille', pubs:'Publicité payante', organic:'Contenu organique', aucune:'Aucune méthode constante' },
-  system:      { oui:'Oui, automatisé', partiel:'Partiellement / manuel', non:'Non, rien de structuré' },
-  challenge:   { leads:'Générer plus de leads qualifiés', convert:'Convertir mes leads en clients', time:'Manque de temps & de système', differentiation:'Me démarquer de la compétition' },
-  goal:        { '10-20k':'10K à 20K $/mois', '20-50k':'20K à 50K $/mois', '50-100k':'50K à 100K $/mois', '100k+':'100K $ et plus /mois' },
+  acquisition: { ref:'Références et bouche-à-oreille', pubs:'Publicité payante', organic:'Contenu organique', achetes:'Leads achetés', aucune:'Pas de méthode fixe' },
+  speed:       { min10:'Moins de 10 minutes', hour:"Dans l'heure", day:'Dans la journée', whenever:"Quand j'ai le temps" },
+  challenge:   { leads:'Avoir plus de leads qui valent la peine', convert:"Convertir ceux qu'il a déjà", time:'Arrêter de tout faire à la main', differentiation:'Me démarquer des autres courtiers' },
 }
 
 // ─────────────────────────────
@@ -1108,6 +1287,7 @@ const state = {
   qIndex: 0,
   answers: {},
   form: { nom: '', email: '', telephone: '' },
+  proj: null,               // resultat complet de calcProjection()
   submitted: false,
   amount: 0,
   disqualified: false,      // remplit le quiz normalement, mais on n'envoie pas le lead
@@ -1178,16 +1358,14 @@ function showScreen(name, back) {
 // ─────────────────────────────
 function checkDisqualification() {
   const a = state.answers
-  // Gate 1 : Je démarre (moins d'un an) — dès Q2
-  if (a.years === 'less1') return { ok: false, reason:'years' }
-  // Gate 2 : Hypothécaire avec moins de 5 clients/mois — dès Q3
+  // Seule gate restante : hypothécaire avec moins de 5 dossiers/mois.
+  // Le visiteur finit quand même le quiz — on n'envoie simplement pas le lead.
   if (a.industry === 'hypothecaire' && typeof a.clients === 'number' && a.clients < 5) {
     return { ok: false, reason:'volume' }
   }
   return { ok: true }
 }
 const NOTQUAL_REASONS = {
-  years:  "Notre système est conçu pour les courtiers déjà établis. La première année, l'enjeu c'est de bâtir ta base — pas d'investir dans un système publicitaire. Voici notre ressource gratuite pour bien démarrer.",
   volume: "Pour un courtier hypothécaire, notre système devient vraiment rentable à partir de 5+ dossiers/mois. Avant ça, il faut bâtir ton volume — voici notre ressource gratuite pour t'aider.",
 }
 
@@ -1202,8 +1380,7 @@ function startQuiz() {
 
 function goNext() {
   if (autoAdvanceTimer) { clearTimeout(autoAdvanceTimer); autoAdvanceTimer = null }
-  const q = QUESTIONS[state.qIndex]
-  if (!state.answers[q.key]) return
+  if (!isCurrentAnswerValid()) return
 
   // Gate : on NE bloque plus le parcours. On marque le lead comme non qualifie
   // (silencieusement) — il finit le quiz et voit son resultat, mais aucun lead
@@ -1224,7 +1401,8 @@ function goNext() {
     showScreen('loading')
     restartCondorAnimation()
     setTimeout(() => {
-      state.amount = calcMoneyOnTable()
+      state.proj   = calcProjection()
+      state.amount = state.proj.surLaTable
       renderResult()
       showScreen('result')
     }, 2000)
@@ -1276,6 +1454,7 @@ function restart() {
   state.submitted = false
   state.disqualified = false
   state.notqualReason = ''
+  state.proj = null
   state.form = { nom: '', email: '', telephone: '' }
   showScreen('intro')
 }
@@ -1285,12 +1464,13 @@ function restart() {
 // ─────────────────────────────
 function renderQuestion(direction) {
   const q = QUESTIONS[state.qIndex]
-  document.getElementById('q-counter').textContent = `QUESTION ${state.qIndex+1} / 7`
+  const total = QUESTIONS.length
+  document.getElementById('q-counter').textContent = `QUESTION ${state.qIndex+1} / ${total}`
 
   // Progress
   const progEl = document.getElementById('progress')
   progEl.innerHTML = ''
-  for (let i = 0; i < 7; i++) {
+  for (let i = 0; i < total; i++) {
     const seg = document.createElement('div')
     seg.className = 'progress-seg' + (i < state.qIndex ? ' done' : i === state.qIndex ? ' current' : '')
     progEl.appendChild(seg)
@@ -1310,8 +1490,10 @@ function renderQuestion(direction) {
   optsEl.innerHTML = ''
   const current = state.answers[q.key]
 
-  if (q.numeric) {
-    // Q3 numérique : stepper +/- avec input libre
+  if (q.slider) {
+    renderBudgetSlider(optsEl)
+  } else if (q.numeric) {
+    // Numérique : stepper +/- avec saisie libre
     const cur = current !== undefined ? current : ''
     optsEl.innerHTML = `
       <div class="num-wrap">
@@ -1321,10 +1503,17 @@ function renderQuestion(direction) {
         <button type="button" class="num-btn" onclick="stepNumeric(1)">+</button>
       </div>
       <div class="num-label">${q.unit||''}</div>
+      ${q.hint ? `<div class="q-hint">${q.hint}</div>` : ''}
     `
     setTimeout(() => document.getElementById('q-num-input')?.focus(), 120)
   } else {
-    // Options multi-choix
+    // Sous-titre optionnel de la question
+    if (q.sub) {
+      const sub = document.createElement('div')
+      sub.className = 'q-sub'
+      sub.textContent = q.sub
+      optsEl.appendChild(sub)
+    }
     q.options.forEach(opt => {
       const div = document.createElement('div')
       div.className = 'opt' + (current === opt.value ? ' selected' : '')
@@ -1346,17 +1535,99 @@ function renderQuestion(direction) {
     }
   }
 
+  renderValueLine()
   updateContinueBtn()
 }
 
-// Stepper numérique (Q3 clients)
+// ─────────────────────────────
+// LIGNE DE VALEUR — le petit texte qui apparaît sous la réponse
+// ─────────────────────────────
+function valueLineFor(q) {
+  const v = state.answers[q.key]
+  if (v === undefined || v === null || v === '') return ''
+  if (q.lineAll) return q.lineAll
+  if (typeof q.line === 'function') return q.line(v)
+  if (q.options) {
+    const opt = q.options.find(o => o.value === v)
+    return (opt && opt.line) || ''
+  }
+  return ''
+}
+
+function renderValueLine() {
+  const q = QUESTIONS[state.qIndex]
+  let el = document.getElementById('q-valueline')
+  const txt = q.slider ? '' : valueLineFor(q)
+  if (!txt) { if (el) el.remove(); return }
+  if (!el) {
+    el = document.createElement('div')
+    el.id = 'q-valueline'
+    el.className = 'value-line'
+    document.getElementById('options').after(el)
+  }
+  if (el.textContent === txt) return   // évite de rejouer l'anim pour rien
+  el.textContent = txt
+  el.classList.remove('vl-in'); void el.offsetWidth; el.classList.add('vl-in')
+}
+
+// ─────────────────────────────
+// SLIDER BUDGET (dernière question)
+// ─────────────────────────────
+function renderBudgetSlider(optsEl) {
+  const q   = QUESTIONS[state.qIndex]
+  const ind = state.answers.industry || 'autre'
+  if (typeof state.answers.budget !== 'number') {
+    state.answers.budget = BUDGET_DEFAULT[ind] ?? 40
+  }
+  const v = state.answers.budget
+  optsEl.innerHTML = `
+    <div class="budget-val"><span id="budget-amount">${v}</span> $<span class="budget-unit"> / jour</span></div>
+    <input type="range" class="budget-range" id="budget-range"
+           min="${q.min}" max="${q.max}" step="${q.step}" value="${v}"
+           oninput="setBudget(this.value)" />
+    <div class="budget-scale"><span>${q.min} $</span><span>${q.max} $</span></div>
+    <div class="budget-live" id="budget-live"></div>
+    <div class="value-line vl-in" id="budget-tier"></div>
+    ${BUDGET_BENCHMARK[ind] ? `<div class="budget-bench">${BUDGET_BENCHMARK[ind]}</div>` : ''}
+  `
+  updateBudgetLive()
+}
+
+function setBudget(v) {
+  state.answers.budget = parseInt(v, 10)
+  const amt = document.getElementById('budget-amount')
+  if (amt) amt.textContent = state.answers.budget
+  const rng = document.getElementById('budget-range')
+  if (rng && rng.value != state.answers.budget) rng.value = state.answers.budget
+  updateBudgetLive()
+  updateContinueBtn()
+}
+
+function updateBudgetLive() {
+  const el = document.getElementById('budget-live'); if (!el) return
+  const ind   = state.answers.industry || 'autre'
+  const mois  = state.answers.budget * JOURS_MOIS
+  const leads = Math.round(mois / (CPL[ind] || 30))
+  el.innerHTML = `<strong>${fmtCAD(mois)}/mois</strong> ≈ <strong>${leads} leads/mois</strong>`
+
+  const tierEl = document.getElementById('budget-tier'); if (!tierEl) return
+  const t = budgetTier(state.answers.budget)
+  if (tierEl.dataset.tag !== t.tag) {
+    tierEl.dataset.tag = t.tag
+    tierEl.innerHTML = `<span class="budget-tag">${t.tag}</span>${t.text}`
+    tierEl.classList.remove('vl-in'); void tierEl.offsetWidth; tierEl.classList.add('vl-in')
+  }
+}
+
+// Stepper numérique
 function stepNumeric(delta) {
   const q = QUESTIONS[state.qIndex]; if (!q.numeric) return
   const cur = typeof state.answers[q.key] === 'number' ? state.answers[q.key] : 0
-  const next = Math.max(q.min ?? 0, Math.min(q.max ?? 999, cur + delta))
+  const next = Math.max(q.min ?? 0, Math.min(q.max ?? 99, cur + delta))
   state.answers[q.key] = next
   const inp = document.getElementById('q-num-input')
   if (inp) inp.value = next
+  renderValueLine()
   updateContinueBtn()
 }
 function setNumeric(v) {
@@ -1366,31 +1637,29 @@ function setNumeric(v) {
     state.answers[q.key] = undefined
   } else {
     const num = parseInt(cleaned) || 0
-    state.answers[q.key] = Math.max(q.min ?? 0, Math.min(q.max ?? 999, num))
+    state.answers[q.key] = Math.max(q.min ?? 0, Math.min(q.max ?? 99, num))
   }
+  renderValueLine()
   updateContinueBtn()
 }
 
-// Clic sur une option — toggle de class seulement, ZÉRO rebuild DOM
+// Clic sur une option — toggle de class seulement, ZÉRO rebuild DOM.
+// Pas d'auto-advance : la ligne de valeur doit avoir le temps d'être lue.
 function selectOption(key, value) {
   state.answers[key] = value
   document.querySelectorAll('#options .opt').forEach(el => {
     el.classList.toggle('selected', el.dataset.value === value)
   })
 
-  // Cas spécial : Q1 "Autre industrie" → input texte, pas d'auto-advance
-  if (key === 'industry' && value === 'autre') {
-    showIndustryOtherInput()
-    updateContinueBtn()
-    if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer)
-    return
+  // Changer d'industrie remet le budget sur le défaut de cette industrie
+  if (key === 'industry') {
+    state.answers.budget = undefined
+    if (value === 'autre') showIndustryOtherInput()
+    else hideIndustryOtherInput()
   }
-  // Si on change d'option sur Q1, retire l'input "autre" s'il existait
-  if (key === 'industry') hideIndustryOtherInput()
 
+  renderValueLine()
   updateContinueBtn()
-  if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer)
-  autoAdvanceTimer = setTimeout(() => { if (state.answers[key] === value) goNext() }, 300)
 }
 
 function showIndustryOtherInput() {
@@ -1419,20 +1688,21 @@ function hideIndustryOtherInput() {
   if (input) input.remove()
 }
 
-function updateContinueBtn() {
+// Une réponse valide ? (0 et le slider comptent — d'où le helper partagé)
+function isCurrentAnswerValid() {
   const q = QUESTIONS[state.qIndex]
   const current = state.answers[q.key]
-  const btn = document.getElementById('btn-continue')
-  let valid
-  if (q.numeric) {
-    // 0 est valide (débutant); undefined/null ne l'est pas
-    valid = typeof current === 'number'
-  } else if (q.key === 'industry' && current === 'autre') {
-    valid = (state.answers.industryOther || '').trim().length >= 2
-  } else {
-    valid = !!current
+  if (q.slider)  return typeof current === 'number'
+  if (q.numeric) return typeof current === 'number'
+  if (q.key === 'industry' && current === 'autre') {
+    return (state.answers.industryOther || '').trim().length >= 2
   }
-  if (valid) {
+  return !!current
+}
+
+function updateContinueBtn() {
+  const btn = document.getElementById('btn-continue')
+  if (isCurrentAnswerValid()) {
     btn.classList.remove('btn--disabled')
     btn.textContent = state.qIndex === QUESTIONS.length - 1 ? 'VOIR MON RÉSULTAT →' : 'CONTINUER →'
   } else {
@@ -1442,36 +1712,94 @@ function updateContinueBtn() {
 }
 
 // ─────────────────────────────
-// CALC — Argent sur la table
-// Formule : potentiel (objectif × multiplicateurs) − revenu actuel estimé
+// CALC — chaîne complète, du budget pub jusqu'au revenu projeté.
+// Chaque constante ici est un chiffre défendable devant le prospect :
+// il peut le contester, mais pas dire qu'il sort de nulle part.
 // ─────────────────────────────
-const TICKETS  = { hypothecaire: 2500, immobilier: 12000, autre: 3000 }
-const GOAL_MIN = { '10-20k': 10000, '20-50k': 20000, '50-100k': 50000, '100k+': 100000 }
+const CPL             = { hypothecaire: 19.45, immobilier: 38.77, autre: 30 }   // coût par lead
+const TICKETS         = { hypothecaire: 2500,  immobilier: 9000,  autre: 3000 } // valeur d'un client
+const BUDGET_DEFAULT  = { hypothecaire: 45,    immobilier: 40,    autre: 40 }   // $/jour
+const BUDGET_BENCHMARK = {
+  hypothecaire: "Nos courtiers hypothécaires investissent en moyenne 45 $/jour et génèrent ~70 leads/mois.",
+  immobilier:   "Nos courtiers immobiliers investissent en moyenne 40 $/jour et génèrent ~32 leads/mois.",
+}
+// Paliers du slider — ce que chaque niveau de budget veut dire concrètement.
+// C'est ce qui pousse le prospect à monter le curseur lui-même.
+const BUDGET_TIERS = [
+  { max: 15,  tag: 'TROP BAS',
+    text: "À ce niveau tu testes, tu ne construis pas. Trop peu de volume pour que l'algo apprenne — tu ne laisses pas grand-chose sur la table, mais tu n'en récupères pas beaucoup non plus." },
+  { max: 25,  tag: 'LE PLANCHER',
+    text: "20 $/jour, c'est le minimum pour voir des leads entrer de façon régulière. Ça démarre, sans encore être prévisible." },
+  { max: 35,  tag: 'ÇA ROULE',
+    text: "À 30 $/jour, le flux devient assez constant pour lire tes chiffres et ajuster tes angles au lieu de deviner." },
+  { max: 70,  tag: 'IDÉAL POUR COMMENCER',
+    text: "40 $/jour, c'est le point de départ qu'on recommande : assez de volume pour tester plusieurs angles et remplir ton agenda chaque semaine." },
+  { max: 999, tag: 'PLEIN RÉGIME',
+    text: "À ce budget, on ne parle plus de quelques dossiers de plus — on parle de dizaines de milliers de dollars ajoutés par mois. À condition de rappeler vite." },
+]
+function budgetTier(v) { return BUDGET_TIERS.find(t => v <= t.max) || BUDGET_TIERS[BUDGET_TIERS.length-1] }
 
-function calcMoneyOnTable() {
-  const a = state.answers
-  const ticket = TICKETS[a.industry] || 3000
-  const cur    = typeof a.clients === 'number' ? a.clients : 0
-  const goal   = GOAL_MIN[a.goal] || 10000
-  const currentRev = cur * ticket
+// Part des leads réellement travaillés selon la vitesse de rappel
+const SPEED_RATE      = { min10: 1.00, hour: 0.70, day: 0.45, whenever: 0.25 }
+const TAUX_EVAL       = 0.20   // leads travaillés → rendez-vous / évaluation
+const TAUX_CLOSE      = 0.30   // rendez-vous → transaction signée
+const FRAIS_GESTION   = 3000   // $/mois — gestion du système
+const JOURS_MOIS      = 30
 
-  const systemMult  = ({ oui: 1.0, partiel: 1.15, non: 1.30 })[a.system]      || 1.15
-  const yearsBonus  = ({ less1: 0.85, '1-3': 1.0, '3-5': 1.10, '5+': 1.18 })[a.years] || 1.0
-  const acqMult     = ({ ref: 1.05, pubs: 1.0, organic: 1.10, aucune: 1.20 })[a.acquisition] || 1.0
-  const challMult   = ({ leads: 1.15, convert: 1.08, time: 1.10, differentiation: 1.05 })[a.challenge] || 1.0
+function calcProjection() {
+  const a       = state.answers
+  const ind     = a.industry || 'autre'
+  const cpl     = CPL[ind] || 30
+  const ticket  = TICKETS[ind] || 3000
+  const budgetJour = typeof a.budget === 'number' ? a.budget : (BUDGET_DEFAULT[ind] ?? 40)
+  const budgetMois = budgetJour * JOURS_MOIS
 
-  const potential = Math.max(goal, currentRev) * systemMult * yearsBonus * acqMult * challMult
-  const onTable   = Math.max(2500, potential - currentRev)
+  const leads        = budgetMois / cpl
+  const speedRate    = SPEED_RATE[a.speed] ?? 0.45
+  const travailles   = leads * speedRate
+  const evals        = travailles * TAUX_EVAL
+  const transactions = evals * TAUX_CLOSE
 
-  return Math.round(onTable / 100) * 100
+  const revenuProjete  = transactions * ticket
+  const clientsActuels = typeof a.clients === 'number' ? a.clients : 0
+  const revenuActuel   = clientsActuels * ticket
+
+  // Le système d'acquisition s'AJOUTE aux références, il ne les remplace pas :
+  // le "sur la table" est donc le revenu ajouté, pas l'écart avec le revenu actuel.
+  const surLaTable  = Math.max(0, Math.round(revenuProjete / 100) * 100)
+  const revenuTotal = revenuActuel + revenuProjete
+  const net        = Math.round((revenuProjete - (budgetMois + FRAIS_GESTION)) / 100) * 100
+
+  return {
+    ind, cpl, ticket, budgetJour, budgetMois, speedRate,
+    leads, travailles, evals, transactions,
+    revenuProjete, clientsActuels, revenuActuel, revenuTotal, surLaTable, net,
+  }
 }
 
 // ─────────────────────────────
 // RENDER RESULT
 // ─────────────────────────────
-// ─────────────────────────────
-// CONSEILS ADAPTÉS SELON Q4 (acquisition)
-// ─────────────────────────────
+// Le défi choisi en Q5 remonte en tête du résultat : on parle de SON problème
+// avant de parler du nôtre.
+const CHALLENGE_FOCUS = {
+  leads:           { icon:'🎯', title:"Ton défi : avoir plus de leads qui valent la peine",
+                     desc:"Le volume, ça s'achète. La qualité, ça se filtre — avant que le lead t'arrive. C'est exactement ce que fait l'IA de qualification dans le système ci-dessous." },
+  convert:         { icon:'💸', title:"Ton défi : convertir ceux que tu as déjà",
+                     desc:"Souvent c'est pas toi, c'est le délai et le suivi. Regarde la ligne « leads réellement travaillés » plus bas — c'est là que ça se joue." },
+  time:            { icon:'⏰', title:"Ton défi : arrêter de tout faire à la main",
+                     desc:"Un CRM avec relances automatiques, c'est environ 5 h/semaine récupérées chez nos clients — et zéro lead oublié." },
+  differentiation: { icon:'✨', title:"Ton défi : te démarquer des autres courtiers",
+                     desc:"L'expertise, tout le monde l'affiche. Ce qui différencie, c'est la personne — c'est pour ça que le contenu vient avant la pub." },
+}
+
+const SPEED_NOTE = {
+  min10:    "Tu rappelles en moins de 10 minutes : on considère que tu travailles 100 % de tes leads.",
+  hour:     "Rappel dans l'heure : environ 70 % de tes leads sont réellement travaillés.",
+  day:      "Rappel dans la journée : environ 45 % de tes leads sont réellement travaillés.",
+  whenever: "Rappel quand tu as le temps : environ 25 % de tes leads sont réellement travaillés.",
+}
+
 const ADVICE_BY_ACQUISITION = {
   pubs: {
     title: "Le problème avec des pubs seules",
@@ -1506,6 +1834,17 @@ const ADVICE_BY_ACQUISITION = {
         desc: "Si tes 3-4 sources de références tarissent, ton business meurt du jour au lendemain. Diversification obligatoire." },
     ]
   },
+  achetes: {
+    title: "Le problème avec les leads achetés",
+    cards: [
+      { icon: '⚔️', title: "Tu es un courtier sur quatre",
+        desc: "Le même lead est revendu à 3-4 courtiers en même temps. Tu ne vends plus ton expertise — tu cours après un délai de réponse." },
+      { icon: '🏷️', title: "La personne magasine un prix",
+        desc: "Un lead partagé arrive sans relation et sans contexte. Il compare des chiffres, pas des professionnels. C'est la pire position de négociation." },
+      { icon: '🔒', title: "Tu ne possèdes rien",
+        desc: "Ni l'audience, ni la marque, ni les données. Le jour où le fournisseur monte ses prix ou coupe le robinet, tu repars de zéro." },
+    ]
+  },
   aucune: {
     title: "Le problème avec aucun système",
     cards: [
@@ -1537,7 +1876,7 @@ function renderResult() {
 
       <div class="form-group" id="form-block">
         <div class="form-title">Obtiens ton plan personnalisé</div>
-        <div class="form-sub">Entre tes coordonnées — on te dévoile ton chiffre exact et on t'envoie un plan sur mesure.</div>
+        <div class="form-sub">Entre tes coordonnées — on te dévoile ton chiffre exact, le calcul ligne par ligne, et on t'envoie un plan sur mesure.</div>
         <input class="field" type="text"  id="f-nom"   placeholder="Ton nom complet" autocomplete="name"  oninput="state.form.nom=this.value;updateFormBtn()" />
         <input class="field" type="email" id="f-email" placeholder="Ton courriel"     autocomplete="email" oninput="state.form.email=this.value;updateFormBtn()" />
         <input class="field" type="tel"   id="f-tel"   placeholder="Ton téléphone"    autocomplete="tel"   oninput="state.form.telephone=this.value;updateFormBtn()" />
@@ -1545,8 +1884,38 @@ function renderResult() {
       </div>
     `
   } else {
-    // ── ÉTAPE 2 : Chiffre révélé + conseils + vidéo ──
-    const advice = ADVICE_BY_ACQUISITION[state.answers.acquisition] || ADVICE_BY_ACQUISITION.aucune
+    // ── ÉTAPE 2 : Chiffre révélé + chaîne de calcul + conseils + vidéo ──
+    const P       = state.proj || calcProjection()
+    const advice  = ADVICE_BY_ACQUISITION[state.answers.acquisition] || ADVICE_BY_ACQUISITION.aucune
+    const focus   = CHALLENGE_FOCUS[state.answers.challenge]
+    const r1      = (n) => new Intl.NumberFormat('fr-CA', { maximumFractionDigits: 1 }).format(n)
+
+    const focusHtml = focus ? `
+      <div class="focus-block">
+        <div class="focus-icon">${focus.icon}</div>
+        <div class="focus-body">
+          <div class="focus-title">${focus.title}</div>
+          <div class="focus-desc">${focus.desc}</div>
+        </div>
+      </div>
+    ` : ''
+
+    // La chaîne complète, ligne par ligne, avec SES chiffres dedans.
+    const chainRows = [
+      ['Budget publicitaire',  `${fmtCAD(P.budgetMois)}/mois`, `${P.budgetJour} $/jour × 30 jours`],
+      ['Leads générés',        `${Math.round(P.leads)}`,        `÷ ${r1(P.cpl)} $ de coût par lead`],
+      ['Leads réellement travaillés', `${Math.round(P.travailles)}`, `× ${Math.round(P.speedRate*100)} % — ${LABELS.speed[state.answers.speed] || '—'}`],
+      ['Rendez-vous obtenus',  `${r1(P.evals)}`,                `× ${Math.round(TAUX_EVAL*100)} % des leads travaillés`],
+      ['Transactions signées', `${r1(P.transactions)}`,         `× ${Math.round(TAUX_CLOSE*100)} % des rendez-vous`],
+      ['Revenu ajouté par le système', `${fmtCAD(Math.round(P.revenuProjete))}/mois`, `× ${fmtCAD(P.ticket)} par client`],
+      ['Ton revenu actuel',    `${fmtCAD(P.revenuActuel)}/mois`, `${P.clientsActuels} client${P.clientsActuels>1?'s':''} × ${fmtCAD(P.ticket)} — le système s'ajoute à ça`],
+    ].map(([lbl, val, note]) => `
+      <div class="chain-row">
+        <div class="chain-lbl">${lbl}<span class="chain-note">${note}</span></div>
+        <div class="chain-val">${val}</div>
+      </div>
+    `).join('')
+
     const adviceHtml = advice.cards.map(c => `
       <div class="advice-card">
         <div class="advice-icon">${c.icon}</div>
@@ -1566,6 +1935,22 @@ function renderResult() {
         <div class="result-divider"></div>
         <div class="result-annual" id="result-annual">0$</div>
         <div class="result-annual-lbl">SUR 12 MOIS</div>
+      </div>
+
+      ${focusHtml}
+
+      <div class="chain-block">
+        <div class="chain-title">D'où sort ce chiffre</div>
+        ${chainRows}
+        <div class="chain-row chain-row--total">
+          <div class="chain-lbl">Ton revenu avec le système<span class="chain-note">${fmtCAD(P.revenuActuel)} actuels + ${fmtCAD(Math.round(P.revenuProjete))} ajoutés</span></div>
+          <div class="chain-val">${fmtCAD(Math.round(P.revenuTotal))}/mois</div>
+        </div>
+        <div class="chain-row chain-row--net">
+          <div class="chain-lbl">Net dans tes poches<span class="chain-note">revenu ajouté − budget pub − ${fmtCAD(FRAIS_GESTION)} de gestion</span></div>
+          <div class="chain-val">${fmtCAD(P.net)}/mois</div>
+        </div>
+        <div class="chain-foot">${SPEED_NOTE[state.answers.speed] || ''}</div>
       </div>
 
       <div class="advice-block">
@@ -1656,6 +2041,7 @@ function submitForm() {
   }
 
   // Webhook GHL
+  const P = state.proj || calcProjection()
   const url = document.querySelector('meta[name="webhook-url"]')?.content
   if (url) {
     fetch(url, {
@@ -1669,12 +2055,22 @@ function submitForm() {
         industrie:              state.answers.industry === 'autre'
                                   ? `Autre — ${state.answers.industryOther || ''}`.trim()
                                   : LABELS.industry[state.answers.industry],
-        annees_affaires:        LABELS.years[state.answers.years],
         clients_mois:           state.answers.clients,
         acquisition:            LABELS.acquisition[state.answers.acquisition],
-        systeme_suivi:          LABELS.system[state.answers.system],
+        vitesse_rappel:         LABELS.speed[state.answers.speed],
         defi_principal:         LABELS.challenge[state.answers.challenge],
-        objectif_revenus:       LABELS.goal[state.answers.goal],
+        budget_pub_jour:        P.budgetJour,
+        budget_pub_mois:        P.budgetMois,
+        cout_par_lead:          P.cpl,
+        valeur_client:          P.ticket,
+        leads_mois:             Math.round(P.leads),
+        leads_travailles:       Math.round(P.travailles),
+        rendez_vous_mois:       Math.round(P.evals * 10) / 10,
+        transactions_mois:      Math.round(P.transactions * 10) / 10,
+        revenu_projete_mensuel: Math.round(P.revenuProjete),
+        revenu_actuel_mensuel:  P.revenuActuel,
+        revenu_total_mensuel:   Math.round(P.revenuTotal),
+        net_mensuel:            P.net,
         montant_table_mensuel:  state.amount,
         montant_table_annuel:   state.amount * 12,
         // Attribution Facebook / UTM (pour le suivi des campagnes)
