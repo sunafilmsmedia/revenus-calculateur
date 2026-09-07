@@ -1197,12 +1197,9 @@ const QUESTIONS = [
     key: 'industry',
     title: 'Tu es dans quel domaine ?',
     options: [
-      { value: 'hypothecaire', icon: '🏠', label: 'Courtier hypothécaire', sub: 'Prêts, renouvellements, refinancement',
-        line: "On accompagne 4 courtiers hypothécaires au Québec en ce moment. Lead moyen : 19 $." },
-      { value: 'immobilier',   icon: '🏢', label: 'Courtier immobilier',   sub: 'Vente, achat, investissement',
-        line: "On accompagne 5 courtiers immobiliers, un seul par secteur. Lead moyen : 39 $." },
-      { value: 'autre',        icon: '⚡', label: 'Autre',                  sub: 'Autre domaine professionnel',
-        line: "On travaille surtout avec des courtiers, mais la mécanique est la même pour tout service à ticket élevé." },
+      { value: 'hypothecaire', icon: '🏠', label: 'Courtier hypothécaire', sub: 'Prêts, renouvellements, refinancement', },
+      { value: 'immobilier',   icon: '🏢', label: 'Courtier immobilier',   sub: 'Vente, achat, investissement', },
+      { value: 'autre',        icon: '⚡', label: 'Autre',                  sub: 'Autre domaine professionnel', },
     ]
   },
   {
@@ -1214,33 +1211,22 @@ const QUESTIONS = [
     min: 0,
     max: 99,
     hint: "Un chiffre approximatif suffit — c'est ta base de comparaison.",
-    line: (v) =>
-      v <= 2 ? "Tu pars de proche de zéro : chaque client de plus change ton mois."
-    : v <= 5 ? "C'est le volume typique d'un courtier qui roule aux références. Le plafond, c'est le nombre de gens que tu connais."
-    :          "Tu as déjà un flow. La question, c'est de le rendre prévisible plutôt que dépendant de ton réseau.",
   },
   {
     key: 'acquisition',
     title: "D'où viennent tes clients en ce moment ?",
     sub: 'Le principal — un seul choix.',
     options: [
-      { value: 'ref',     icon: '🤝', label: 'Références et bouche-à-oreille',
-        line: "Solide, mais impossible à scaler : tu ne contrôles ni le volume ni le timing." },
-      { value: 'pubs',    icon: '📢', label: 'Publicité payante', sub: 'Meta, Google',
-        line: "Bon signe — tu sais déjà que ça se paie. La différence se joue sur ce qui se passe après le clic." },
-      { value: 'organic', icon: '📱', label: 'Contenu organique', sub: 'Réseaux sociaux',
-        line: "Tu bâtis de la confiance, mais sans pub, seulement une fraction de ton audience te voit." },
-      { value: 'achetes', icon: '🛒', label: 'Leads achetés', sub: 'Sites de leads partagés',
-        line: "Tu es en compétition avec 3-4 courtiers sur le même lead, et la personne veut souvent juste un prix." },
-      { value: 'aucune',  icon: '🎲', label: 'Pas de méthode fixe', sub: 'Ça dépend des mois',
-        line: "C'est le scénario le plus fréquent chez ceux qu'on rencontre. Bonne nouvelle : c'est aussi celui où l'écart est le plus grand." },
+      { value: 'ref',     icon: '🤝', label: 'Références et bouche-à-oreille', },
+      { value: 'pubs',    icon: '📢', label: 'Publicité payante', sub: 'Meta, Google', },
+      { value: 'organic', icon: '📱', label: 'Contenu organique', sub: 'Réseaux sociaux', },
+      { value: 'achetes', icon: '🛒', label: 'Leads achetés', sub: 'Sites de leads partagés', },
+      { value: 'aucune',  icon: '🎲', label: 'Pas de méthode fixe', sub: 'Ça dépend des mois', },
     ]
   },
   {
     key: 'speed',
     title: 'Quand un lead entre, tu le rappelles en combien de temps ?',
-    // Même ligne de valeur peu importe la réponse — c'est le point à faire passer.
-    lineAll: "Après 10 minutes, tu perds jusqu'à 80 % de tes chances de convertir un lead. C'est le levier le plus sous-estimé qu'on voit chez les courtiers.",
     options: [
       { value: 'min10',    icon: '⚡', label: 'Moins de 10 minutes', sub: 'Automatisé ou je suis dessus' },
       { value: 'hour',     icon: '⏱', label: "Dans l'heure" },
@@ -1252,14 +1238,10 @@ const QUESTIONS = [
     key: 'challenge',
     title: 'Si tu pouvais régler une seule chose ce mois-ci, ce serait quoi ?',
     options: [
-      { value: 'leads',           icon: '🎯', label: 'Avoir plus de leads qui valent la peine',
-        line: "Le volume, ça s'achète. La qualité, ça se filtre — avant que le lead t'arrive." },
-      { value: 'convert',         icon: '💸', label: "Convertir ceux que j'ai déjà",
-        line: "Souvent c'est pas toi, c'est le délai et le suivi. On regarde ça dans ton résultat." },
-      { value: 'time',            icon: '⏰', label: 'Arrêter de tout faire à la main',
-        line: "Un CRM avec relances automatiques, c'est ~5 h/semaine récupérées chez nos clients." },
-      { value: 'differentiation', icon: '✨', label: 'Me démarquer des autres courtiers',
-        line: "L'expertise, tout le monde l'affiche. Ce qui différencie, c'est la personne." },
+      { value: 'leads',           icon: '🎯', label: 'Avoir plus de leads qui valent la peine', },
+      { value: 'convert',         icon: '💸', label: "Convertir ceux que j'ai déjà", },
+      { value: 'time',            icon: '⏰', label: 'Arrêter de tout faire à la main', },
+      { value: 'differentiation', icon: '✨', label: 'Me démarquer des autres courtiers', },
     ]
   },
   {
@@ -1535,39 +1517,7 @@ function renderQuestion(direction) {
     }
   }
 
-  renderValueLine()
   updateContinueBtn()
-}
-
-// ─────────────────────────────
-// LIGNE DE VALEUR — le petit texte qui apparaît sous la réponse
-// ─────────────────────────────
-function valueLineFor(q) {
-  const v = state.answers[q.key]
-  if (v === undefined || v === null || v === '') return ''
-  if (q.lineAll) return q.lineAll
-  if (typeof q.line === 'function') return q.line(v)
-  if (q.options) {
-    const opt = q.options.find(o => o.value === v)
-    return (opt && opt.line) || ''
-  }
-  return ''
-}
-
-function renderValueLine() {
-  const q = QUESTIONS[state.qIndex]
-  let el = document.getElementById('q-valueline')
-  const txt = q.slider ? '' : valueLineFor(q)
-  if (!txt) { if (el) el.remove(); return }
-  if (!el) {
-    el = document.createElement('div')
-    el.id = 'q-valueline'
-    el.className = 'value-line'
-    document.getElementById('options').after(el)
-  }
-  if (el.textContent === txt) return   // évite de rejouer l'anim pour rien
-  el.textContent = txt
-  el.classList.remove('vl-in'); void el.offsetWidth; el.classList.add('vl-in')
 }
 
 // ─────────────────────────────
@@ -1627,7 +1577,6 @@ function stepNumeric(delta) {
   state.answers[q.key] = next
   const inp = document.getElementById('q-num-input')
   if (inp) inp.value = next
-  renderValueLine()
   updateContinueBtn()
 }
 function setNumeric(v) {
@@ -1639,12 +1588,11 @@ function setNumeric(v) {
     const num = parseInt(cleaned) || 0
     state.answers[q.key] = Math.max(q.min ?? 0, Math.min(q.max ?? 99, num))
   }
-  renderValueLine()
   updateContinueBtn()
 }
 
 // Clic sur une option — toggle de class seulement, ZÉRO rebuild DOM.
-// Pas d'auto-advance : la ligne de valeur doit avoir le temps d'être lue.
+// Un clic = on passe à la question suivante.
 function selectOption(key, value) {
   state.answers[key] = value
   document.querySelectorAll('#options .opt').forEach(el => {
@@ -1654,12 +1602,19 @@ function selectOption(key, value) {
   // Changer d'industrie remet le budget sur le défaut de cette industrie
   if (key === 'industry') {
     state.answers.budget = undefined
-    if (value === 'autre') showIndustryOtherInput()
-    else hideIndustryOtherInput()
+    if (value === 'autre') {
+      // "Autre" ouvre un champ texte : pas d'avance auto, il doit le remplir
+      showIndustryOtherInput()
+      updateContinueBtn()
+      if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer)
+      return
+    }
+    hideIndustryOtherInput()
   }
 
-  renderValueLine()
   updateContinueBtn()
+  if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer)
+  autoAdvanceTimer = setTimeout(() => { if (state.answers[key] === value) goNext() }, 300)
 }
 
 function showIndustryOtherInput() {
