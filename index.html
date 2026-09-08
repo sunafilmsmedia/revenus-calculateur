@@ -6,63 +6,41 @@
   <title>Ça va me rapporter combien ? — Suna Films Media</title>
   <meta name="description" content="Chaque année sans Contenu + Pubs + AI, tu manques des clients. Calcule combien en 3 minutes." />
   <meta property="og:title" content="Ça va me rapporter combien ? Ce qu'un vrai système d'acquisition de clients pourrait te générer." />
-  <meta property="og:description" content="6 questions basées sur ton volume actuel. En 3 minutes, tu vois ton chiffre." />
+  <meta property="og:description" content="7 questions basées sur ton volume actuel. En 3 minutes, tu vois ton chiffre." />
   <meta name="webhook-url" content="https://services.leadconnectorhq.com/hooks/pp5qkRPyKZNC36rStsc7/webhook-trigger/lgL8QjTcgUvEPnFaRECu" />
 
-  <!-- Polices hebergees en local : plus de round-trip vers Google avant
-       le premier rendu. Les deux polices du haut de page sont prechargees. -->
-  <link rel="preload" href="fonts/HankenGrotesk-400-800.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="fonts/Barlow-700.woff2" as="font" type="font/woff2" crossorigin>
-
-  <!-- Meta Pixel + Clarity : charges apres le premier rendu (voir plus bas).
-       Le noscript reste immediat pour les visiteurs sans JS. -->
+  <!-- Meta Pixel Code -->
+  <script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '889823396710916');
+  fbq('track', 'PageView');
+  </script>
   <noscript><img height="1" width="1" style="display:none"
   src="https://www.facebook.com/tr?id=889823396710916&ev=PageView&noscript=1"
   /></noscript>
+  <!-- End Meta Pixel Code -->
+
+  <!-- Microsoft Clarity -->
+  <script type="text/javascript">
+      (function(c,l,a,r,i,t,y){
+          c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+          t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+          y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+      })(window, document, "clarity", "script", "xbqh7lqnmz");
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:ital,wght@0,700;0,800;0,900;1,700;1,800&family=Instrument+Sans:ital,wght@1,600;1,700&family=Kaushan+Script&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
-    @font-face {
-      font-family: 'Anton';
-      font-style: normal;
-      font-weight: 400;
-      font-display: swap;
-      src: url('fonts/Anton-400.woff2') format('woff2');
-      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-    }
-    @font-face {
-      font-family: 'Barlow';
-      font-style: normal;
-      font-weight: 700;
-      font-display: swap;
-      src: url('fonts/Barlow-700.woff2') format('woff2');
-      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-    }
-    @font-face {
-      font-family: 'Hanken Grotesk';
-      font-style: normal;
-      font-weight: 400 800;
-      font-display: swap;
-      src: url('fonts/HankenGrotesk-400-800.woff2') format('woff2');
-      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-    }
-    @font-face {
-      font-family: 'Instrument Sans';
-      font-style: italic;
-      font-weight: 700;
-      font-stretch: 100%;
-      font-display: swap;
-      src: url('fonts/InstrumentSans-700i.woff2') format('woff2');
-      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-    }
-    @font-face {
-      font-family: 'Kaushan Script';
-      font-style: normal;
-      font-weight: 400;
-      font-display: swap;
-      src: url('fonts/KaushanScript-400.woff2') format('woff2');
-      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-    }
-
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
@@ -1212,7 +1190,8 @@
   <!-- ════ TOP BAR (landing) ════ -->
   <div class="topbar" id="topbar">
     <a href="https://sunafilmsmedia.com" target="_blank" rel="noopener" class="wordmark">Suna Films Media</a>
-    <span class="badge-free">GRATUIT</span>
+    <img class="logo-img" src="logo.png" alt="Suna Films Media" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-block'" />
+    <span class="badge-free" style="display:none">GRATUIT</span>
   </div>
 
   <!-- ════ HEADER LOGO (questions / loading) ════ -->
@@ -1236,7 +1215,7 @@
 
     <div class="stats-inline">
       <span class="stat-item"><span class="stat-dot"></span> 3 minutes</span>
-      <span class="stat-item"><span class="stat-dot"></span> 6 questions</span>
+      <span class="stat-item"><span class="stat-dot"></span> 7 questions</span>
       <span class="stat-item"><span class="stat-dot"></span> 100 % personnalisé</span>
     </div>
 
@@ -1325,42 +1304,6 @@
 </div>
 
 <script>
-// ─────────────────────────────
-// TRACKING — charge apres le premier rendu pour ne pas bloquer l'affichage.
-// fbevents.js pese 110 Ko : l'executer pendant le chargement coutait ~260 ms
-// de blocage. La file d'attente fbq() est creee tout de suite, donc le
-// PageView (et un Lead precoce) partent quand meme, dans l'ordre.
-// ─────────────────────────────
-;(function(){
-  const f = window
-  if (!f.fbq) {
-    const n = f.fbq = function(){ n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments) }
-    if (!f._fbq) f._fbq = n
-    n.push = n; n.loaded = !0; n.version = '2.0'; n.queue = []
-  }
-  fbq('init', '889823396710916')
-  fbq('track', 'PageView')
-
-  window.clarity = window.clarity || function(){ (window.clarity.q = window.clarity.q || []).push(arguments) }
-
-  let done = false
-  function loadTracking() {
-    if (done) return
-    done = true
-    for (const src of ['https://connect.facebook.net/en_US/fbevents.js',
-                       'https://www.clarity.ms/tag/xbqh7lqnmz']) {
-      const sc = document.createElement('script')
-      sc.async = true; sc.src = src
-      document.head.appendChild(sc)
-    }
-  }
-  // Des que la page est peinte et stable, ou au premier geste du visiteur.
-  if (document.readyState === 'complete') setTimeout(loadTracking, 800)
-  else window.addEventListener('load', () => setTimeout(loadTracking, 800))
-  ;['pointerdown','keydown','touchstart'].forEach(e =>
-    window.addEventListener(e, loadTracking, { once: true, passive: true }))
-})()
-
 // ─────────────────────────────
 // QUESTIONS
 // ─────────────────────────────
