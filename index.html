@@ -367,6 +367,65 @@
       margin-top: 3px;
     }
 
+    /* ── ÉCHÉANCIER D'INSTALLATION ── */
+    .setup-block {
+      margin: 22px 0 0;
+      padding: 18px 16px 14px;
+      border: 1px solid var(--w10);
+      border-radius: 14px;
+      background: var(--w03);
+      text-align: left;
+    }
+    .setup-title {
+      font-family: 'Anton', sans-serif;
+      font-size: 22px;
+      line-height: 1.1;
+      color: var(--white);
+      margin-bottom: 6px;
+    }
+    .setup-intro {
+      color: rgba(255,255,255,0.72);
+      font-size: 13.5px;
+      line-height: 1.55;
+      margin-bottom: 16px;
+    }
+    .setup-row {
+      display: flex; gap: 12px; align-items: flex-start;
+      padding: 12px 0;
+      border-top: 1px solid var(--w06);
+    }
+    .setup-num {
+      flex: 0 0 auto;
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: var(--orange);
+      color: var(--white);
+      font-family: 'Hanken Grotesk', sans-serif;
+      font-weight: 800; font-size: 13px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .setup-when {
+      color: var(--orange);
+      font-size: 11px; font-weight: 800;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+    .setup-what {
+      color: rgba(255,255,255,0.80);
+      font-size: 13.5px; line-height: 1.55;
+    }
+    .setup-foot {
+      color: var(--w45);
+      font-size: 12.5px; line-height: 1.5;
+      margin-top: 12px; padding-top: 12px;
+      border-top: 1px solid var(--w06);
+    }
+    @media (max-width: 640px) {
+      .setup-block { padding: 16px 14px 12px; }
+      .setup-title { font-size: 19px; }
+      .setup-what { font-size: 13px; }
+    }
+
     /* ── CALENDRIER (bas du résultat) ── */
     .cal-block { margin: 26px 0 0; }
     .cal-title {
@@ -913,11 +972,6 @@
       margin: 8px 0 28px;
       overflow: hidden;
     }
-    .result-box--revealed .result-amount,
-    .result-box--revealed .result-annual {
-      filter: blur(0);
-      text-shadow: none;
-    }
     /* Anime en fondu chaque section quand le contenu du result est refait */
     .result-anim-in { animation: reveal-fade 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
     @keyframes reveal-fade {
@@ -932,7 +986,6 @@
       letter-spacing: 0.01em;
       white-space: nowrap;
       text-align: center;
-      filter: blur(11px);
       text-shadow: 0 0 20px rgba(255,255,255,0.4);
     }
     .result-suffix {
@@ -957,7 +1010,6 @@
       letter-spacing: 0.02em;
       white-space: nowrap;
       text-align: center;
-      filter: blur(7px);
       text-shadow: 0 0 12px rgba(255,255,255,0.4);
     }
     .result-annual-lbl {
@@ -1011,18 +1063,6 @@
     .advice-card-desc { font-size: 13px; color: var(--w60); line-height: 1.5; }
 
     /* Encadré "un pro va t'appeler" */
-    .pro-note {
-      background: rgba(255,106,0,0.06);
-      border: 1px solid rgba(255,106,0,0.30);
-      border-radius: 14px;
-      padding: 16px 18px;
-      margin: 8px 0 18px;
-      text-align: center;
-      font-size: 14px;
-      color: var(--white);
-      line-height: 1.55;
-    }
-    .pro-note strong { color: var(--orange); }
 
     .result-restart {
       text-align: center;
@@ -1038,38 +1078,6 @@
     .result-restart:hover { color: var(--white); }
 
     /* ── FORM (sur résultat) ── */
-    .form-group {
-      background: var(--w03);
-      border: 1px solid var(--w10);
-      border-radius: 18px;
-      padding: 24px;
-      margin: 24px 0 16px;
-      text-align: left;
-    }
-    .form-title {
-      font-family: 'Anton', sans-serif;
-      font-size: 24px;
-      text-transform: uppercase;
-      letter-spacing: 0.02em;
-      margin-bottom: 6px;
-      text-align: center;
-    }
-    .form-sub { color: var(--w60); font-size: 14px; margin-bottom: 18px; line-height: 1.5; text-align: center; }
-    .field {
-      width: 100%;
-      padding: 16px 18px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--w10);
-      border-radius: 12px;
-      color: var(--white);
-      font-family: inherit;
-      font-size: 15px;
-      margin-bottom: 12px;
-      outline: none;
-      transition: border-color 0.18s;
-    }
-    .field:focus { border-color: var(--orange); }
-    .field::placeholder { color: var(--w45); }
 
     /* ── SCREENS + ANIMATIONS ── */
     .screen { display: none; }
@@ -1383,9 +1391,7 @@ const state = {
   view: 'intro',  // intro | question | loading | result
   qIndex: 0,
   answers: {},
-  form: { nom: '', email: '', telephone: '' },
   proj: null,               // resultat complet de calcProjection()
-  submitted: false,
   amount: 0,
   disqualified: false,      // remplit le quiz normalement, mais on n'envoie pas le lead
   notqualReason: '',
@@ -1548,11 +1554,9 @@ function goBack() {
 function restart() {
   state.qIndex = 0
   state.answers = {}
-  state.submitted = false
   state.disqualified = false
   state.notqualReason = ''
   state.proj = null
-  state.form = { nom: '', email: '', telephone: '' }
   showScreen('intro')
 }
 
@@ -1832,6 +1836,16 @@ function budgetTier(v) { return BUDGET_TIERS.find(t => v <= t.max) || BUDGET_TIE
 // Part des leads réellement travaillés selon la vitesse de rappel
 const SPEED_RATE      = { min10: 0.90, hour: 0.70, day: 0.50, whenever: 0.30 }
 // Formulation employée dans la phrase « 39 leads, rappelés dans la journée → … »
+// Échéancier d'installation montré en bas du résultat.
+// À ajuster si le vrai processus diffère.
+const SETUP_STEPS = [
+  { when: "Jours 1 à 3",    what: "Appel de cadrage et accès à ton compte publicitaire. On installe le pixel, le CRM et les relances automatiques." },
+  { when: "Semaine 1",      what: "On produit ton contenu et on écrit tes publicités : les angles, les offres, les audiences." },
+  { when: "Semaine 2",      what: "Les campagnes partent en ligne. L'IA de qualification commence à trier les leads avant qu'ils t'arrivent." },
+  { when: "Semaine 3 et 4", what: "Les premiers rendez-vous entrent dans ton agenda. On ajuste selon les vrais chiffres, pas des suppositions." },
+]
+const SETUP_FOOT = "Compte environ deux semaines avant les premiers leads, et 30 jours pour que le système tourne sans toi."
+
 const SPEED_PHRASE    = {
   min10:    "rappelés en moins de 10 minutes",
   hour:     "rappelés dans l'heure",
@@ -2000,31 +2014,6 @@ const ADVICE_BY_ACQUISITION = {
 function renderResult() {
   const container = document.getElementById('result-screen-content')
 
-  if (!state.submitted) {
-    // ── ÉTAPE 1 : Chiffre flou + formulaire ──
-    const mot = CLIENT_MOT[state.answers.industry] || CLIENT_MOT.autre
-    container.innerHTML = `
-      <div class="result-lbl">TON ESTIMATION</div>
-      <div class="result-script">Tu laisses environ</div>
-      <div class="result-box">
-        <div class="result-amount" id="result-amount">0</div>
-        <div class="result-suffix">${mot.suffixe}</div>
-        <div class="result-divider"></div>
-        <div class="result-annual" id="result-annual">0</div>
-        <div class="result-annual-lbl">${mot.annuel}</div>
-      </div>
-
-      <div class="form-group" id="form-block">
-        <div class="form-title">Obtiens ton plan personnalisé</div>
-        <div class="form-sub">Entre tes coordonnées — on te dévoile ton chiffre exact, le calcul ligne par ligne, et on t'envoie un plan sur mesure.</div>
-        <input class="field" type="text"  id="f-nom"   placeholder="Ton nom complet" autocomplete="name"  oninput="state.form.nom=this.value;updateFormBtn()" />
-        <input class="field" type="email" id="f-email" placeholder="Ton courriel"     autocomplete="email" oninput="state.form.email=this.value;updateFormBtn()" />
-        <input class="field" type="tel"   id="f-tel"   placeholder="Ton téléphone"    autocomplete="tel"   oninput="state.form.telephone=this.value;updateFormBtn()" />
-        <button class="btn btn--disabled" id="btn-submit" onclick="submitForm()">OBTENIR MON PLAN GRATUIT →</button>
-      </div>
-    `
-  } else {
-    // ── ÉTAPE 2 : Chiffre révélé + chaîne de calcul + conseils + vidéo ──
     const P       = state.proj || calcProjection()
     const advice  = ADVICE_BY_ACQUISITION[state.answers.acquisition] || ADVICE_BY_ACQUISITION.aucune
     const focus   = CHALLENGE_FOCUS[state.answers.challenge]
@@ -2123,7 +2112,7 @@ function renderResult() {
     container.innerHTML = `
       <div class="result-lbl">TON POTENTIEL RÉVÉLÉ</div>
       <div class="result-script">Tu laisses environ</div>
-      <div class="result-box result-box--revealed">
+      <div class="result-box">
         <div class="result-amount" id="result-amount">0</div>
         <div class="result-suffix">${CLIENT_MOT[P.ind].suffixe}</div>
         <div class="result-divider"></div>
@@ -2161,14 +2150,19 @@ function renderResult() {
         <div class="advice-cards">${adviceHtml}</div>
       </div>
 
-      <div class="pro-note">
-        <strong>Un de nos professionnels</strong> va t'appeler pour vérifier ta situation et confirmer ces chiffres avec toi.
-      </div>
-
-      <div class="form-group" style="text-align:center">
-        <div style="font-size:44px;margin-bottom:6px">🎉</div>
-        <div class="anton" style="font-size:24px;margin-bottom:6px">PLAN EN ROUTE</div>
-        <p style="color:var(--w60);font-size:14px;line-height:1.55">On te rappelle sous 24h pour confirmer tes chiffres et te présenter ton plan.</p>
+      <div class="setup-block">
+        <div class="setup-title">Voici combien de temps ça prend à installer</div>
+        <p class="setup-intro">Tu n'as rien à monter toi-même. On branche le système, tu reçois les rendez-vous.</p>
+        ${SETUP_STEPS.map((st, i) => `
+          <div class="setup-row">
+            <div class="setup-num">${i + 1}</div>
+            <div class="setup-body">
+              <div class="setup-when">${st.when}</div>
+              <div class="setup-what">${st.what}</div>
+            </div>
+          </div>
+        `).join('')}
+        <div class="setup-foot">${SETUP_FOOT}</div>
       </div>
 
       <div class="cal-block">
@@ -2179,7 +2173,6 @@ function renderResult() {
         </div>
       </div>
     `
-  }
 
   // Anime le fondu du contenu à chaque re-render
   container.classList.remove('result-anim-in')
@@ -2195,116 +2188,39 @@ function renderResult() {
     const cible = P.clientsAjoutes
     const start = performance.now()
     const dur   = 1100
+    function poser() {
+      monthEl.textContent = clientRange(cible)
+      yearEl.textContent  = clientRangeYear(cible)
+    }
     function tick(now) {
-      const p    = Math.min((now - start) / dur, 1)
+      // Borner la progression : selon le navigateur, le timestamp de rAF peut
+      // preceder performance.now(), ce qui donnait un compteur negatif.
+      const p    = Math.min(Math.max((now - start) / dur, 0), 1)
       const ease = 1 - Math.pow(1 - p, 3)
       if (p < 1) {
-        monthEl.textContent = String(Math.floor(cible * ease))
-        yearEl.textContent  = String(Math.floor(cible * ease) * 12)
+        const v = Math.max(0, Math.floor(cible * ease))
+        monthEl.textContent = String(v)
+        yearEl.textContent  = String(v * 12)
         requestAnimationFrame(tick)
       } else {
-        monthEl.textContent = clientRange(cible)
-        yearEl.textContent  = clientRangeYear(cible)
+        poser()
       }
     }
     requestAnimationFrame(tick)
+    // Filet : si les frames n'arrivent pas (onglet en arriere-plan, animations
+    // reduites), on pose quand meme le chiffre final.
+    setTimeout(poser, dur + 150)
   }
 
-  if (!state.submitted) updateFormBtn()
-  else loadCalendarScript()
+  loadCalendarScript()
 }
 
 function fmtCAD(n) {
   return new Intl.NumberFormat('fr-CA').format(n) + '$'
 }
 
-// ─────────────────────────────
-// FORM
-// ─────────────────────────────
-function updateFormBtn() {
-  const btn = document.getElementById('btn-submit'); if (!btn) return
-  const nomOk   = (state.form.nom||'').trim().length >= 2
-  const telOk   = (state.form.telephone||'').replace(/\D/g,'').length >= 10
-  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.form.email||'')
-  btn.classList.toggle('btn--disabled', !(nomOk && telOk && emailOk))
-}
-
-function submitForm() {
-  const nomOk   = (state.form.nom||'').trim().length >= 2
-  const telOk   = (state.form.telephone||'').replace(/\D/g,'').length >= 10
-  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.form.email||'')
-  if (!(nomOk && telOk && emailOk)) return
-  state.submitted = true
-
-  // Non qualifie : il voit son resultat complet, mais on n'envoie RIEN
-  // (ni evenement Lead au pixel, ni webhook CRM).
-  if (state.disqualified) {
-    renderResult()
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-    return
-  }
-
-  // Meta Pixel
-  if (window.fbq) {
-    fbq('track', 'Lead', {
-      content_name: 'Combien tu laisses sur la table',
-      value: state.amount,
-      currency: 'CAD',
-    })
-  }
-
-  // Webhook GHL
-  const P = state.proj || calcProjection()
-  const url = document.querySelector('meta[name="webhook-url"]')?.content
-  if (url) {
-    fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        prenom:                 state.form.nom,
-        email:                  state.form.email,
-        telephone:              state.form.telephone,
-        qualifie:               'OUI',
-        industrie:              state.answers.industry === 'autre'
-                                  ? `Autre — ${state.answers.industryOther || ''}`.trim()
-                                  : LABELS.industry[state.answers.industry],
-        clients_mois:           state.answers.clients,
-        acquisition:            LABELS.acquisition[state.answers.acquisition],
-        vitesse_rappel:         LABELS.speed[state.answers.speed],
-        defi_principal:         LABELS.challenge[state.answers.challenge],
-        budget_pub_jour:        P.budgetJour,
-        budget_pub_mois:        P.budgetMois,
-        cout_par_lead:          P.cpl,
-        valeur_client:          P.ticket,
-        leads_mois:             Math.round(P.leads),
-        leads_travailles:       Math.round(P.travailles),
-        rendez_vous_mois:       Math.round(P.evals * 10) / 10,
-        transactions_mois:      Math.round(P.transactions * 10) / 10,
-        revenu_projete_mensuel: Math.round(P.revenuProjete),
-        revenu_actuel_mensuel:  P.revenuActuel,
-        revenu_total_mensuel:   Math.round(P.revenuTotal),
-        net_mensuel:            P.net,
-        montant_table_mensuel:  state.amount,
-        montant_table_annuel:   state.amount * 12,
-        // Attribution Facebook / UTM (pour le suivi des campagnes)
-        fbclid:                 FB_TRACKING.fbclid,
-        fbc:                    FB_TRACKING.fbc,
-        fbp:                    FB_TRACKING.fbp,
-        landing_url:            FB_TRACKING.landing_url,
-        referrer:               FB_TRACKING.referrer,
-        utm_source:             FB_TRACKING.utm_source,
-        utm_medium:             FB_TRACKING.utm_medium,
-        utm_campaign:           FB_TRACKING.utm_campaign,
-        utm_content:            FB_TRACKING.utm_content,
-        utm_term:               FB_TRACKING.utm_term,
-      })
-    }).catch(()=>{})
-  }
-
-  // Re-render en mode "révélé" (chiffre net + conseils + vidéo)
-  renderResult()
-  window.scrollTo({ top: 0, behavior: 'smooth' })
-}
+// Le resultat n'est plus verrouille : plus de formulaire, plus de soumission.
+// Les coordonnees sont captees par le calendrier GHL en bas de page.
 
 </script>
 
